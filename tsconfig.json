@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ESNext",
+    "jsx": "preserve",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "lib": ["ES2015", "DOM"],
+    "jsxImportSource": "react",
+    "outDir": "./dist",
+    "declaration": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
