@@ -33,3 +33,23 @@
 ## Custom Babel Plugins
 - `babel-plugins/transform-imports-exports.js` - Custom import/export system
 - `babel-plugins/transform-react-hooks.js` - Prefix React identifiers with dc.
+
+## Next Steps
+
+### Global Type-Safe useQuery Hook
+Need to create a global type-safe wrapper for `dc.useQuery()`:
+- Create in `src/` directory (e.g., `src/globals.ts` or `src/types.ts`)
+- Generic function: `useQuery<T>(query: string): T[]`
+- Example usage: `useQuery<{ frontmatter: string }>('query')` returns `{ frontmatter: string }[]`
+- Provides type safety and autocomplete for query results
+- Should be globally available (no imports needed) in all source files
+
+### Cleanup webpack and tsc configs
+We end up using only babel for transpilation, so we can remove webpack and tsc configs
+- Remove webpack
+- Remove tsc
+
+### Vault injection mechanism
+We need a way to inject the transpiled code into the vault.
+- We config were the vault is mounted
+- We build and copy the code to the vault
