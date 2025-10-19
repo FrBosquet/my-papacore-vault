@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import { Counter } from "./counter";
 
 type Option = string | number;
 
@@ -11,6 +12,7 @@ export function App() {
     <div>
       <Component option="Hello" />
       <p>This JSX will be preserved in the output</p>
+      <Counter />
     </div>
   );
 }
