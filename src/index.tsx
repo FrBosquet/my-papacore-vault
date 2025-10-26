@@ -13,7 +13,7 @@ export function App() {
     <div>
       <Component option="Hello" />
       <p>This JSX will be preserved in the output</p>
-      <p>Today is {getTodayString()}</p>
+      <p>Today is {getTodayString()} and its going to be a great day</p>
       <Counter />
     </div>
   );

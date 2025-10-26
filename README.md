@@ -19,6 +19,18 @@ Papacore transforms TypeScript and JSX files into a format consumable by Datacor
 pnpm install
 ```
 
+## Configuration
+
+Before you can deploy your components to your Datacore vault, you need to configure the target location:
+
+```bash
+pnpm run config
+```
+
+This will prompt you to enter the path to your Datacore vault. The configuration is saved in `papacore.json` (which is git-ignored for security).
+
+You can run `pnpm run config` again anytime to update the vault location.
+
 ## Usage
 
 ### Build Once
@@ -37,6 +49,30 @@ Continuously watch for changes and rebuild automatically:
 pnpm run watch
 ```
 
+### Development Mode (Build + Auto-Install)
+
+Build, watch for changes, and automatically install to your configured vault:
+
+```bash
+pnpm run dev
+```
+
+This will:
+1. Ask for confirmation once at startup
+2. Build all files
+3. Copy them to your vault
+4. Watch for changes and auto-install on every save
+
+### Install to Vault
+
+Copy already-built files from `dist/` to your configured vault:
+
+```bash
+pnpm run install
+```
+
+This will ask for confirmation before overwriting files.
+
 ## Project Structure
 
 ```
@@ -53,9 +89,16 @@ papacore/
 │   └── Datacore/
 │       └── utils/
 │           └── time.js
+├── scripts/                # Build and utility scripts
+│   ├── build.js           # Build script with watch mode
+│   ├── install.js         # Install to vault script
+│   ├── config.js          # Configuration wizard
+│   └── utils.js           # Shared utilities
 ├── babel-plugins/          # Custom Babel transformation plugins
-├── build.js               # Custom build script
-└── babel.config.js        # Babel configuration
+│   ├── transform-imports-exports.js
+│   └── transform-react-hooks.js
+├── babel.config.js        # Babel configuration
+└── papacore.json          # Vault configuration (git-ignored)
 ```
 
 ## How It Works
@@ -185,11 +228,43 @@ The build system uses two custom Babel plugins:
 
 ## Development
 
-To work on this project:
+### Quick Start
 
-1. Make changes to files in `src/`
-2. Run `pnpm run watch` to auto-compile on save
-3. Check output in `dist/`
+1. Install dependencies: `pnpm install`
+2. Configure your vault: `pnpm run config`
+3. Start development mode: `pnpm run dev`
+4. Edit files in `src/` and they'll automatically compile and install to your vault
+
+### Development Workflow
+
+**Option 1: Auto-install to vault (recommended)**
+```bash
+pnpm run dev
+```
+This watches for changes, rebuilds, and automatically copies files to your vault.
+
+**Option 2: Build only**
+```bash
+pnpm run watch
+```
+This watches for changes and rebuilds, but doesn't install to your vault.
+
+**Option 3: Manual build + install**
+```bash
+pnpm run build
+pnpm run install
+```
+Build once and manually copy to your vault.
+
+## Scripts Reference
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run config` | Configure vault location (interactive wizard) |
+| `pnpm run build` | Build once (compile all files) |
+| `pnpm run watch` | Watch mode (rebuild on changes) |
+| `pnpm run dev` | Development mode (build + watch + auto-install to vault) |
+| `pnpm run install` | Copy built files to vault (with confirmation) |
 
 ## License
 

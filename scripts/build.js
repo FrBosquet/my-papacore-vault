@@ -1,15 +1,28 @@
 const { transformFileSync } = require('@babel/core');
 const fs = require('fs');
 const path = require('path');
+const {
+  projectRoot,
+  srcDir,
+  distDir,
+  loadConfig,
+  askConfirmation,
+  ensureDir
+} = require('./utils');
 
-const srcDir = path.join(__dirname, 'src');
-const distDir = path.join(__dirname, 'dist');
-
-// Check if watch mode is enabled
+// Check if watch mode and install mode are enabled
 const isWatchMode = process.argv.includes('--watch');
+const isInstallMode = process.argv.includes('--install');
 
 // Load babel config
-const babelConfig = require('./babel.config.js');
+const babelConfig = require(path.join(projectRoot, 'babel.config.js'));
+
+// Load target vault config if install mode is enabled
+let targetVault = null;
+if (isInstallMode) {
+  const config = loadConfig();
+  targetVault = config.targetVault;
+}
 
 function getAllFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -28,10 +41,18 @@ function getAllFiles(dir, fileList = []) {
   return fileList;
 }
 
-function ensureDir(dir) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+// Function to copy a single file to the vault
+function copyToVault(distFilePath) {
+  if (!targetVault) return;
+
+  const relativePath = path.relative(distDir, distFilePath);
+  const targetPath = path.join(targetVault, relativePath);
+
+  // Ensure target directory exists
+  ensureDir(path.dirname(targetPath));
+
+  // Copy the file
+  fs.copyFileSync(distFilePath, targetPath);
 }
 
 function compileFile(filePath) {
@@ -66,6 +87,12 @@ function compileFile(filePath) {
     // Write output
     fs.writeFileSync(outPath, result.code);
     console.log(`Compiled: ${relativePath}`);
+
+    // Copy to vault if install mode is enabled
+    if (isInstallMode) {
+      copyToVault(outPath);
+      console.log(`Installed: ${relativePath}`);
+    }
   } catch (error) {
     console.error(`Error compiling ${relativePath}:`, error.message);
   }
@@ -105,8 +132,30 @@ function watch() {
   });
 }
 
-if (isWatchMode) {
-  watch();
-} else {
-  build();
+async function main() {
+  // Ask for confirmation if install mode is enabled
+  if (isInstallMode) {
+    const message = `Files will be automatically copied to ${targetVault}\nAny matching files in the target directory will be OVERWRITTEN.`;
+    const confirmed = await askConfirmation(targetVault, message);
+
+    if (!confirmed) {
+      console.log('\nBuild cancelled.');
+      process.exit(0);
+    }
+
+    // Create target vault directory if it doesn't exist
+    if (!fs.existsSync(targetVault)) {
+      console.log(`\nCreating target directory: ${targetVault}`);
+      fs.mkdirSync(targetVault, { recursive: true });
+    }
+  }
+
+  // Run watch or build
+  if (isWatchMode || isInstallMode) {
+    watch();
+  } else {
+    build();
+  }
 }
+
+main();
