@@ -1,3 +1,5 @@
+const nodePath = require('path');
+
 module.exports = function ({ types: t }) {
   return {
     name: 'transform-imports-exports',
@@ -53,20 +55,62 @@ module.exports = function ({ types: t }) {
       },
 
       // Transform: import { foo } from './file'
-      // To: const { foo } = await dc.require('./file')
-      ImportDeclaration(path) {
+      // To: const { foo } = await dc.require('/absolute/path/to/file')
+      ImportDeclaration(path, state) {
         // Skip type-only imports (import type { ... } or import { type ... })
         if (path.node.importKind === 'type') {
           path.remove();
           return;
         }
 
-        const source = path.node.source.value;
+        let source = path.node.source.value;
 
         // Remove all imports from 'react' - everything is available on dc global
         if (source === 'react') {
           path.remove();
           return;
+        }
+
+        // Resolve relative imports to paths absolute from the dist folder root
+        if (source.startsWith('.')) {
+          const currentFile = state.file.opts.filename;
+          const currentDir = nodePath.dirname(currentFile);
+
+          // Resolve to absolute path
+          let absolutePath = nodePath.resolve(currentDir, source);
+
+          // Add extension if missing
+          if (!nodePath.extname(absolutePath)) {
+            // Try to find the actual file
+            if (require('fs').existsSync(absolutePath + '.tsx')) {
+              absolutePath = absolutePath + '.tsx';
+            } else if (require('fs').existsSync(absolutePath + '.ts')) {
+              absolutePath = absolutePath + '.ts';
+            } else if (require('fs').existsSync(absolutePath + '.jsx')) {
+              absolutePath = absolutePath + '.jsx';
+            } else if (require('fs').existsSync(absolutePath + '.js')) {
+              absolutePath = absolutePath + '.js';
+            }
+          }
+
+          // Map source extensions to output extensions
+          // .tsx -> .jsx, .ts -> .js
+          let targetOutput = absolutePath
+            .replace(/\.tsx$/, '.jsx')
+            .replace(/\.ts$/, '.js');
+
+          // Map from src/ to dist/
+          targetOutput = targetOutput.replace(/\/src\//, '/dist/');
+
+          // Get the project root (parent of src folder)
+          const srcIndex = currentFile.indexOf('/src/');
+          const projectRoot = currentFile.substring(0, srcIndex);
+          const distRoot = nodePath.join(projectRoot, 'dist');
+
+          // Calculate path relative to dist root (keeps extension)
+          let pathFromDistRoot = nodePath.relative(distRoot, targetOutput);
+
+          source = pathFromDistRoot;
         }
 
         const specifiers = path.node.specifiers;

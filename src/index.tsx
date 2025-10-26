@@ -1,5 +1,6 @@
 import { JSX } from "react";
 import { Counter } from "./counter";
+import { getTodayString } from "./Datacore/utils/time";
 
 type Option = string | number;
 
@@ -12,6 +13,7 @@ export function App() {
     <div>
       <Component option="Hello" />
       <p>This JSX will be preserved in the output</p>
+      <p>Today is {getTodayString()}</p>
       <Counter />
     </div>
   );

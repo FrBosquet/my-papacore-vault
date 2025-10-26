@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --extensions '.ts,.tsx'",
-    "watch": "babel src --out-dir dist --extensions '.ts,.tsx' --watch",
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "build:babel": "babel src --out-dir dist --extensions '.ts,.tsx'",
     "build:tsc": "tsc",
     "build:webpack": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
