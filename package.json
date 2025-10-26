@@ -1,8 +1,16 @@
 {
   "name": "papacore",
   "version": "1.0.0",
-  "description": "",
+  "description": "A custom TypeScript/JSX build tool for creating components compatible with Datacore's custom Preact runtime",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FrBosquet/papacore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FrBosquet/papacore/issues"
+  },
+  "homepage": "https://github.com/FrBosquet/papacore#readme",
   "scripts": {
     "build": "node build.js",
     "watch": "node build.js --watch",
@@ -12,8 +20,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Fran Bosquet",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.28.3",
     "@babel/core": "^7.28.4",

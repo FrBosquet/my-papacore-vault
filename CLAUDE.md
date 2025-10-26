@@ -5,18 +5,19 @@
 
 ## Project Setup
 - TypeScript + Babel project for a markdown editor with custom React runtime
-- Source files: `.tsx` in `src/`
-- Output files: `.js` in `dist/`
+- Source files: `.tsx` and `.ts` in `src/`
+- Output files: `.tsx` → `.jsx`, `.ts` → `.js` in `dist/`
 - Output is consumed by a markdown editor (not for browsers)
 
 ## Build Configuration
-- Using Babel to transform TypeScript + JSX
-- `pnpm run build` - Compile .tsx to .js with transformations
-- `pnpm run watch` - Watch mode
+- Using custom build script (`build.js`) with Babel for transformations
+- `pnpm run build` - Compile all files with transformations
+- `pnpm run watch` - Watch mode (auto-recompile on file changes)
 
 ## Transformations Applied
 1. **Import/Export Transformation:**
-   - `import { foo } from './file'` → `const { foo } = await dc.require('./file')`
+   - `import { foo } from './file'` → `const { foo } = await dc.require("file.jsx")` (or `.js`)
+   - Import paths are absolute from `dist/` root with file extensions
    - `import ... from 'react'` → **Removed** (React available on dc global)
    - Type-only imports → **Removed**
    - `export function Bar() {}` → Function declared normally, then `return { Bar }` at end
@@ -30,9 +31,23 @@
    - JSX syntax is kept in output (not transpiled to createElement)
    - TypeScript types are stripped
 
+## Custom Build System
+- **Build Script:** `build.js` - Custom Node.js script that processes files with Babel
+  - Transforms `.tsx` files → `.jsx` files (preserves JSX syntax)
+  - Transforms `.ts` files → `.js` files
+  - Recursively processes all files in `src/` directory
+  - Supports watch mode with `--watch` flag
+
 ## Custom Babel Plugins
-- `babel-plugins/transform-imports-exports.js` - Custom import/export system
+- `babel-plugins/transform-imports-exports.js` - Custom import/export system with absolute path resolution
 - `babel-plugins/transform-react-hooks.js` - Prefix React identifiers with dc.
+
+## Import Path Resolution
+- Relative imports are resolved to absolute paths from `dist/` root
+- File extensions are automatically mapped and included:
+  - Source `.tsx` → Output `.jsx` in import path
+  - Source `.ts` → Output `.js` in import path
+- Example: `src/components/Button.tsx` → `dc.require("components/Button.jsx")`
 
 ## Next Steps
 
