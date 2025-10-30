@@ -1,4 +1,5 @@
 const { transformFileSync } = require('@babel/core')
+const { execSync } = require('node:child_process')
 const fs = require('node:fs')
 const path = require('node:path')
 const { projectRoot, srcDir, distDir, loadConfig, askConfirmation, ensureDir } = require('./utils')
@@ -46,6 +47,29 @@ function copyToVault(distFilePath) {
 
   // Copy the file
   fs.copyFileSync(distFilePath, targetPath)
+}
+
+// Function to build Tailwind CSS
+function buildCSS() {
+  console.log('Building CSS...')
+  try {
+    execSync('pnpm run build:css', { stdio: 'inherit', cwd: projectRoot })
+    console.log('CSS built successfully!')
+
+    // Copy CSS to vault .obsidian/snippets if install mode is enabled
+    if (isInstallMode && targetVault) {
+      const cssPath = path.join(distDir, 'styles.css')
+      if (fs.existsSync(cssPath)) {
+        const snippetsDir = path.join(targetVault, '.obsidian', 'snippets')
+        ensureDir(snippetsDir)
+        const targetPath = path.join(snippetsDir, 'papacore.css')
+        fs.copyFileSync(cssPath, targetPath)
+        console.log('CSS copied to .obsidian/snippets/papacore.css')
+      }
+    }
+  } catch (error) {
+    console.error('Error building CSS:', error.message)
+  }
 }
 
 function compileFile(filePath) {
@@ -100,6 +124,10 @@ function build() {
 
   console.log('Building...')
   files.forEach(compileFile)
+
+  // Build CSS
+  buildCSS()
+
   console.log('\nBuild completed successfully!')
 }
 
@@ -118,6 +146,14 @@ function watch() {
     if (/\.(ts|tsx)$/.test(filePath) && !/\.d\.ts$/.test(filePath) && fs.existsSync(filePath)) {
       console.log(`\nFile changed: ${filename}`)
       compileFile(filePath)
+      // Rebuild CSS since Tailwind classes might have changed
+      buildCSS()
+    }
+
+    // Rebuild CSS if styles.css changes
+    if (filename === 'styles.css') {
+      console.log('\nCSS file changed')
+      buildCSS()
     }
   })
 }
