@@ -1,11 +1,11 @@
-import { JSX } from "react";
-import { Counter } from "./counter";
-import { getTodayString } from "./Datacore/utils/time";
+import type { JSX } from 'react'
+import { getTodayString } from '../../utils/time'
+import { Counter } from './counter'
 
-type Option = string | number;
+type Option = string | number
 
 export function Component({ option }: { option: Option }): JSX.Element {
-  return <div>Hello TypeScript with JSX! {option}</div>;
+  return <div>Hello TypeScript with JSX! {option}</div>
 }
 
 export function App() {
@@ -16,5 +16,5 @@ export function App() {
       <p>Today is {getTodayString()} and its going to be a great day</p>
       <Counter />
     </div>
-  );
+  )
 }

@@ -17,7 +17,11 @@
     "dev": "node scripts/build.js --install",
     "install": "node scripts/install.js",
     "config": "node scripts/config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format ."
   },
   "keywords": [],
   "author": "Fran Bosquet",
@@ -27,6 +31,7 @@
     "@babel/core": "^7.28.4",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@biomejs/biome": "^2.3.2",
     "@types/node": "^24.9.2",
     "preact": "^10.27.2",
     "ts-loader": "^9.5.4",

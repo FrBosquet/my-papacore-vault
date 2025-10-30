@@ -65,8 +65,8 @@ module.exports = function ({ types: t }) {
 
         let source = path.node.source.value;
 
-        // Remove all imports from 'react' - everything is available on dc global
-        if (source === 'react') {
+        // Remove all imports from 'react' and 'preact' - everything is available on dc global
+        if (source === 'react' || source === 'preact' || source === 'preact/hooks') {
           path.remove();
           return;
         }
