@@ -9,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "lib": ["ES2015", "DOM"],
-    "jsxImportSource": "react",
     "outDir": "./dist",
     "declaration": false
   },
