@@ -1,0 +1,57 @@
+@import "tailwindcss" important;
+
+@theme {
+  /* Custom colors */
+  --color-primary-50: #f6f6f9;
+  --color-primary-100: #ececf2;
+  --color-primary-200: #d5d6e2;
+  --color-primary-300: #b0b2c9;
+  --color-primary-400: #8689aa;
+  --color-primary-500: #676a90;
+  --color-primary-600: #525577;
+  --color-primary-700: #434461;
+  --color-primary-800: #3a3c52;
+  --color-primary-900: #343446;
+  --color-primary-950: #16161e;
+
+  --color-theme-accent: #9ece6a;
+  --color-theme-contrast: #bb9af7;
+
+  /* Custom font sizes */
+  --text-2xs: 0.5rem;
+  --text-xs: 0.60rem;
+  --text-sm: 0.75rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 2.5rem;
+
+  /* Custom spacing */
+  --spacing-18: 4.5rem;
+  --spacing-128: 32rem;
+}
+
+.markdown-rendered p {
+  margin-block-start: unset;
+  margin-block-end: unset;
+  unicode-bidi: unset;
+}
+
+/* Components */
+@layer components {
+  .pc-link a {
+    text-decoration: none !important;
+    font-weight: inherit !important;
+    font-size: inherit !important;
+    letter-spacing: 0.15rem;
+    color: inherit !important;
+  }
+
+  .view-content img.pc-image {
+    max-width: unset !important;
+    outline: inherit !important;
+  } 
+}

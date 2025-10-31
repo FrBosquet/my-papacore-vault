@@ -209,8 +209,8 @@ module.exports = function ({ types: t }) {
       ExportNamedDeclaration(path) {
         if (path.node.declaration) {
           path.replaceWith(path.node.declaration);
-        } else if (path.node.specifiers.length > 0) {
-          // export { foo, bar } - remove this statement
+        } else {
+          // export { foo, bar } or empty export {} - remove this statement
           path.remove();
         }
       },
