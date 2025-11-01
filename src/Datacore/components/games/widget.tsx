@@ -4,6 +4,7 @@ import { getDailyNoteDatetime } from '../../utils/files'
 import { cleanAnnotationFromLinks, getFrontmatterValue } from '../../utils/markdown'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
+import { Scroller } from '../shared/scroller'
 import { WidgetItem } from '../shared/widget'
 
 export const GameWidget = () => {
@@ -16,9 +17,11 @@ export const GameWidget = () => {
       <Link path="Gaming Log/Games.base" icon="gamepad-2">
         Playing
       </Link>
-      {games.map((game) => (
-        <GameItem key={game.$path} game={game} />
-      ))}
+      <Scroller className='h-30' wrapperClassName='gap-2'>
+        {games.map((game) => (
+          <GameItem key={game.$path} game={game} />
+        ))}
+      </Scroller>
     </Card>
   )
 }
@@ -54,7 +57,7 @@ const GameItem = ({ game }: { game: MarkdownPage }) => {
       page={game}
       tooltip={lastAnnotationText}
     >
-      <span className="normal-case group-hover:text-primary-800 text-primary-300 transition">
+      <span className="normal-case text-primary-300 transition group-hover:text-primary-800">
         {game.$name}
       </span>
       <div className="flex justify-between items-center w-full tracking-normal">

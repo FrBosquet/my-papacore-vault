@@ -8,17 +8,18 @@ type Props = {
   children: ComponentChildren
   className?: string
   icon?: IconName
+  iconClassName?: string
   tooltip?: string
 }
 
-export const Link = ({ path, children, icon, className, tooltip }: Props) => {
+export const Link = ({ path, children, icon, className, iconClassName, tooltip }: Props) => {
   const pRef = useRef<HTMLParagraphElement>(null)
 
   // Create a link to the file
   const link = dc.fileLink(cleanPath(path)).withDisplay(
     (
       <div className={`flex items-center gap-2 ${className}`}>
-        {icon && <dc.Icon icon={icon} />}
+        {icon && <dc.Icon icon={icon} className={iconClassName} />}
         {children}
       </div>
     ) as unknown as string

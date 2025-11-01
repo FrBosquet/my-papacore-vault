@@ -1,5 +1,6 @@
 import type { MarkdownPage } from "@blacksmithgu/datacore"
 import type { ComponentChildren } from "preact"
+import { getResourcePath } from "../../utils/files"
 import { getFrontmatterValue } from "../../utils/markdown"
 import { Image } from "./image"
 import { Link } from "./link"
@@ -22,14 +23,16 @@ export const WidgetItem = ({
       tooltip={tooltip}
       key={page.$path}
       path={page.$path}
-      className="flex items-center gap-2 w-full group hover:bg-theme-contrast bg-primary-950 transition"
+      className="flex items-center gap-2 w-full group hover:bg-theme-contrast bg-primary-950 transition hover:text-primary-800 relative h-10"
     >
       <Image
-        src={image ?? ''}
+        src={image ?? getResourcePath('Images/empty.jpg')}
         alt={page.$name}
-        className="size-8 aspect-square object-cover"
+        className="h-full aspect-square object-cover"
       />
-      <div className="flex flex-col gap-1 text-sm w-full">{children}</div>
+      <div className="flex flex-col gap-1 text-sm flex-1 overflow-hidden">
+        {children}
+      </div>
     </Link>
   )
 }

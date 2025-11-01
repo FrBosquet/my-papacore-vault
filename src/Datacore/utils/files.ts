@@ -33,3 +33,15 @@ export const getDailyNoteDatetime = (path: string) => {
 
   return dc.coerce.date(date) as DateTime
 }
+
+
+export const getResourcePath = (pathInVault: string) => {
+  return dc.app.vault.adapter.getResourcePath(pathInVault)
+}
+
+export const getFileName = (path: string) => {
+  const filename = path.split('/').pop()
+  const extensionIndex = filename?.lastIndexOf('.')
+
+  return extensionIndex !== -1 ? filename?.slice(0, extensionIndex) : filename
+}
