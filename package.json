@@ -19,6 +19,7 @@
     "dev": "node scripts/build.js --install",
     "install": "node scripts/install.js",
     "config": "node scripts/config.js",
+    "scan": "node scripts/scan-vault.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

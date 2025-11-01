@@ -1,0 +1,50 @@
+{
+  "graph": {
+    "Datacore/utils/time.js": [
+      "Datacore/components/example/index.jsx"
+    ],
+    "Datacore/components/example/counter.jsx": [
+      "Datacore/components/example/index.jsx"
+    ],
+    "Datacore/utils/files.js": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/shared/link.jsx"
+    ],
+    "Datacore/utils/markdown.js": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/shared/widget.jsx"
+    ],
+    "Datacore/components/shared/card.jsx": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/music/widget.jsx",
+      "Datacore/components/projects/widget.jsx"
+    ],
+    "Datacore/components/shared/link.jsx": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/music/widget.jsx",
+      "Datacore/components/projects/widget.jsx",
+      "Datacore/components/shared/widget.jsx"
+    ],
+    "Datacore/components/shared/widget.jsx": [
+      "Datacore/components/games/widget.jsx"
+    ],
+    "Datacore/components/shared/image.jsx": [
+      "Datacore/components/shared/widget.jsx"
+    ],
+    "Datacore/components/games/widget.jsx": [
+      "Datacore/views/Today.jsx"
+    ],
+    "Datacore/components/music/widget.jsx": [
+      "Datacore/views/Today.jsx"
+    ],
+    "Datacore/components/projects/widget.jsx": [
+      "Datacore/views/Today.jsx"
+    ]
+  },
+  "views": {
+    "Datacore/views/Today.jsx": [
+      "TODAY.md",
+      "test.md"
+    ]
+  }
+}

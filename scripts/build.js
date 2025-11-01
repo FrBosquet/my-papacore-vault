@@ -49,6 +49,92 @@ function copyToVault(distFilePath) {
   fs.copyFileSync(distFilePath, targetPath)
 }
 
+/**
+ * Recursively find all views that depend on a given file
+ */
+function findAffectedViews(filePath, graph, visited = new Set()) {
+  const affectedViews = new Set()
+
+  // Prevent infinite loops
+  if (visited.has(filePath)) return affectedViews
+  visited.add(filePath)
+
+  // If this is a view, add it
+  if (filePath.startsWith('Datacore/views/')) {
+    affectedViews.add(filePath)
+  }
+
+  // Find all files that depend on this file
+  const dependents = graph[filePath] || []
+
+  // Recursively check each dependent
+  for (const dependent of dependents) {
+    const childViews = findAffectedViews(dependent, graph, visited)
+    for (const view of childViews) {
+      affectedViews.add(view)
+    }
+  }
+
+  return affectedViews
+}
+
+// Function to touch dependent vault files to trigger Obsidian reload
+function touchDependentFiles(outPath) {
+  if (!targetVault) return
+
+  const relativePath = path.relative(distDir, outPath)
+
+  // Load deps.json if it exists
+  const depsPath = path.join(projectRoot, 'deps.json')
+  if (!fs.existsSync(depsPath)) return
+
+  try {
+    const deps = JSON.parse(fs.readFileSync(depsPath, 'utf-8'))
+
+    // Recursively find all views affected by this file change
+    const affectedViews = findAffectedViews(relativePath, deps.graph || {})
+
+    // Collect all vault files that use these affected views
+    const vaultFilesToTouch = new Set()
+    for (const viewPath of affectedViews) {
+      const vaultFiles = deps.views?.[viewPath] || []
+      for (const file of vaultFiles) {
+        vaultFilesToTouch.add(file)
+      }
+    }
+
+    if (vaultFilesToTouch.size > 0) {
+      console.log(`Triggering reload for ${vaultFilesToTouch.size} dependent file(s)...`)
+      if (affectedViews.size > 0) {
+        console.log(`  Affected views: ${Array.from(affectedViews).join(', ')}`)
+      }
+
+      vaultFilesToTouch.forEach((file) => {
+        const fullPath = path.join(targetVault, file)
+        if (fs.existsSync(fullPath)) {
+          const content = fs.readFileSync(fullPath, 'utf-8')
+
+          // Find and update timestamp comment in datacorejsx blocks
+          const timestamp = Date.now()
+          const timestampComment = `// Papacore build ${timestamp}`
+
+          // Match datacorejsx blocks and add/update timestamp at the top
+          const updatedContent = content.replace(
+            /(```datacorejsx\n)(\/\/ Papacore build [^\n]+\n)?([\s\S]*?\n```)/g,
+            `$1${timestampComment}\n$3`
+          )
+
+          // Write the updated content
+          fs.writeFileSync(fullPath, updatedContent)
+          console.log(`  Reloaded: ${file}`)
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error touching dependent files:', error.message)
+  }
+}
+
 // Function to build Tailwind CSS
 function buildCSS() {
   console.log('Building CSS...')
@@ -106,6 +192,9 @@ function compileFile(filePath) {
     if (isInstallMode) {
       copyToVault(outPath)
       console.log(`Installed: ${relativePath}`)
+
+      // Touch dependent vault files to trigger Obsidian reload
+      touchDependentFiles(outPath)
     }
   } catch (error) {
     console.error(`Error compiling ${relativePath}:`, error.message)
