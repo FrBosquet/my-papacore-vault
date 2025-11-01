@@ -226,6 +226,9 @@ function watch() {
 
   console.log(`\nWatching for changes in ${srcDir}...`)
 
+  // Keep track of previously compiled files
+  let compiledFiles = new Set(getAllFiles(srcDir))
+
   fs.watch(srcDir, { recursive: true }, (_eventType, filename) => {
     if (!filename) return
 
@@ -234,7 +237,27 @@ function watch() {
     // Only recompile .ts and .tsx files (exclude .d.ts files)
     if (/\.(ts|tsx)$/.test(filePath) && !/\.d\.ts$/.test(filePath) && fs.existsSync(filePath)) {
       console.log(`\nFile changed: ${filename}`)
+
+      // Rescan directory to find any new files
+      const currentFiles = new Set(getAllFiles(srcDir))
+      const newFiles = [...currentFiles].filter(f => !compiledFiles.has(f))
+
+      // Compile the changed file
       compileFile(filePath)
+
+      // Compile any newly discovered files
+      if (newFiles.length > 0) {
+        console.log(`\nFound ${newFiles.length} new file(s):`)
+        newFiles.forEach(newFile => {
+          const relPath = path.relative(srcDir, newFile)
+          console.log(`  - ${relPath}`)
+          compileFile(newFile)
+        })
+      }
+
+      // Update the compiled files set
+      compiledFiles = currentFiles
+
       // Rebuild CSS since Tailwind classes might have changed
       buildCSS()
     }
