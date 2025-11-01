@@ -10,7 +10,7 @@ export const ProjectsWidget = () => {
     @page
     AND path("Projects")
     AND status = "ongoing"
-  `).sort((a, b) => a.$name.localeCompare(b.$name))
+  `).sort((a, b) => a.$mtime.ts - b.$mtime.ts)
 
   return <Card>
     <Link path="Projects/Hub.base" icon="folder-kanban">Working on</Link>

@@ -12,7 +12,9 @@ const useMonthAlbums = (datetime: DateTime) => {
   const currentPeriod = `${datetime.year} ${datetime.monthLong}`
 
   return dc.useQuery<MarkdownPage>(
-    `@page AND path("Music/Albums") AND Listening = "${currentPeriod}"`
+    `@page 
+      AND path("Music/Albums")
+      AND Listening = "${currentPeriod}"`
   )
 }
 
@@ -23,8 +25,8 @@ const useRecentAlbums = () => {
   const previousMonthAlbums = useMonthAlbums(previousMonth)
 
   return [
-    ...thisMonthAlbums.sort((a, b) => b.$name.localeCompare(a.$name)),
-    ...previousMonthAlbums.sort((a, b) => b.$name.localeCompare(a.$name)),
+    ...thisMonthAlbums.sort((a, b) => b.$mtime.ts - a.$mtime.ts),
+    ...previousMonthAlbums.sort((a, b) => b.$mtime.ts - a.$mtime.ts),
   ]
 }
 
