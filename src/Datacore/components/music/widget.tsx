@@ -1,3 +1,8 @@
+import { Card } from "../shared/card"
+import { Link } from "../shared/link"
+
 export const MusicWidget = () => {
-  return <p className="widget">I'm the music widget</p>
+  return <Card>
+    <Link path="Music/Hub" icon="headphones">Listening</Link>
+  </Card>
 }

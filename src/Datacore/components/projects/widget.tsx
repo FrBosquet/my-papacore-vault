@@ -1,3 +1,8 @@
+import { Card } from "../shared/card"
+import { Link } from "../shared/link"
+
 export const ProjectsWidget = () => {
-  return <p className="widget">I'm the projects widget</p>
+  return <Card>
+    <Link path="Projects/Hub.base" icon="folder-kanban">Working on</Link>
+  </Card>
 }
