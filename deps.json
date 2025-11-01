@@ -8,10 +8,13 @@
     ],
     "Datacore/utils/files.js": [
       "Datacore/components/games/widget.jsx",
-      "Datacore/components/shared/link.jsx"
+      "Datacore/components/music/widget.jsx",
+      "Datacore/components/shared/link.jsx",
+      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
+      "Datacore/components/music/widget.jsx",
       "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/card.jsx": [
@@ -25,8 +28,13 @@
       "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx"
     ],
+    "Datacore/components/shared/scroller.jsx": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/music/widget.jsx"
+    ],
     "Datacore/components/shared/widget.jsx": [
-      "Datacore/components/games/widget.jsx"
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/music/widget.jsx"
     ],
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
@@ -43,8 +51,7 @@
   },
   "views": {
     "Datacore/views/Today.jsx": [
-      "TODAY.md",
-      "test.md"
+      "TODAY.md"
     ]
   }
 }
