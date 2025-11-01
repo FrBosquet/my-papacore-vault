@@ -32,6 +32,9 @@
   /* Custom spacing */
   --spacing-18: 4.5rem;
   --spacing-128: 32rem;
+
+  /* Custom breakpoints */
+  --breakpoint-3xl: 1900px;
 }
 
 .markdown-rendered p {
