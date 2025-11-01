@@ -5,10 +5,10 @@ import { ProjectsWidget } from "../components/projects/widget"
 export const Today = () => {
   return (
     <article>
-      <header className="grid grid-cols-3 gap-2">
+      <header className="grid 3xl:grid-cols-3 gap-2">
+        <ProjectsWidget />
         <GameWidget />
         <MusicWidget />
-        <ProjectsWidget />
       </header>
     </article>
   )
