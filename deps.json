@@ -15,6 +15,7 @@
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/widget.jsx",
+      "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/card.jsx": [
@@ -30,11 +31,16 @@
     ],
     "Datacore/components/shared/scroller.jsx": [
       "Datacore/components/games/widget.jsx",
-      "Datacore/components/music/widget.jsx"
+      "Datacore/components/music/widget.jsx",
+      "Datacore/components/projects/widget.jsx"
     ],
     "Datacore/components/shared/widget.jsx": [
       "Datacore/components/games/widget.jsx",
-      "Datacore/components/music/widget.jsx"
+      "Datacore/components/music/widget.jsx",
+      "Datacore/components/projects/widget.jsx"
+    ],
+    "Datacore/utils/classMerge.js": [
+      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
@@ -46,6 +52,9 @@
       "Datacore/views/Today.jsx"
     ],
     "Datacore/components/projects/widget.jsx": [
+      "Datacore/views/Today.jsx"
+    ],
+    "Datacore/components/shared/dialog.jsx": [
       "Datacore/views/Today.jsx"
     ]
   },

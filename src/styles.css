@@ -43,6 +43,17 @@
   unicode-bidi: unset;
 }
 
+::backdrop {
+  background-image: linear-gradient(
+    45deg,
+    var(--color-primary-950),
+    var(--color-primary-700),
+    var(--color-primary-400),
+    var(--color-primary-200)
+  );
+  opacity: 0.8;
+}
+
 /* Components */
 @layer components {
   .pc-link a {
