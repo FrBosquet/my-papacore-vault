@@ -4,6 +4,9 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { projectRoot, srcDir, distDir, loadConfig, askConfirmation, ensureDir } = require('./utils')
 
+// Import scan functions from scan-vault-lib
+const { updateDepsJson } = require('./scan-vault-lib')
+
 // Check if watch mode and install mode are enabled
 const isWatchMode = process.argv.includes('--watch')
 const isInstallMode = process.argv.includes('--install')
@@ -135,6 +138,22 @@ function touchDependentFiles(outPath) {
   }
 }
 
+// Function to update deps.json
+function updateDeps() {
+  if (!targetVault) return
+
+  try {
+    const deps = updateDepsJson(targetVault, { verbose: false })
+    if (deps) {
+      const outputPath = path.join(projectRoot, 'deps.json')
+      fs.writeFileSync(outputPath, JSON.stringify(deps, null, 2))
+      console.log('Updated deps.json')
+    }
+  } catch (error) {
+    console.error('Error updating deps.json:', error.message)
+  }
+}
+
 // Function to build Tailwind CSS
 function buildCSS() {
   console.log('Building CSS...')
@@ -217,6 +236,11 @@ function build() {
   // Build CSS
   buildCSS()
 
+  // Update dependency graph
+  if (isInstallMode) {
+    updateDeps()
+  }
+
   console.log('\nBuild completed successfully!')
 }
 
@@ -260,6 +284,11 @@ function watch() {
 
       // Rebuild CSS since Tailwind classes might have changed
       buildCSS()
+
+      // Update dependency graph in install mode
+      if (isInstallMode) {
+        updateDeps()
+      }
     }
 
     // Rebuild CSS if styles.css changes
