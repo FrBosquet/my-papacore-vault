@@ -29,7 +29,7 @@ export const trimExtension = (path: string) => {
  * @param path 
  */
 export const getDailyNoteDatetime = (path: string) => {
-  const date = trimExtension(path).split('/').pop()
+  const date = trimExtension(path).split('/').pop() as string
 
   return dc.coerce.date(date) as DateTime
 }
@@ -44,4 +44,34 @@ export const getFileName = (path: string) => {
   const extensionIndex = filename?.lastIndexOf('.')
 
   return extensionIndex !== -1 ? filename?.slice(0, extensionIndex) : filename
+}
+
+const getTemplateContent = async (templateName: string) => {
+  try {
+    const templateFile = dc.app.vault.getFileByPath(`Templates/${templateName}.md`);
+
+    if (templateFile) {
+      return await dc.app.vault.read(templateFile);
+    }
+  } catch (error) {
+    alert(`Error getting template: ${error instanceof Error ? error.message : error}`);
+  }
+  return null;
+};
+
+export const createFromTemplate = async (
+  targetPath: string,
+  templatePath: string
+) => {
+  const templateContent = await getTemplateContent(templatePath)
+
+  if (templateContent !== null) {
+    try {
+      await dc.app.vault.create(targetPath, templateContent);
+
+      return targetPath
+    } catch (error) {
+      throw error
+    }
+  }
 }
