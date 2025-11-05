@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: build script, we need logging here */
 const fs = require('node:fs')
 const path = require('node:path')
 const { loadConfig } = require('./utils')

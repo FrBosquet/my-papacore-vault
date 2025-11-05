@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: build script, we need logging here */
 const { execSync } = require('node:child_process')
 const fs = require('node:fs')
 const path = require('node:path')

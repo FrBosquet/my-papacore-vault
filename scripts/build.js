@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: build script, we need logging here */
 const { transformFileSync } = require('@babel/core')
 const { execSync } = require('node:child_process')
 const fs = require('node:fs')
