@@ -182,6 +182,9 @@ function compileFile(filePath) {
   const relativePath = path.relative(srcDir, filePath)
   const ext = path.extname(filePath)
 
+  // Check if this is a .stories.tsx file
+  const isStoryFile = filePath.includes('.stories.tsx')
+
   // Determine output extension
   let outExt
   if (ext === '.tsx') {
@@ -207,6 +210,37 @@ function compileFile(filePath) {
     // Write output
     fs.writeFileSync(outPath, result.code)
     console.log(`Compiled: ${relativePath}`)
+
+    // If this is a story file, create a corresponding .md file
+    if (isStoryFile) {
+      const mdPath = outPath.replace(/\.jsx$/, '.md')
+
+      // Extract the export name from the compiled file
+      const exportMatch = result.code.match(/return\s*\{\s*(\w+)\s*\}/)
+      const exportName = exportMatch ? exportMatch[1] : 'default'
+
+      // Get the relative path from dist root for the import
+      const importPath = path.relative(distDir, outPath).replace(/\\/g, '/')
+
+      // Generate the markdown content with datacorejsx code block
+      const timestamp = Date.now()
+      const mdContent = `
+      
+\`\`\`datacorejsx
+// Papacore build ${timestamp}
+const { ${exportName} } = await dc.require('${importPath}');
+
+return <${exportName} />
+\`\`\`
+`
+      fs.writeFileSync(mdPath, mdContent)
+      console.log(`Created story markdown: ${path.relative(distDir, mdPath)}`)
+
+      // Copy markdown to vault if install mode is enabled
+      if (isInstallMode) {
+        copyToVault(mdPath)
+      }
+    }
 
     // Copy to vault if install mode is enabled
     if (isInstallMode) {

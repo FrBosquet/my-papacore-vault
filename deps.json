@@ -10,8 +10,7 @@
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/components/shared/link.jsx",
-      "Datacore/components/shared/widget.jsx",
-      "Datacore/views/Experiment.jsx"
+      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
@@ -23,7 +22,8 @@
       "Datacore/components/games/widget.jsx",
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/widget.jsx",
-      "Datacore/components/projects/widget.jsx"
+      "Datacore/components/projects/widget.jsx",
+      "Datacore/components/shared/card.stories.jsx"
     ],
     "Datacore/components/shared/link.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -43,7 +43,8 @@
       "Datacore/components/projects/widget.jsx"
     ],
     "Datacore/components/shared/button.jsx": [
-      "Datacore/components/habits/widget.jsx"
+      "Datacore/components/habits/widget.jsx",
+      "Datacore/components/shared/button.stories.jsx"
     ],
     "Datacore/utils/classMerge.js": [
       "Datacore/components/shared/button.jsx",
