@@ -8,8 +8,10 @@ const Icons = [
   'disc-3',
   'star',
   'user',
-  'user-round'
-]
+  'user-round',
+  'brush-cleaning',
+  'shell'
+] as const
 
 export type IconName = typeof Icons[number]
 

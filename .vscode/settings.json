@@ -3,7 +3,12 @@
     [
       "className\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]",
       "([^\\s'\"`]+)"
-    ]
+    ],
+    [
+      "cva\\([\\s\\S]*?(?:variants|sizes):\\s*\\{([^}]*)\\}",
+      ":\\s*[\"'`]([^\"'`]*)[\"'`]"
+    ],
+    "cva\\([\\s\\S]*?base:\\s*[\"'`]([^\"'`]*)[\"'`]"
   ],
   "tailwindCSS.lint.cssConflict": "warning",
   "tailwindCSS.lint.invalidApply": "error",
@@ -13,5 +18,8 @@
   "tailwindCSS.lint.invalidTailwindDirective": "error",
   "tailwindCSS.lint.recommendedVariantOrder": "warning",
   "css.lint.unknownProperties": "warning",
-  "editor.defaultFormatter": "biomejs.biome"
+  "editor.defaultFormatter": "biomejs.biome",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }
