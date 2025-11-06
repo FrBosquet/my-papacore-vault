@@ -15,7 +15,12 @@
   --color-primary-950: #16161e;
 
   --color-theme-accent: #9ece6a;
+  --color-theme-accent-hover: color-mix(in srgb, var(--color-theme-accent) 80%, white);
+  --color-theme-accent-disabled: color-mix(in srgb, var(--color-theme-accent) 80%, black);
+
   --color-theme-contrast: #bb9af7;
+  --color-theme-contrast-hover: color-mix(in srgb, var(--color-theme-contrast) 80%, white);
+  --color-theme-contrast-disabled: color-mix(in srgb, var(--color-theme-contrast) 80%, black);
 
   /* Custom font sizes */
   --text-2xs: 0.5rem;
