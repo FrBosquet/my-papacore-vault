@@ -59,6 +59,12 @@
   opacity: 0.8;
 }
 
+@layer utilities {
+  .grid-cols-auto-4 {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+}
+
 /* Components */
 @layer components {
   .pc-link a {
@@ -72,5 +78,5 @@
   .view-content img.pc-image {
     max-width: unset !important;
     outline: inherit !important;
-  } 
+  }
 }

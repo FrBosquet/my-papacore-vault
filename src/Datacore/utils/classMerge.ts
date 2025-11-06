@@ -43,6 +43,16 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
 
     const prefix = parts[0]
 
+    // Position utilities should all conflict with each other
+    if (['absolute', 'relative', 'fixed', 'sticky', 'static'].includes(className)) {
+      return 'position-'
+    }
+
+    // Pointer events utilities should all conflict with each other
+    if (['pointer-events-none', 'pointer-events-auto'].includes(className)) {
+      return 'pointer-events-'
+    }
+
     // Special handling for text utilities to avoid false conflicts
     if (prefix === 'text' && parts.length >= 2) {
       const second = parts[1]

@@ -1,7 +1,8 @@
 {
   "graph": {
     "Datacore/utils/time.js": [
-      "Datacore/components/example/index.jsx"
+      "Datacore/components/example/index.jsx",
+      "Datacore/components/habits/widget.jsx"
     ],
     "Datacore/components/example/counter.jsx": [
       "Datacore/components/example/index.jsx"
@@ -10,13 +11,15 @@
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/components/shared/link.jsx",
-      "Datacore/components/shared/widget.jsx"
+      "Datacore/components/shared/widget.jsx",
+      "Datacore/hooks/markdown.js"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/components/projects/widget.jsx",
-      "Datacore/components/shared/widget.jsx"
+      "Datacore/components/shared/widget.jsx",
+      "Datacore/hooks/markdown.js"
     ],
     "Datacore/components/shared/card.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -42,9 +45,15 @@
       "Datacore/components/music/widget.jsx",
       "Datacore/components/projects/widget.jsx"
     ],
+    "Datacore/hooks/markdown.js": [
+      "Datacore/components/habits/widget.jsx"
+    ],
     "Datacore/components/shared/button.jsx": [
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/shared/button.stories.jsx"
+    ],
+    "Datacore/components/habits/habit-config.js": [
+      "Datacore/components/habits/widget.jsx"
     ],
     "Datacore/utils/classMerge.js": [
       "Datacore/components/shared/button.jsx",

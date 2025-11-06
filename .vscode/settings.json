@@ -12,7 +12,8 @@
       "sizes:\\s*\\{([\\s\\S]*?)\\}",
       ":\\s*[\"'`]([^\"'`]*)[\"'`]"
     ],
-    "cva\\([\\s\\S]*?base:\\s*[\"'`]([^\"'`]*)[\"'`]"
+    "cva\\([\\s\\S]*?base:\\s*[\"'`]([^\"'`]*)[\"'`]",
+    "classMerge\\(([^)]*?)\\)"
   ],
   "tailwindCSS.lint.cssConflict": "warning",
   "tailwindCSS.lint.invalidApply": "error",
@@ -24,6 +25,9 @@
   "css.lint.unknownProperties": "warning",
   "editor.defaultFormatter": "biomejs.biome",
   "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
   }
 }
