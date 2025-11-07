@@ -9,6 +9,7 @@
     ],
     "Datacore/utils/files.js": [
       "Datacore/components/games/widget.jsx",
+      "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
@@ -25,8 +26,7 @@
       "Datacore/components/games/widget.jsx",
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/widget.jsx",
-      "Datacore/components/projects/widget.jsx",
-      "Datacore/components/shared/card.stories.jsx"
+      "Datacore/components/projects/widget.jsx"
     ],
     "Datacore/components/shared/link.jsx": [
       "Datacore/components/games/widget.jsx",
