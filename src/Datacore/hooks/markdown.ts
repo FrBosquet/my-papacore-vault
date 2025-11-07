@@ -1,4 +1,4 @@
-import type { Literal, MarkdownPage } from '@blacksmithgu/datacore'
+import type { Literal } from '@blacksmithgu/datacore'
 import { useEffect, useState } from 'preact/hooks'
 import { getPage } from '../utils/files'
 import { setPageFrontmatterValue } from '../utils/markdown'
@@ -24,14 +24,12 @@ export const useFileFrontmatterState = <T extends Literal>(
     value: T | undefined | ((currentValue: T | undefined) => T | undefined)
   ) => {
     setIsLoading(true)
-    let targetPage = page
 
-    if (!targetPage) {
-      await dc.app.vault.create(path, '')
-      targetPage = getPage(path) as MarkdownPage
+    if (!page) {
+      return
     }
 
-    setPageFrontmatterValue(targetPage, key, value)
+    setPageFrontmatterValue(page, key, value)
   }
 
   useEffect(() => {

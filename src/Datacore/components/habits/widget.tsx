@@ -4,6 +4,7 @@ import {
   useFileFrontmatterState,
   useFrontmatterState,
 } from '../../hooks/markdown'
+import { createFromTemplate } from '../../utils/files'
 import { getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
@@ -146,17 +147,38 @@ const HabitToggle = ({
   targetPath: string
   faded?: boolean
 }) => {
+  const [togglePending, setTogglePending] = useState(false)
+  const [page] = dc.useQuery(`@page and $path = "${targetPath}"`)
   const [isDone, setIsDone, isLoading] = useFileFrontmatterState<boolean>(
     targetPath,
     habit.key
   )
 
+  const handleClick = async () => {
+    if (!page) {
+      await createFromTemplate(targetPath, 'daily')
+      setTogglePending(true)
+      return
+    }
+
+    setIsDone(!isDone)
+  }
+
+  // Small hack to wait for the page to be created
+  useEffect(() => {
+    if (togglePending && page) {
+      setIsDone(!isDone)
+      setTogglePending(false)
+    }
+  }, [togglePending, page])
+
   return (
     <button
+      aria-label={habit.tooltip ?? habit.label}
       type="button"
       data-is-done={isDone}
       data-faded={faded}
-      onClick={() => setIsDone(!isDone)}
+      onClick={handleClick}
       className="aspect-square flex-col flex items-center justify-center h-auto text-xs gap-2 cursor-pointer data-[is-done=true]:bg-theme-accent data-[is-done=true]:text-primary-950 rounded-none border-none bg-primary-900 shadow-none data-[faded=true]:opacity-50"
     >
       <dc.Icon
