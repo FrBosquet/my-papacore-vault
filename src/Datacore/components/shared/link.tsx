@@ -1,15 +1,41 @@
-import type { Link as LinkType } from '@blacksmithgu/datacore'
+import type { ComponentChildren } from 'preact'
+import { useEffect, useRef } from 'preact/hooks'
+import type { IconName } from '../../../icons'
+import { cleanPath } from '../../utils/files'
 
 type Props = {
   path: string
-  children: string
+  children: ComponentChildren
+  className?: string
+  icon?: IconName
+  iconClassName?: string
+  tooltip?: string
 }
 
-export const Link = ({ path, children }: Props) => {
-  // Create a link to the file
-  const link: LinkType = dc
-    .fileLink(`${path}.md`)
-    .withDisplay(children)
+export const Link = ({ path, children, icon, className, iconClassName, tooltip }: Props) => {
+  const pRef = useRef<HTMLParagraphElement>(null)
 
-  return <dc.Link link={link} />
+  // Create a link to the file
+  const link = dc.fileLink(cleanPath(path)).withDisplay(
+    (
+      <div className={`flex items-center gap-2 ${className}`}>
+        {icon && <dc.Icon icon={icon} className={iconClassName} />}
+        {children}
+      </div>
+    ) as unknown as string
+  ) // Allows to pass a React element as a string
+
+  useEffect(() => {
+    const aRef = pRef.current?.querySelector('a')
+
+    if (tooltip && aRef) {
+      aRef.setAttribute('aria-label', tooltip)
+    }
+  }, [])
+
+  return (
+    <p ref={pRef} className="uppercase p-0 m-0 no-underline text-sm pc-link tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all">
+      <dc.Link link={link} />
+    </p>
+  )
 }

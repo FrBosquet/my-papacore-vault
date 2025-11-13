@@ -1,0 +1,33 @@
+{
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "className\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]",
+      "([^\\s'\"`]+)"
+    ],
+    [
+      "variants:\\s*\\{([\\s\\S]*?)\\}",
+      ":\\s*[\"'`]([^\"'`]*)[\"'`]"
+    ],
+    [
+      "sizes:\\s*\\{([\\s\\S]*?)\\}",
+      ":\\s*[\"'`]([^\"'`]*)[\"'`]"
+    ],
+    "cva\\([\\s\\S]*?base:\\s*[\"'`]([^\"'`]*)[\"'`]",
+    "classMerge\\(([^)]*?)\\)"
+  ],
+  "tailwindCSS.lint.cssConflict": "warning",
+  "tailwindCSS.lint.invalidApply": "error",
+  "tailwindCSS.lint.invalidScreen": "error",
+  "tailwindCSS.lint.invalidVariant": "error",
+  "tailwindCSS.lint.invalidConfigPath": "error",
+  "tailwindCSS.lint.invalidTailwindDirective": "error",
+  "tailwindCSS.lint.recommendedVariantOrder": "warning",
+  "css.lint.unknownProperties": "warning",
+  "editor.defaultFormatter": "biomejs.biome",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
+}
