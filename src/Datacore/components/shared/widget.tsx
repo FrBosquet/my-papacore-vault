@@ -25,14 +25,14 @@ export const WidgetItem = ({
 
   return (
     <div
-      className="bg-primary-950 flex w-full gap-2"
+      className="bg-primary-950 flex w-full gap-2 overflow-hidden"
     >
       <Link
         tooltip={tooltip}
         key={page.$path}
         path={page.$path}
         wrapperClassName="flex-1"
-        className={classMerge(`flex items-center gap-2 group hover:bg-theme-contrast bg-primary-950 transition hover:text-primary-800 relative h-10 text-sm flex-1`, className)}
+        className={classMerge(`flex items-center gap-2 group hover:bg-theme-contrast bg-primary-950 transition  overflow-hidden hover:text-primary-800 relative h-10 text-sm flex-1`, className)}
       >
         <Image
           src={image ?? getResourcePath('Images/empty.jpg')}

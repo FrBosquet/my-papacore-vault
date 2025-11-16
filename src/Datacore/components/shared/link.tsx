@@ -38,7 +38,7 @@ export const Link = ({ path, children, icon, className, iconClassName, tooltip, 
   return (
     <p
       ref={pRef}
-      className={classMerge("uppercase p-0 m-0 no-underline text-sm pc-link tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all", wrapperClassName)}
+      className={classMerge("uppercase p-0 m-0 no-underline text-sm pc-link tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full", wrapperClassName)}
     >
       <dc.Link
         link={link}

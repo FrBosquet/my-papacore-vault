@@ -3,22 +3,26 @@ import { useEffect, useState } from 'preact/hooks'
 import { getPage } from '../utils/files'
 import { setPageFrontmatterValue } from '../utils/markdown'
 
-export const useFrontmatterState = <T extends Literal>(key: string) => {
+export const useFrontmatterState = <T extends Literal>(
+  key: string,
+  defaultValue?: string
+) => {
   const thisPage = dc.useCurrentFile()
 
-  return useFileFrontmatterState<T>(thisPage.$path, key)
+  return useFileFrontmatterState<T>(thisPage.$path, key, defaultValue)
 }
 
 export const useFileFrontmatterState = <T extends Literal>(
   path: string,
-  key: string
+  key: string,
+  defaultValue?: string
 ) => {
   const [isLoading, setIsLoading] = useState(false)
   const page = getPage(path)
 
   const frontmatter = page?.$frontmatter
 
-  const currentValue = frontmatter?.[key.toLowerCase()]?.value as T
+  const currentValue = frontmatter?.[key.toLowerCase()]?.value as T ?? defaultValue
 
   const setValue = async (
     value: T | undefined | ((currentValue: T | undefined) => T | undefined)
@@ -29,7 +33,9 @@ export const useFileFrontmatterState = <T extends Literal>(
       return
     }
 
-    setPageFrontmatterValue(page, key, value)
+    setPageFrontmatterValue(page, key,
+      value === defaultValue ? undefined : value
+    )
   }
 
   useEffect(() => {
