@@ -1,11 +1,11 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { AddAlbumModal } from '../components/music/add-album-modal'
+import { AlbumViz } from '../components/music/album-viz'
 import { AlbumDialog } from '../components/music/albums-dialog'
-import { AlbumsMonth } from '../components/music/albums-month'
+import { SongViz } from '../components/music/song-viz'
 import {
   buildAlbumHierarchy,
-  type YearString,
-  type YearsAndMonths
+  type YearString
 } from '../components/music/utils'
 import { Button } from '../components/shared/button'
 import { useFrontmatterState } from '../hooks/markdown'
@@ -42,60 +42,30 @@ export const Music = ({ apiKey }: Props) => {
       <main style={{
         "--column-width": time === 'month' ? "330px" : null,
       }}>
-        {years.map((year) => {
-          if (year === 'unlisted') return null
-          return (
-            <div key={year}>
-              <h2>{year}</h2>
-              {
-                <AlbumMode
-                  time={time?.toString() as 'month' | 'year'}
-                  year={year}
-                  yearAlbums={albumList[year]}
-                  pendingAlbums={albumList.unlisted}
-                />
-              }
-            </div>
-          )
-        })}
+        {
+          mode === 'album'
+            ? years.map((year) => {
+              if (year === 'unlisted') return null
+              return (
+                <div key={year}>
+                  <h2>{year}</h2>
+                  {
+                    <AlbumViz
+                      time={time?.toString() as 'month' | 'year'}
+                      year={year}
+                      yearAlbums={albumList[year]}
+                      pendingAlbums={albumList.unlisted}
+                    />
+                  }
+                </div>
+              )
+            })
+            : <SongViz
+              time={time?.toString() as 'month' | 'year'} />
+        }
       </main>
     </div>
   )
 }
 
-const AlbumMode = ({
-  time,
-  year,
-  yearAlbums,
-  pendingAlbums
-}: {
-  time: 'month' | 'year'
-  year: YearString,
-  yearAlbums: YearsAndMonths[YearString],
-  pendingAlbums: MarkdownPage[]
-}) => {
-  if (time === 'month') {
-    return (
-      Object.keys(yearAlbums).sort().map((month) => {
-        return (
-          <AlbumsMonth
-            key={month}
-            month={parseInt(month, 10)}
-            year={year}
-            pendingAlbums={pendingAlbums}
-            albums={yearAlbums[parseInt(month, 10)]}
-          />
-        )
-      })
-    )
-  } else {
-    const aggregatedAlbums = Object.values(yearAlbums).flat()
-    return (
-      <AlbumsMonth
-        year={year}
-        pendingAlbums={pendingAlbums}
-        albums={aggregatedAlbums}
-      />
-    )
-  }
-}
+

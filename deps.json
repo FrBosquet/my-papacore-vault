@@ -21,6 +21,7 @@
       "Datacore/components/music/album-item.jsx",
       "Datacore/components/music/album-list.jsx",
       "Datacore/components/music/albums-month.jsx",
+      "Datacore/components/music/song-viz.jsx",
       "Datacore/components/music/utils.js",
       "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx",
@@ -82,8 +83,12 @@
     "Datacore/components/music/utils.js": [
       "Datacore/components/music/album-list.jsx",
       "Datacore/components/music/albums-month.jsx",
+      "Datacore/components/music/song-viz.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/music/albums-month.jsx": [
+      "Datacore/components/music/album-viz.jsx"
     ],
     "Datacore/hooks/state.js": [
       "Datacore/components/music/albums-dialog.jsx"
@@ -95,6 +100,9 @@
     "Datacore/components/music/albums-dialog.jsx": [
       "Datacore/components/music/albums-month.jsx",
       "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/music/song-list.jsx": [
+      "Datacore/components/music/song-viz.jsx"
     ],
     "Datacore/utils/classMerge.js": [
       "Datacore/components/shared/button.jsx",
@@ -115,7 +123,10 @@
     "Datacore/components/music/add-album-modal.jsx": [
       "Datacore/views/Music.jsx"
     ],
-    "Datacore/components/music/albums-month.jsx": [
+    "Datacore/components/music/album-viz.jsx": [
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/music/song-viz.jsx": [
       "Datacore/views/Music.jsx"
     ],
     "Datacore/components/games/widget.jsx": [

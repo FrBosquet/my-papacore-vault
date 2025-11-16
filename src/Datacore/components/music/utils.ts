@@ -57,3 +57,16 @@ export const buildAlbumHierarchy = (albums: MarkdownPage[]) => {
     unlisted: [],
   })
 }
+
+export type Song = {
+  page: MarkdownPage,
+  artist: string,
+  albumName: string,
+  listening: string,
+  songTitle: string,
+  songComment: string,
+  month: string,
+  albumUrl: string,
+  albumPath: string,
+  albumImage: string,
+}
