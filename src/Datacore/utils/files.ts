@@ -1,4 +1,5 @@
 import type { DateTime } from 'luxon'
+import { ContentTransformer } from './ContentTransformer'
 
 export const getPage = (path: string) => {
   return dc.api.page(path)
@@ -69,13 +70,18 @@ const getTemplateContent = async (templateName: string) => {
 export const createFromTemplate = async (
   targetPath: string,
   templatePath: string,
-  transformer?: (content: string) => string
+  transformer?: (content: ContentTransformer) => ContentTransformer
 ) => {
   const templateContent = await getTemplateContent(templatePath)
 
   if (templateContent !== null) {
     try {
-      await dc.app.vault.create(targetPath, transformer ? transformer(templateContent) : templateContent)
+      await dc.app.vault.create(
+        targetPath,
+        transformer
+          ? transformer(new ContentTransformer(templateContent)).toString()
+          : templateContent
+      )
 
       return targetPath
     } catch (error) {
@@ -86,9 +92,17 @@ export const createFromTemplate = async (
   }
 }
 
+export const getFile = (path: string) => {
+  return dc.app.vault.getFileByPath(path)
+}
+
+export const fileExists = (path: string) => {
+  return getFile(path) !== null
+}
+
 export const writeAtTheEndOfTheFile = async (path: string, content: string) => {
   try {
-    const file = dc.app.vault.getFileByPath(path)
+    const file = getFile(path)
     if (file) {
       const fileContent = await dc.app.vault.read(file)
       const newContent = fileContent + '\n' + content

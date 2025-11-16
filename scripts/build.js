@@ -31,7 +31,7 @@ function getAllFiles(dir, fileList = []) {
 
     if (stat.isDirectory()) {
       getAllFiles(filePath, fileList)
-    } else if (/\.(ts|tsx)$/.test(file) && !/\.d\.ts$/.test(file)) {
+    } else if (/\.(ts|tsx)$/.test(file) && !/\.d\.ts$/.test(file) && !/\.test\.(ts|tsx)$/.test(file)) {
       fileList.push(filePath)
     }
   })
@@ -293,8 +293,8 @@ function watch() {
 
     const filePath = path.join(srcDir, filename)
 
-    // Only recompile .ts and .tsx files (exclude .d.ts files)
-    if (/\.(ts|tsx)$/.test(filePath) && !/\.d\.ts$/.test(filePath) && fs.existsSync(filePath)) {
+    // Only recompile .ts and .tsx files (exclude .d.ts and .test.ts files)
+    if (/\.(ts|tsx)$/.test(filePath) && !/\.d\.ts$/.test(filePath) && !/\.test\.(ts|tsx)$/.test(filePath) && fs.existsSync(filePath)) {
       console.log(`\nFile changed: ${filename}`)
 
       // Rescan directory to find any new files

@@ -1,25 +1,14 @@
 import { useReducer } from 'preact/hooks'
 import { Button } from '../components/shared/button'
 import { Dialog, useDialog } from '../components/shared/dialog'
-import { createFromTemplate } from '../utils/files'
-
-type Album = {
-  id: string
-  name: string
-  release_date: string
-  artists: string[]
-  images: Array<{
-    url: string
-    height: number
-    width: number
-  }>
-  external_urls: { spotify: string }
-  total_tracks: number
-}
+import type { ContentTransformer } from '../utils/ContentTransformer'
+import { createFromTemplate, fileExists, getFile } from '../utils/files'
+import { getMusicAlbumWiki } from '../utils/perplexity'
+import { type Album, searchAlbums } from '../utils/spotify'
 
 type State = {
   results: Array<Album>
-  state: 'idle' | 'loading' | 'error' | 'success'
+  state: 'idle' | 'loading' | 'loading-wiki' | 'error' | 'success'
   selected: Album | null
 }
 
@@ -27,30 +16,40 @@ type Action =
   | { type: 'loading' }
   | { type: 'setAlbums'; payload?: Array<Album> }
   | { type: 'selectAlbum'; payload: Album }
+  | { type: 'abort' }
+  | { type: 'loading-wiki' }
 
-const contentTransformer = (source: Album) => (content: string) => {
-  // frontmatter variables replacement
+const contentTransformer = (source: Album, reason: string, wikiContent: string) => (content: ContentTransformer) => {
+  content.setFrontmatter('year', source.release_date.split('-')[0])
+  content.setFrontmatter('album', source.external_urls.spotify)
+  content.setFrontmatter('image', source.images[0].url)
+  content.setFrontmatter('artist', source.artists.map((artist) => `[[${artist}]]`))
+
+  // If the first line is an h3, remove it and 
+  let cleanContent = wikiContent.split('\n')
+
+  if (cleanContent[0].startsWith('###')) {
+    cleanContent = cleanContent.slice(1)
+
+    if (cleanContent[0].length === 0) {
+      cleanContent = cleanContent.slice(1)
+    }
+  }
+
+  content.insertInSection('wiki', cleanContent.join('\n'))
+
+  if (reason.length > 0) {
+    content.insertInSection('My take', reason)
+  }
+
   return content
-    .split('\n')
-    .map((line) => {
-      // TODO: Make this frontmatter modification more sofisticated
-      return line
-        .replace('year:', `year: ${source.release_date.split('-')[0]}`)
-        .replace('album:', `album: ${source.external_urls.spotify}`)
-        .replace('image:', `image: ${source.images[0].url}`)
-        .replace(
-          'artist:',
-          `
-artist:
-${source.artists.map((artist) => `  - "[[${artist}]]"`).join('\n')}
-
-              `
-        )
-    })
-    .join('\n')
 }
 
-export const Music = () => {
+export const Music = ({
+  apiKey,
+}: {
+  apiKey: string
+}) => {
   const { ref: dialogRef, close } = useDialog()
 
   const [state, dispatch] = useReducer(
@@ -58,6 +57,10 @@ export const Music = () => {
       switch (action.type) {
         case 'loading':
           return { ...state, state: 'loading' }
+        case 'loading-wiki':
+          return { ...state, state: 'loading-wiki' }
+        case 'abort':
+          return { ...state, state: state.results.length > 0 ? 'success' : 'idle' }
         case 'setAlbums':
           return {
             selected: null,
@@ -91,51 +94,78 @@ export const Music = () => {
 
     dispatch({ type: 'loading' })
 
-    const result = await fetch(
-      `https://www.franbosquet.com/api/spotify?search=${encodeURIComponent(searchTerm)}&type=album`,
-      {
-        headers: {
-          Authorization: 'branfostify',
-        },
-      }
-    )
+    try {
+      const result = await searchAlbums(searchTerm, apiKey)
 
-    if (result.status !== 200) {
-      alert('Error leyendo la API. Comprueba la consola para más detalles.')
+      dispatch({ type: 'setAlbums', payload: result })
+    } catch (error) {
+      dispatch({ type: 'abort' })
+      alert(error instanceof Error ? error.message : error)
       return
     }
-
-    const body: { albums: Array<Album> } = await result.json()
-
-    dispatch({ type: 'setAlbums', payload: body.albums })
   }
 
   const handleSelect = (album: Album) => {
     dispatch({ type: 'selectAlbum', payload: album })
   }
 
-  const handleCreate = async () => {
+  const handleCreate = async (e: Event) => {
+    e.preventDefault()
+    const target: HTMLFormElement = e.currentTarget as HTMLFormElement
+    const form = new FormData(target)
+
+    const reason = form.get('reason')?.toString().trim()
+
     const source = state.selected
     if (!source) return
 
     const fileName = `${source.artists[0]} - ${source.name}.md`
     const filePath = `Music/Albums/${fileName}`
 
-    if (dc.app.vault.getFileByPath(filePath)) {
+    if (fileExists(filePath)) {
       alert('El album ya existe en el vault.')
       return
     }
 
-    await createFromTemplate(filePath, 'album', contentTransformer(source))
+    try {
 
-    close()
+      const artist = source.artists[0]
+      const title = source.name
 
-    // navigate to the created file
-    const file = dc.app.vault.getFileByPath(filePath)
-    if (file) {
-      dc.app.workspace.getLeaf(true).openFile(file)
+      dispatch({ type: 'loading-wiki' })
+
+      const wiki = await getMusicAlbumWiki(artist, title, apiKey)
+
+      // create the artist files if they don't exist
+      const artists = source.artists
+
+      for (const artist of artists) {
+        const artistPath = `Music/Artists/${artist}.md`
+
+        if (!fileExists(artistPath)) {
+          await createFromTemplate(artistPath, 'artist')
+        }
+      }
+
+      await createFromTemplate(filePath, 'album', contentTransformer(source, reason ?? '', wiki))
+
+      dispatch({ type: 'abort' })
+      close()
+
+      // navigate to the created file
+      const file = getFile(filePath)
+      if (file) {
+        dc.app.workspace.getLeaf(true).openFile(file)
+      }
+    } catch (error) {
+      dispatch({ type: 'abort' })
+      alert(error instanceof Error ? error.message : error)
     }
   }
+
+  const isLoading = state.state.includes('loading')
+
+  const notSearched = state.state === 'idle' || state.state === 'loading'
 
   return (
     <div>
@@ -147,47 +177,59 @@ export const Music = () => {
       >
         <form className="flex gap-4 w-full" onSubmit={handleSearch}>
           <input className="flex-1" type="text" name="albumName" />
-          <Button variant="secondary" type="submit">
-            Buscar
-          </Button>
+          <Button variant="secondary" size="icon" type="submit" isLoading={isLoading} icon="search" />
         </form>
         <div
           className="grid grid-cols-auto-fit gap-1 mt-4"
           style={{ '--column-width': '60px' }}
         >
-          {state.results.map((album) => {
-            const smallestImage = album.images[album.images.length - 1]
+          {notSearched
+            ? <p className="text-primary-600 py-4 text-center w-full">{
+              state.state === 'loading'
+                ? 'Buscando album...'
+                : 'Empieza buscando un album'
+            }</p>
+            : state.results.map((album) => {
+              const smallestImage = album.images[album.images.length - 1]
 
-            return (
-              <button
-                type="button"
-                key={album.id}
-                data-selected={state.selected?.id === album.id}
-                className="flex flex-col cursor-pointer p-0 border-none h-auto bg-transparent data-[selected=true]:outline data-[selected=true]:outline-yellow-500"
-                aria-label={album.name}
-                onClick={() => handleSelect(album)}
-              >
-                <img
-                  src={smallestImage.url}
-                  alt={album.name}
-                  className="object-cover"
-                />
-                <span className="text-sm overflow-hidden block w-full text-ellipsis">
-                  {album.name}
-                </span>
-              </button>
-            )
-          })}
+              return (
+                <button
+                  type="button"
+                  key={album.id}
+                  data-selected={state.selected?.id === album.id}
+                  className="flex flex-col cursor-pointer p-0 border-none h-auto bg-transparent data-[selected=true]:outline data-[selected=true]:outline-yellow-500"
+                  aria-label={album.name}
+                  onClick={() => handleSelect(album)}
+                >
+                  <img
+                    src={smallestImage.url}
+                    alt={album.name}
+                    className="object-cover aspect-square"
+                  />
+                  <span className="text-sm overflow-hidden block w-full text-ellipsis">
+                    {album.name}
+                  </span>
+                </button>
+              )
+            })}
         </div>
         {state.selected && (
           <div className="mt-4">
-            <h3>
+            <h3 className="mb-1">
               {state.selected.name} ({state.selected.release_date.split('-')[0]}
               )
             </h3>
-            <p>{state.selected.artists.join(', ')}</p>
-            <p>{state.selected.total_tracks} canciones</p>
-            <Button onClick={handleCreate}>Guardar</Button>
+            <div className="flex gap-2 w-full">
+              <p className="text-primary-300">{state.selected.artists.join(', ')}</p>
+              <p className="text-primary-600 flex-1">{state.selected.total_tracks} canciones</p>
+            </div>
+            <form onSubmit={handleCreate} className="flex gap-2 w-full pt-4">
+              <label htmlFor="reason" className="text-xs uppercase text-primary-700">Razón:</label>
+              <input type="text" name="reason" className="flex-1" />
+              <Button type="submit" isLoading={isLoading} iconRight='save'>
+                Añadir
+              </Button>
+            </form>
           </div>
         )}
       </Dialog>

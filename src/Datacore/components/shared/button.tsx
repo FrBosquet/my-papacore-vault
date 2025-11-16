@@ -17,7 +17,7 @@ const getVariant = cva({
     default: 'px-2 text-sm',
     sm: 'px-1 text-xs',
     lg: 'px-3 text-base',
-    icon: 'px-1 py-1 rounded-full text-xs',
+    icon: 'px-1 py-1 size-8 rounded-full text-xs aspect-square',
   },
 })
 

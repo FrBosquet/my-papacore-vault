@@ -70,7 +70,16 @@
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
     ],
+    "Datacore/utils/ContentTransformer.js": [
+      "Datacore/utils/files.js"
+    ],
     "Datacore/components/shared/dialog.jsx": [
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/utils/perplexity.js": [
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/utils/spotify.js": [
       "Datacore/views/Music.jsx"
     ],
     "Datacore/components/games/widget.jsx": [
