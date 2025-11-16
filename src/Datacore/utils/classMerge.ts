@@ -105,6 +105,12 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
   secondClasses.forEach(cls => {
     const key = getConflictKey(cls)
     classMap.set(key, cls)
+
+    // If this is a size- class, also remove height and width
+    if (key === 'size-') {
+      classMap.delete('h-')
+      classMap.delete('w-')
+    }
   })
 
   return Array.from(classMap.values()).join(' ')

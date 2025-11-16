@@ -11,6 +11,7 @@ export type Props = {
   children: ComponentChildren
   tooltip?: string
   className?: string
+  actions?: ComponentChildren
 }
 
 export const WidgetItem = ({
@@ -18,24 +19,36 @@ export const WidgetItem = ({
   children,
   tooltip,
   className,
+  actions,
 }: Props) => {
   const image = getFrontmatterValue<string>(page, 'image')
 
   return (
-    <Link
-      tooltip={tooltip}
-      key={page.$path}
-      path={page.$path}
-      className={classMerge(`flex items-center gap-2 w-full group hover:bg-theme-contrast bg-primary-950 transition hover:text-primary-800 relative h-10 text-sm`, className)}
+    <div
+      className="bg-primary-950 flex w-full gap-2"
     >
-      <Image
-        src={image ?? getResourcePath('Images/empty.jpg')}
-        alt={page.$name}
-        className="h-full aspect-square object-cover"
-      />
-      <div className="flex flex-col gap-1 flex-1 overflow-hidden">
-        {children}
-      </div>
-    </Link>
+      <Link
+        tooltip={tooltip}
+        key={page.$path}
+        path={page.$path}
+        wrapperClassName="flex-1"
+        className={classMerge(`flex items-center gap-2 group hover:bg-theme-contrast bg-primary-950 transition hover:text-primary-800 relative h-10 text-sm flex-1`, className)}
+      >
+        <Image
+          src={image ?? getResourcePath('Images/empty.jpg')}
+          alt={page.$name}
+          className="h-full aspect-square object-cover"
+        />
+        <div className="flex flex-col gap-1 flex-1 overflow-hidden">
+          {children}
+        </div>
+      </Link>
+      {actions
+        ? (
+          <menu className="flex items-center justify-center">
+            {actions}
+          </menu>
+        ) : null}
+    </div>
   )
 }

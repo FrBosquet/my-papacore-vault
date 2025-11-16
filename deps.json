@@ -10,18 +10,19 @@
     "Datacore/utils/files.js": [
       "Datacore/components/games/widget.jsx",
       "Datacore/components/habits/widget.jsx",
-      "Datacore/components/music/widget.jsx",
+      "Datacore/components/music/add-album-modal.jsx",
+      "Datacore/components/music/album-item.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js",
-      "Datacore/views/Music.jsx"
+      "Datacore/hooks/markdown.js"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
-      "Datacore/components/music/widget.jsx",
+      "Datacore/components/music/album-item.jsx",
       "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js"
+      "Datacore/hooks/markdown.js",
+      "Datacore/views/Music.jsx"
     ],
     "Datacore/components/shared/card.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -39,11 +40,12 @@
     "Datacore/components/shared/scroller.jsx": [
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/widget.jsx",
-      "Datacore/components/projects/widget.jsx"
+      "Datacore/components/projects/widget.jsx",
+      "Datacore/views/Music.jsx"
     ],
     "Datacore/components/shared/widget.jsx": [
       "Datacore/components/games/widget.jsx",
-      "Datacore/components/music/widget.jsx",
+      "Datacore/components/music/album-item.jsx",
       "Datacore/components/projects/widget.jsx"
     ],
     "Datacore/hooks/markdown.js": [
@@ -51,6 +53,7 @@
     ],
     "Datacore/components/shared/button.jsx": [
       "Datacore/components/habits/widget.jsx",
+      "Datacore/components/music/add-album-modal.jsx",
       "Datacore/components/shared/button.stories.jsx",
       "Datacore/components/shared/dialog.jsx",
       "Datacore/views/Music.jsx"
@@ -58,10 +61,29 @@
     "Datacore/components/habits/habit-config.js": [
       "Datacore/components/habits/widget.jsx"
     ],
+    "Datacore/utils/perplexity.js": [
+      "Datacore/components/music/add-album-modal.jsx"
+    ],
+    "Datacore/utils/spotify.js": [
+      "Datacore/components/music/add-album-modal.jsx"
+    ],
+    "Datacore/components/shared/dialog.jsx": [
+      "Datacore/components/music/add-album-modal.jsx",
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/music/album-item.jsx": [
+      "Datacore/components/music/widget.jsx",
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/music/utils.js": [
+      "Datacore/components/music/widget.jsx",
+      "Datacore/views/Music.jsx"
+    ],
     "Datacore/utils/classMerge.js": [
       "Datacore/components/shared/button.jsx",
       "Datacore/components/shared/class-variance-authority.js",
       "Datacore/components/shared/dialog.jsx",
+      "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/class-variance-authority.js": [
@@ -73,13 +95,10 @@
     "Datacore/utils/ContentTransformer.js": [
       "Datacore/utils/files.js"
     ],
-    "Datacore/components/shared/dialog.jsx": [
+    "Datacore/components/music/add-album-modal.jsx": [
       "Datacore/views/Music.jsx"
     ],
-    "Datacore/utils/perplexity.js": [
-      "Datacore/views/Music.jsx"
-    ],
-    "Datacore/utils/spotify.js": [
+    "Datacore/hooks/state.js": [
       "Datacore/views/Music.jsx"
     ],
     "Datacore/components/games/widget.jsx": [

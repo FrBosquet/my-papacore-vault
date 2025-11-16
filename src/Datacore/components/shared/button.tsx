@@ -18,10 +18,11 @@ const getVariant = cva({
     sm: 'px-1 text-xs',
     lg: 'px-3 text-base',
     icon: 'px-1 py-1 size-8 rounded-full text-xs aspect-square',
+    ['icon-xs']: 'p-1/2 size-4 rounded-full text-xs aspect-square'
   },
 })
 
-type Props = {
+export type Props = {
   children?: ComponentChildren
   icon?: IconName
   iconRight?: IconName
@@ -33,6 +34,7 @@ type Props = {
   tooltip?: string
   isLoading?: boolean
   type?: 'button' | 'submit' | 'reset'
+  label?: string | null
 }
 
 export const Button = ({
@@ -47,6 +49,7 @@ export const Button = ({
   tooltip,
   isLoading,
   type = 'button',
+  label,
 }: Props) => {
   const variantValue = getVariant(variant, size)
   const calculatedClassName = classMerge(variantValue, className)
@@ -66,7 +69,7 @@ export const Button = ({
       onClick={onClick}
     >
       {icon && <dc.Icon icon={icon} />}
-      {children}
+      {label === undefined ? children : label}
       {iconRight && <dc.Icon icon={iconRight} />}
       <div className={loaderClassname}>
         <dc.Icon icon="loader" className="animate-spin" />

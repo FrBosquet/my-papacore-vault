@@ -1,15 +1,16 @@
-import type { Ref } from 'preact'
-import { useEffect, useRef } from 'preact/hooks'
-import type { IconName } from '../../../icons'
-import { classMerge } from '../../utils/classMerge'
-import { Button } from './button';
+import type { Ref } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
+import type { IconName } from '../../../icons';
+import { classMerge } from '../../utils/classMerge';
+import { Button, type Props as ButtonProps } from './button';
 
-type Props = {
+export type Props = {
   children: React.ReactNode
   className?: string
   title?: string
   icon?: IconName
   dialogRef?: Ref<HTMLDialogElement>
+  triggerProps?: Partial<Omit<ButtonProps, 'onClick'>>
 }
 
 export const useDialog = (defaultOpen = false) => {
@@ -29,12 +30,13 @@ export const useDialog = (defaultOpen = false) => {
 }
 
 export const Dialog = (props: Props) => {
-  const { children, className, icon, title, dialogRef } = props
+  const { children, className, icon, title, dialogRef, triggerProps } = props
 
   return (
     <div className="contents">
       <Button
-        className="cursor-pointer"
+        {...triggerProps}
+        className={classMerge("cursor-pointer", triggerProps?.className)}
         onClick={() => {
           if (dialogRef && 'current' in dialogRef) {
             dialogRef.current?.showModal()
@@ -46,7 +48,7 @@ export const Dialog = (props: Props) => {
       <dialog
         ref={dialogRef}
         className={classMerge(
-          'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl',
+          'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl pointer-events-auto',
           className
         )}
         onClick={(e) => {
