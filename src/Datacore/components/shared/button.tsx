@@ -32,6 +32,7 @@ type Props = {
   disabled?: boolean
   tooltip?: string
   isLoading?: boolean
+  type?: 'button' | 'submit' | 'reset'
 }
 
 export const Button = ({
@@ -45,6 +46,7 @@ export const Button = ({
   disabled,
   tooltip,
   isLoading,
+  type = 'button',
 }: Props) => {
   const variantValue = getVariant(variant, size)
   const calculatedClassName = classMerge(variantValue, className)
@@ -58,7 +60,7 @@ export const Button = ({
   return (
     <button
       aria-label={tooltip}
-      type="button"
+      type={type}
       className={calculatedClassName}
       disabled={disabled || isLoading}
       onClick={onClick}

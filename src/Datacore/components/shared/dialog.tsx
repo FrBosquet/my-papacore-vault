@@ -1,7 +1,8 @@
 import type { Ref } from 'preact'
-import { useRef } from 'preact/hooks'
+import { useEffect, useRef } from 'preact/hooks'
 import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
+import { Button } from './button';
 
 type Props = {
   children: React.ReactNode
@@ -11,8 +12,14 @@ type Props = {
   dialogRef?: Ref<HTMLDialogElement>
 }
 
-export const useDialog = () => {
+export const useDialog = (defaultOpen = false) => {
   const ref = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    if (defaultOpen && ref.current) {
+      ref.current.showModal()
+    }
+  }, [defaultOpen, ref.current])
 
   return {
     ref,
@@ -26,16 +33,16 @@ export const Dialog = (props: Props) => {
 
   return (
     <div className="contents">
-      <button
-        type="button"
+      <Button
+        className="cursor-pointer"
         onClick={() => {
           if (dialogRef && 'current' in dialogRef) {
             dialogRef.current?.showModal()
           }
         }}
       >
-        Open
-      </button>
+        {title || 'Open Dialog'}
+      </Button>
       <dialog
         ref={dialogRef}
         className={classMerge(

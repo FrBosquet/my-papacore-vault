@@ -13,7 +13,8 @@
       "Datacore/components/music/widget.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js"
+      "Datacore/hooks/markdown.js",
+      "Datacore/views/Music.jsx"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
@@ -50,7 +51,9 @@
     ],
     "Datacore/components/shared/button.jsx": [
       "Datacore/components/habits/widget.jsx",
-      "Datacore/components/shared/button.stories.jsx"
+      "Datacore/components/shared/button.stories.jsx",
+      "Datacore/components/shared/dialog.jsx",
+      "Datacore/views/Music.jsx"
     ],
     "Datacore/components/habits/habit-config.js": [
       "Datacore/components/habits/widget.jsx"
@@ -67,6 +70,9 @@
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
     ],
+    "Datacore/components/shared/dialog.jsx": [
+      "Datacore/views/Music.jsx"
+    ],
     "Datacore/components/games/widget.jsx": [
       "Datacore/views/Today.jsx"
     ],
@@ -81,6 +87,9 @@
     ]
   },
   "views": {
+    "Datacore/views/Music.jsx": [
+      "Music/Hub.md"
+    ],
     "Datacore/views/Today.jsx": [
       "TODAY.md"
     ]

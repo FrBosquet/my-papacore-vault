@@ -63,6 +63,10 @@
   .grid-cols-auto-4 {
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   }
+
+  .grid-cols-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
+  }
 }
 
 /* Components */

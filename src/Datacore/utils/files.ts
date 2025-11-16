@@ -68,18 +68,21 @@ const getTemplateContent = async (templateName: string) => {
 
 export const createFromTemplate = async (
   targetPath: string,
-  templatePath: string
+  templatePath: string,
+  transformer?: (content: string) => string
 ) => {
   const templateContent = await getTemplateContent(templatePath)
 
   if (templateContent !== null) {
     try {
-      await dc.app.vault.create(targetPath, templateContent)
+      await dc.app.vault.create(targetPath, transformer ? transformer(templateContent) : templateContent)
 
       return targetPath
     } catch (error) {
       throw error
     }
+  } else {
+    alert(`El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`)
   }
 }
 
