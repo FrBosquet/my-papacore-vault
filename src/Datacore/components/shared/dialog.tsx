@@ -43,7 +43,7 @@ export const Dialog = (props: Props) => {
           }
         }}
       >
-        {title || 'Open Dialog'}
+        {triggerProps?.label ?? title ?? 'Open Dialog'}
       </Button>
       <dialog
         ref={dialogRef}
