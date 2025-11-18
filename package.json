@@ -1,5 +1,5 @@
 {
-  "name": "papacore",
+  "name": "my-papacore-vault",
   "version": "1.0.0",
   "description": "A custom TypeScript/JSX build tool for creating components compatible with Datacore's custom Preact runtime",
   "main": "index.js",
