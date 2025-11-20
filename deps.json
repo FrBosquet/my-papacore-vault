@@ -105,6 +105,7 @@
       "Datacore/components/music/song-viz.jsx"
     ],
     "Datacore/utils/classMerge.js": [
+      "Datacore/components/shared/anchor.jsx",
       "Datacore/components/shared/button.jsx",
       "Datacore/components/shared/class-variance-authority.js",
       "Datacore/components/shared/dialog.jsx",
@@ -112,6 +113,7 @@
       "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/class-variance-authority.js": [
+      "Datacore/components/shared/anchor.jsx",
       "Datacore/components/shared/button.jsx"
     ],
     "Datacore/components/shared/image.jsx": [
@@ -146,6 +148,7 @@
     "Datacore/views/Music.jsx": [
       "Music/Hub.md"
     ],
+    "Datacore/views/TestView.jsx": [],
     "Datacore/views/Today.jsx": [
       "TODAY.md"
     ]

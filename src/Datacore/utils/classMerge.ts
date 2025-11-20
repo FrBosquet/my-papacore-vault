@@ -43,6 +43,11 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
 
     const prefix = parts[0]
 
+    // Some classes can be overriden by subs, like flex and flex-1 or border and border-2
+    if ('border' === className) return '@core-border'
+
+    if (['flex', 'block', 'inline', 'inline-flex'].includes(className)) return 'display-'
+
     // Position utilities should all conflict with each other
     if (['absolute', 'relative', 'fixed', 'sticky', 'static'].includes(className)) {
       return 'position-'
