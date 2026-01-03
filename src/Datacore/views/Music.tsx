@@ -3,10 +3,7 @@ import { AddAlbumModal } from '../components/music/add-album-modal'
 import { AlbumViz } from '../components/music/album-viz'
 import { AlbumDialog } from '../components/music/albums-dialog'
 import { SongViz } from '../components/music/song-viz'
-import {
-  buildAlbumHierarchy,
-  type YearString
-} from '../components/music/utils'
+import { buildAlbumHierarchy, type YearString } from '../components/music/utils'
 import { Button } from '../components/shared/button'
 import { useFrontmatterState } from '../hooks/markdown'
 
@@ -22,29 +19,58 @@ export const Music = ({ apiKey }: Props) => {
 
   const albumList = buildAlbumHierarchy(albums)
 
-  const years = Object.keys(albumList).sort((a, b) => parseInt(a, 10) - parseInt(b, 10)) as Array<YearString | 'unlisted'>
+  const years = Object.keys(albumList).sort(
+    (a, b) => parseInt(a, 10) - parseInt(b, 10)
+  ) as Array<YearString | 'unlisted'>
 
   return (
     <div>
       <menu className="flex justify-end gap-1">
         <div className="flex">
-          <Button size="sm" disabled={mode === 'song'} onClick={() => setMode('song')}>Cancion</Button>
-          <Button size="sm" disabled={mode === 'album'} onClick={() => setMode('album')}>Album</Button>
+          <Button
+            size="sm"
+            disabled={mode === 'song'}
+            onClick={() => setMode('song')}
+          >
+            Cancion
+          </Button>
+          <Button
+            size="sm"
+            disabled={mode === 'album'}
+            onClick={() => setMode('album')}
+          >
+            Album
+          </Button>
         </div>
         <div className="flex">
-          <Button size="sm" disabled={time === 'month'} onClick={() => setTime('month')}>Mes</Button>
-          <Button size="sm" disabled={time === 'year'} onClick={() => setTime('year')}>Año</Button>
+          <Button
+            size="sm"
+            disabled={time === 'month'}
+            onClick={() => setTime('month')}
+          >
+            Mes
+          </Button>
+          <Button
+            size="sm"
+            disabled={time === 'year'}
+            onClick={() => setTime('year')}
+          >
+            Año
+          </Button>
         </div>
         <AlbumDialog albums={albumList.unlisted} />
         <AddAlbumModal apiKey={apiKey} />
       </menu>
 
-      <main style={{
-        "--column-width": time === 'month' ? "330px" : null,
-      }}>
-        {
-          mode === 'album'
-            ? years.map((year) => {
+      <main
+        style={{
+          '--column-width': time === 'month' ? '330px' : null,
+        }}
+      >
+        {mode === 'album' ? (
+          years
+            .sort((a, b) => parseInt(b, 10) - parseInt(a, 10))
+            .map((year) => {
               if (year === 'unlisted') return null
               return (
                 <div key={year}>
@@ -60,12 +86,10 @@ export const Music = ({ apiKey }: Props) => {
                 </div>
               )
             })
-            : <SongViz
-              time={time?.toString() as 'month' | 'year'} />
-        }
+        ) : (
+          <SongViz time={time?.toString() as 'month' | 'year'} />
+        )}
       </main>
     </div>
   )
 }
-
-

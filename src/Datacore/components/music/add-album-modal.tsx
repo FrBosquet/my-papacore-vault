@@ -120,7 +120,8 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
     const source = state.selected
     if (!source) return
 
-    const fileName = `${source.artists[0]} - ${source.name}.md`
+    const safeAlbumName = `${source.artists[0]} - ${source.name}`.replace(/[/:*?"<>|]/g, '')
+    const fileName = `${safeAlbumName}.md`
     const filePath = `Music/Albums/${fileName}`
 
     if (fileExists(filePath)) {
@@ -129,7 +130,6 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
     }
 
     try {
-
       const artist = source.artists[0]
       const title = source.name
 

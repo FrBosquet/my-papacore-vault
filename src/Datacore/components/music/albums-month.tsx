@@ -18,10 +18,10 @@ export const AlbumsMonth = ({
   return (
     <div>
       {
-        month
+        typeof month === 'number'
           ? (
             <header className="flex items-center gap-1 mb-2 mt-6">
-              <h3 className="flex-1 my-0">{months[month]}</h3>
+              <h3 className="flex-1 my-0">{months[month]} ({albums.length})</h3>
               <AlbumDialog
                 albums={pendingAlbums}
                 triggerProps={{ size: 'icon', label: null, icon: 'disc-3' }}
