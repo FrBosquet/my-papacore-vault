@@ -63,7 +63,7 @@ export const SongViz = ({
     }
   }, {})
 
-  const years = Object.keys(songData).sort()
+  const years = Object.keys(songData).sort((a, b) => parseInt(b, 10) - parseInt(a, 10))
 
   return <div>
     {
