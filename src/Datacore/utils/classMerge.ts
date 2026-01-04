@@ -45,6 +45,7 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
 
     // Some classes can be overriden by subs, like flex and flex-1 or border and border-2
     if ('border' === className) return '@core-border'
+    if ('bg-no-repeat' === className) return '@core-bg-no-repeat'
 
     if (['flex', 'block', 'inline', 'inline-flex'].includes(className)) return 'display-'
 

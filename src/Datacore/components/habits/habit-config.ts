@@ -191,4 +191,10 @@ export const habitConfig: Record<string, HabitConfig> = {
     category: 'personal',
     highlight: false,
   },
+  CleanGlasses: {
+    icon: 'glasses',
+    label: 'Clean Glasses',
+    category: 'personal',
+    highlight: false,
+  },
 }

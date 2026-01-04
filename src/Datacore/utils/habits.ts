@@ -2,7 +2,7 @@ import type { MarkdownPage } from "@blacksmithgu/datacore";
 import { DateTime } from "luxon";
 import { getDailyNoteDatetime } from "./files";
 
-type Streak = {
+export type Streak = {
   days: number;
   type: 'streak' | 'hiatus' | 'never'
 }

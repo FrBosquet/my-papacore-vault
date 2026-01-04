@@ -14,6 +14,30 @@
   --color-primary-900: #343446;
   --color-primary-950: #16161e;
 
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #fb464c;
+  --color-red-600: #e63946;
+  --color-red-700: #c92a2a;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+
+  --color-green-50: #f3faeb;
+  --color-green-100: #e6f3d4;
+  --color-green-200: #cee9ad;
+  --color-green-300: #aed97d;
+  --color-green-400: #9ece6a;
+  --color-green-500: #71ac36;
+  --color-green-600: #568927;
+  --color-green-700: #436922;
+  --color-green-800: #385420;
+  --color-green-900: #31481f;
+  --color-green-950: #17270c;
+
   --color-theme-accent: #9ece6a;
   --color-theme-accent-hover: color-mix(in srgb, var(--color-theme-accent) 80%, white);
   --color-theme-accent-disabled: color-mix(in srgb, var(--color-theme-accent) 80%, black);

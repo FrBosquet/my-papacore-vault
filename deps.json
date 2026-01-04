@@ -14,7 +14,8 @@
       "Datacore/components/music/album-item.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js"
+      "Datacore/hooks/markdown.js",
+      "Datacore/utils/habits.js"
     ],
     "Datacore/utils/markdown.js": [
       "Datacore/components/games/widget.jsx",
@@ -54,6 +55,18 @@
     "Datacore/hooks/markdown.js": [
       "Datacore/components/habits/widget.jsx",
       "Datacore/views/Music.jsx"
+    ],
+    "Datacore/utils/classMerge.js": [
+      "Datacore/components/habits/widget.jsx",
+      "Datacore/components/shared/anchor.jsx",
+      "Datacore/components/shared/button.jsx",
+      "Datacore/components/shared/class-variance-authority.js",
+      "Datacore/components/shared/dialog.jsx",
+      "Datacore/components/shared/link.jsx",
+      "Datacore/components/shared/widget.jsx"
+    ],
+    "Datacore/utils/habits.js": [
+      "Datacore/components/habits/widget.jsx"
     ],
     "Datacore/components/shared/button.jsx": [
       "Datacore/components/habits/widget.jsx",
@@ -103,14 +116,6 @@
     ],
     "Datacore/components/music/song-list.jsx": [
       "Datacore/components/music/song-viz.jsx"
-    ],
-    "Datacore/utils/classMerge.js": [
-      "Datacore/components/shared/anchor.jsx",
-      "Datacore/components/shared/button.jsx",
-      "Datacore/components/shared/class-variance-authority.js",
-      "Datacore/components/shared/dialog.jsx",
-      "Datacore/components/shared/link.jsx",
-      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/class-variance-authority.js": [
       "Datacore/components/shared/anchor.jsx",

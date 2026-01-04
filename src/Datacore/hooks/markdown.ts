@@ -5,7 +5,7 @@ import { setPageFrontmatterValue } from '../utils/markdown'
 
 export const useFrontmatterState = <T extends Literal>(
   key: string,
-  defaultValue?: string
+  defaultValue?: T
 ) => {
   const thisPage = dc.useCurrentFile()
 
@@ -15,7 +15,7 @@ export const useFrontmatterState = <T extends Literal>(
 export const useFileFrontmatterState = <T extends Literal>(
   path: string,
   key: string,
-  defaultValue?: string
+  defaultValue?: T
 ) => {
   const [isLoading, setIsLoading] = useState(false)
   const page = getPage(path)

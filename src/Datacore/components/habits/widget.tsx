@@ -1,10 +1,13 @@
+import { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import { useEffect, useState } from 'preact/hooks'
 import {
   useFileFrontmatterState,
   useFrontmatterState,
 } from '../../hooks/markdown'
-import { createFromTemplate } from '../../utils/files'
+import { classMerge } from '../../utils/classMerge'
+import { createFromTemplate, getDailyNoteDatetime } from '../../utils/files'
+import { calculateStreak, Streak } from '../../utils/habits'
 import { getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
@@ -21,6 +24,7 @@ const habitList = Object.entries(habitConfig)
 const dailyHabitList = habitList.filter(
   (habit) => habit.category === 'personal'
 )
+
 const workHabitList = habitList.filter((habit) => habit.category === 'work')
 
 type Habit = (typeof habitList)[number]
@@ -138,6 +142,25 @@ export const HabitWidget = () => {
   )
 }
 
+const getStreak = (notes: MarkdownPage[], targetDate: DateTime) => {
+  return new Promise((resolve) => {
+    const streak = calculateStreak(notes, targetDate)
+    resolve(streak)
+  })
+}
+
+const useStreak = (notes: MarkdownPage[], targetPath: string): Streak | null => {
+  const [streak, setStreak] = useState<Streak | null>(null)
+  
+  useEffect(() => {
+    const targetDate = getDailyNoteDatetime(targetPath)
+
+    getStreak(notes, targetDate).then((streak) => setStreak(streak as Streak))
+  }, [notes, targetPath])
+
+  return streak
+}
+
 const HabitToggle = ({
   habit,
   targetPath,
@@ -147,6 +170,15 @@ const HabitToggle = ({
   targetPath: string
   faded?: boolean
 }) => {
+  const notes = dc
+    .useQuery<MarkdownPage>(`@page and path("Journal") and ${habit.key}`)
+
+  const streak = useStreak(notes, targetPath)
+
+  const inStreak = streak?.type === 'streak' && streak?.days > 1
+  const inWarningHiatus = streak?.type === 'hiatus' && streak?.days < 3
+  const inDangerHiatus = streak?.type === 'hiatus' && streak?.days >= 3
+
   const [togglePending, setTogglePending] = useState(false)
   const [page] = dc.useQuery(`@page and $path = "${targetPath}"`)
   const [isDone, setIsDone, isLoading] = useFileFrontmatterState<boolean>(
@@ -172,6 +204,22 @@ const HabitToggle = ({
     }
   }, [togglePending, page])
 
+const renderStreak = () => {
+  if(!streak) return null
+
+  if (streak?.type === 'streak') {
+    if (streak?.days === 1) return null
+
+    return `+${streak?.days}`
+  }
+
+  if (streak?.type === 'hiatus') {
+    return `${streak?.days} days`
+  }
+
+  return 'Never done'
+}
+
   return (
     <button
       aria-label={habit.tooltip ?? habit.label}
@@ -179,13 +227,24 @@ const HabitToggle = ({
       data-is-done={isDone}
       data-faded={faded}
       onClick={handleClick}
-      className="aspect-square flex-col flex items-center justify-center h-auto text-xs gap-2 cursor-pointer data-[is-done=true]:bg-theme-accent data-[is-done=true]:text-primary-950 rounded-none border-none bg-primary-900 shadow-none data-[faded=true]:opacity-50"
+      className="aspect-square flex-col flex items-center justify-center h-auto text-xs gap-2 cursor-pointer data-[is-done=true]:bg-theme-accent data-[is-done=true]:text-primary-950 rounded-none border-none bg-primary-900 shadow-none data-[faded=true]:opacity-50 relative"
     >
       <dc.Icon
         className={isLoading ? 'animate-spin' : ''}
         icon={isLoading ? 'loader' : habit.icon}
       />
       <span>{habit.label}</span>
+      {(
+        <div className={classMerge(
+          "absolute bottom-0 to-transparent bg-size-[100%_200%] bg-position-[50%_10px] bg-no-repeat uppercase text-xs font-semibold p-2 bg-radial h-6 w-full",
+          inStreak ? 'from-green-50 text-primary-900 text-base h-8 bg-position-[50%_8px]' : undefined,
+          inWarningHiatus ? 'from-yellow-700/20 text-yellow-400' : undefined,
+          inDangerHiatus ? 'from-red-700/20 text-red-400' : undefined,
+          
+          )}>
+          {renderStreak()}
+        </div>
+      )}
     </button>
   )
 }
