@@ -31,6 +31,7 @@ export const useDialog = (defaultOpen = false) => {
 
 export const Dialog = (props: Props) => {
   const { children, className, icon, title, dialogRef, triggerProps } = props
+  const mouseDownOnOverlay = useRef(false)
 
   return (
     <div className="contents">
@@ -47,8 +48,13 @@ export const Dialog = (props: Props) => {
       </Button>
       <dialog
         ref={dialogRef}
+        onMouseDown={(e) => {
+          // Track if mousedown happened on the overlay (dialog element itself)
+          mouseDownOnOverlay.current = e.target === e.currentTarget
+        }}
         onClick={(e) => {
-          if (e.target === e.currentTarget) {
+          // Only close if both mousedown and click happened on the overlay
+          if (e.target === e.currentTarget && mouseDownOnOverlay.current) {
             e.currentTarget.close()
           }
         }}
