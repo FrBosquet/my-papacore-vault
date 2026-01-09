@@ -7,17 +7,8 @@
     "Datacore/components/example/counter.jsx": [
       "Datacore/components/example/index.jsx"
     ],
-    "Datacore/utils/files.js": [
-      "Datacore/components/games/widget.jsx",
-      "Datacore/components/habits/widget.jsx",
-      "Datacore/components/music/add-album-modal.jsx",
-      "Datacore/components/music/album-item.jsx",
-      "Datacore/components/shared/link.jsx",
-      "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js",
-      "Datacore/utils/habits.js"
-    ],
     "Datacore/utils/markdown.js": [
+      "Datacore/components/games/get-game-modal.jsx",
       "Datacore/components/games/widget.jsx",
       "Datacore/components/music/album-item.jsx",
       "Datacore/components/music/album-list.jsx",
@@ -27,6 +18,34 @@
       "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx",
       "Datacore/hooks/markdown.js"
+    ],
+    "Datacore/utils/perplexity.js": [
+      "Datacore/components/games/get-game-modal.jsx",
+      "Datacore/components/music/add-album-modal.jsx"
+    ],
+    "Datacore/components/shared/button.jsx": [
+      "Datacore/components/games/get-game-modal.jsx",
+      "Datacore/components/habits/widget.jsx",
+      "Datacore/components/music/add-album-modal.jsx",
+      "Datacore/components/music/album-list.jsx",
+      "Datacore/components/shared/button.stories.jsx",
+      "Datacore/components/shared/dialog.jsx",
+      "Datacore/views/Music.jsx"
+    ],
+    "Datacore/components/shared/dialog.jsx": [
+      "Datacore/components/games/get-game-modal.jsx",
+      "Datacore/components/music/add-album-modal.jsx",
+      "Datacore/components/music/albums-dialog.jsx"
+    ],
+    "Datacore/utils/files.js": [
+      "Datacore/components/games/widget.jsx",
+      "Datacore/components/habits/widget.jsx",
+      "Datacore/components/music/add-album-modal.jsx",
+      "Datacore/components/music/album-item.jsx",
+      "Datacore/components/shared/link.jsx",
+      "Datacore/components/shared/widget.jsx",
+      "Datacore/hooks/markdown.js",
+      "Datacore/utils/habits.js"
     ],
     "Datacore/components/shared/card.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -68,26 +87,11 @@
     "Datacore/utils/habits.js": [
       "Datacore/components/habits/widget.jsx"
     ],
-    "Datacore/components/shared/button.jsx": [
-      "Datacore/components/habits/widget.jsx",
-      "Datacore/components/music/add-album-modal.jsx",
-      "Datacore/components/music/album-list.jsx",
-      "Datacore/components/shared/button.stories.jsx",
-      "Datacore/components/shared/dialog.jsx",
-      "Datacore/views/Music.jsx"
-    ],
     "Datacore/components/habits/habit-config.js": [
       "Datacore/components/habits/widget.jsx"
     ],
-    "Datacore/utils/perplexity.js": [
-      "Datacore/components/music/add-album-modal.jsx"
-    ],
     "Datacore/utils/spotify.js": [
       "Datacore/components/music/add-album-modal.jsx"
-    ],
-    "Datacore/components/shared/dialog.jsx": [
-      "Datacore/components/music/add-album-modal.jsx",
-      "Datacore/components/music/albums-dialog.jsx"
     ],
     "Datacore/components/music/album-item.jsx": [
       "Datacore/components/music/album-list.jsx",
@@ -127,6 +131,9 @@
     "Datacore/utils/ContentTransformer.js": [
       "Datacore/utils/files.js"
     ],
+    "Datacore/components/games/get-game-modal.jsx": [
+      "Datacore/views/GamePane.jsx"
+    ],
     "Datacore/components/music/add-album-modal.jsx": [
       "Datacore/views/Music.jsx"
     ],
@@ -150,6 +157,9 @@
     ]
   },
   "views": {
+    "Datacore/views/GamePane.jsx": [
+      "Gaming Log/Games/Steamworld Heist 2.md"
+    ],
     "Datacore/views/Music.jsx": [
       "Music/Hub.md"
     ],

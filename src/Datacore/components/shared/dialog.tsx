@@ -11,6 +11,7 @@ export type Props = {
   icon?: IconName
   dialogRef?: Ref<HTMLDialogElement>
   triggerProps?: Partial<Omit<ButtonProps, 'onClick'>>
+  onOpen?: () => void
 }
 
 export const useDialog = (defaultOpen = false) => {
@@ -30,7 +31,7 @@ export const useDialog = (defaultOpen = false) => {
 }
 
 export const Dialog = (props: Props) => {
-  const { children, className, icon, title, dialogRef, triggerProps } = props
+  const { children, className, icon, title, dialogRef, triggerProps, onOpen } = props
   const mouseDownOnOverlay = useRef(false)
 
   return (
@@ -41,6 +42,7 @@ export const Dialog = (props: Props) => {
         onClick={() => {
           if (dialogRef && 'current' in dialogRef) {
             dialogRef.current?.showModal()
+            onOpen?.()
           }
         }}
       >
