@@ -10,11 +10,11 @@ export const ProjectsWidget = () => {
     @page
     AND path("Projects")
     AND status = "ongoing"
-  `).sort((a, b) => a.$mtime.ts - b.$mtime.ts)
+  `).sort((a, b) => a.$mtime.toMillis() - b.$mtime.toMillis())
 
   return <Card>
     <Link path="Projects/Hub.base" icon="folder-kanban">Working on</Link>
-    <Scroller className="h-30 @container" wrapperClassName="gap-2 grid grid-cols-2 @[540px]:grid-cols-3 ">
+    <Scroller className="h-30 @container w-full" wrapperClassName="gap-2 grid grid-cols-2 @[540px]:grid-cols-3">
       {projects.map((project) => (
         <ProjectItem key={project.$id} project={project} />
       ))}

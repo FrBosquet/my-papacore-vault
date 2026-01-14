@@ -3,8 +3,8 @@ import type { ComponentChildren } from "preact"
 import { classMerge } from "../../utils/classMerge"
 import { getResourcePath } from "../../utils/files"
 import { getFrontmatterValue } from "../../utils/markdown"
+import { BlockLink } from "./block-link"
 import { Image } from "./image"
-import { Link } from "./link"
 
 export type Props = {
   page: MarkdownPage
@@ -27,12 +27,12 @@ export const WidgetItem = ({
     <div
       className="bg-primary-950 flex w-full gap-2 overflow-hidden"
     >
-      <Link
+      <BlockLink   
         tooltip={tooltip}
         key={page.$path}
         path={page.$path}
         wrapperClassName="flex-1"
-        className={classMerge(`flex items-center gap-2 group hover:bg-theme-contrast bg-primary-950 transition  overflow-hidden hover:text-primary-800 relative h-10 text-sm flex-1`, className)}
+        className={classMerge(`flex items-center gap-2 group hover:bg-theme-contrast bg-primary-950 transition w-full overflow-hidden hover:text-primary-800 relative h-10 text-sm flex-1`, className)}
       >
         <Image
           src={image ?? getResourcePath('Images/empty.jpg')}
@@ -42,7 +42,7 @@ export const WidgetItem = ({
         <div className="flex flex-col gap-1 flex-1 overflow-hidden">
           {children}
         </div>
-      </Link>
+      </BlockLink>
       {actions
         ? (
           <menu className="flex items-center justify-center">
