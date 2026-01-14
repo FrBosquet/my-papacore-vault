@@ -42,7 +42,6 @@
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/add-album-modal.jsx",
       "Datacore/components/music/album-item.jsx",
-      "Datacore/components/shared/block-link.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
       "Datacore/hooks/markdown.js",
@@ -78,7 +77,6 @@
     "Datacore/utils/classMerge.js": [
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/shared/anchor.jsx",
-      "Datacore/components/shared/block-link.jsx",
       "Datacore/components/shared/button.jsx",
       "Datacore/components/shared/class-variance-authority.js",
       "Datacore/components/shared/dialog.jsx",
@@ -125,9 +123,6 @@
     "Datacore/components/shared/class-variance-authority.js": [
       "Datacore/components/shared/anchor.jsx",
       "Datacore/components/shared/button.jsx"
-    ],
-    "Datacore/components/shared/block-link.jsx": [
-      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
@@ -204,6 +199,7 @@
       "Gaming Log/Games/It Takes Two.md",
       "Gaming Log/Games/Kingdom Come Deliverance II.md",
       "Gaming Log/Games/Last day of June.md",
+      "Gaming Log/Games/Lies of P.md",
       "Gaming Log/Games/Lorelei and the Laser eyes.md",
       "Gaming Log/Games/Lunacid.md",
       "Gaming Log/Games/Night Stones.md",
@@ -217,6 +213,7 @@
       "Gaming Log/Games/The Excavation of Hobs Barrow.md",
       "Gaming Log/Games/The Last Campfire.md",
       "Gaming Log/Games/The Operator.md",
+      "Gaming Log/Games/The Roottrees are Dead.md",
       "Gaming Log/Games/The Unfinished Swan.md",
       "Gaming Log/Games/The precinct.md",
       "Gaming Log/Games/Titanfall 2.md",
