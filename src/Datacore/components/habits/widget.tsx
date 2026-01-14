@@ -52,7 +52,7 @@ export const HabitWidget = () => {
 
   const path = `Journal/${localYear}-${monthNumber.toString().padStart(2, '0')}-${localDay.toString().padStart(2, '0')}.md`
 
-  const dateLabel = `${localDay} ${localMonth} ${localYear} (${relativeCal})`
+  const dateLabel = `${localWeekday}, ${localDay} ${localMonth} ${localYear}`
 
   const handleNextDay = () => {
     setIsLoading(true)
@@ -96,7 +96,7 @@ export const HabitWidget = () => {
           <p className="text-xs uppercase font-semibold">Diarios:</p>
         </div>
         <div className="flex items-center pr-1">
-          <p className="text-xs capitalize">{`${localWeekday}, W${weekNumber}`}</p>
+          <p className="text-xs capitalize">{`${relativeCal}, W${weekNumber}`}</p>
         </div>
         <Button
           variant="secondary"
