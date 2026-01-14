@@ -9,7 +9,7 @@ import { WidgetItem } from '../shared/widget'
 
 export const GameWidget = () => {
   const games = dc.useQuery<MarkdownPage>(
-    `@page AND path("Gaming log/Games") AND start AND !end`
+    `@page AND path("Gaming Log/Games") AND start AND !end`
   )
 
   return (
