@@ -1,4 +1,4 @@
-import type { MarkdownPage } from '@blacksmithgu/datacore'
+import type { MarkdownPage, MarkdownSection } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import { useEffect, useState } from 'preact/hooks'
 import {
@@ -169,6 +169,12 @@ const useStreak = (
   return streak
 }
 
+const getFileContent = async (path: string) => {
+  const file = dc.app.vault.getFileByPath(path)
+  if (!file) return null
+  return await dc.app.vault.read(file)
+}
+
 const HabitToggle = ({
   habit,
   targetPath,
@@ -178,9 +184,27 @@ const HabitToggle = ({
   targetPath: string
   faded?: boolean
 }) => {
+  const [tooltipContent, setTooltipContent] = useState<string>(``)
   const notes = dc.useQuery<MarkdownPage>(
     `@page and path("Journal") and ${habit.key}`
   )
+  
+  const tooltipDescriptor = dc.useQuery<MarkdownSection>(`@section and $title="Tooltip" and $file="Habits/${habit.key}.md"`)
+
+  const loadTooltipContent = async () => {
+    if( !tooltipDescriptor[0]?.$position ) return
+
+    const position = tooltipDescriptor[0]?.$position
+
+    const fileContent = await getFileContent(tooltipDescriptor[0]?.$file as string)
+    if( !fileContent ) return
+
+    const lines = fileContent.split('\n')
+    const tooltipLines = lines.splice(position.start + 1, position.end - position.start)
+    setTooltipContent(tooltipLines.join('\n'))
+  }
+
+  useEffect(() => { loadTooltipContent() }, [tooltipDescriptor])
 
   const streak = useStreak(notes, targetPath)
 
@@ -231,7 +255,7 @@ const HabitToggle = ({
 
   return (
     <button
-      aria-label={habit.tooltip ?? habit.label}
+      aria-label={tooltipContent ?? habit.label}
       type="button"
       data-is-done={isDone}
       data-faded={faded}
