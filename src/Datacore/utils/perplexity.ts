@@ -25,61 +25,57 @@ export const getMusicAlbumWiki = async (artist: string, album: string, apiKey: s
   return wikiContent
 }
 
-export type GameInfo = {
+export type GameData = {
   year: number
-  image: string
   price: number
+  image: string[]
+  howlongtobeat: number
   metacritic: number
-  hltb: number
   metacriticDataUrl: string
-  hltbDataUrl: string
+  howLongToBeatUrl: string
   dataUrl: string
 }
 
-export const getGameData = async (fileName: string, apiKey: string): Promise<GameInfo> => {
-  const prompt = `Return a JSON with the data for the game ${fileName}. A valid JSON stringified with just the JSON, no other text.
+export const getGameData = async (gameName: string, apiKey: string): Promise<GameData> => {
+  const system = `Eres un experto en videojuegos que maneja gran cantidad de información.
   
-  You should search in steam.com for the 'year' integer for the year of release, the 'price' float for the game price in euros without discounts. If the game is not listed in steam, look for other sources of information to get the year and price. Provide a dataUrl string with a link with the page of the store where you found the information.
+  Para la puntuación de los juegos solo te fias de metacritic.com y la das de 0 a 100. La devuelves como el número 'metacritic' y la URL de la página de metacritic como 'metacriticDataUrl'.
   
-  You should get 'image' string for the game cover in the best resolution you can find. If its an steam game, try to get the image from steam.com domain. If its not a steam game, try to get the image from upload.wikimedia.com domain. If both fails, try to get the image from howlongtobeat.com domain. Don't made up the strings, actually search for references to the URI. If all fails, return null, never return an string from any other domain.
+  Para la duración, solo te fias de howlongtobeat.com y la das en horas. La devuelves como el número 'howlongtobeat' y la URL de la página de howlongtobeat como 'howLongToBeatUrl'.
+  
+  Para las imágenes buscas varias URIs de imágenes del juego, al menos 10, y las das en un array de strings. La devuelves como el array 'image'. Prefieres imágenes que encuentras en cloudflare.
+  
+  Para el año de lanzamiento, buscas la información en la web y la das como el número 'year'.
+  
+  Para el precio, buscas la información en la web y la das como el número 'price' prefiriendo steam.com pero puedes dar otras páginas.
+  
+  Para la URL de la página del juego, prefieres buscar en steam.com, pero puedes dar otras página. Buscas la información en la web y la das como la string 'dataUrl'.
+  `
 
-  You should go to metacritic.com to get the 'metacritic' float for the users game score from 0 to 100. No other source is valid for the metacritic score. If you can find the score, just return null. Provide a metacriticDataUrl string with a link with the page of the store where you found the information.
-  
-  You should go to howlongtobeat.com to get the 'hltb' float for the game duration. Do not visit other webs, thats the only source of information you need for completion time. Provide a hltbDataUrl string with a link to the howlongtobat page where you found the information. Make sure the url points to the right game page, not any other game's page.
-    `
+  const content = `Informacion sobre el juego ${gameName} `
 
-  const result = await fetch('https://www.franbosquet.com/api/ask', {
+  const result = await fetch('https://www.franbosquet.com/api/ask/structured', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': apiKey,
     },
     body: JSON.stringify({
-      search: prompt,
+      content,
+      system,
+      mode: 'sonar',
+      schema: {
+        "year": "number",
+        "price": "float",
+        "image": "string[]",
+        "howlongtobeat": "number",
+        "metacritic": "number",
+        "metacriticDataUrl": "string",
+        "howLongToBeatUrl": "string",
+        "dataUrl": "string"
+      }
     }),
   })
 
-  if (result.status !== 200) {
-    console.error(result)
-    throw new Error('Error leyendo la API. Comprueba la consola para más detalles.')
-  }
-
-  const response = await result.json()
-
-  const jsonContent = response.data.choices[0].message.content
-
-  try {
-    const json = JSON.parse(jsonContent)
-
-    console.log(json)
-
-    if (json.error) {
-      throw new Error(json.error)
-    }
-
-    return json
-  } catch (error) {
-    console.error(error)
-    throw new Error(error instanceof Error ? error.message : 'Error parsing the JSON response. Comprueba la consola para más detalles.')
-  }
+  return result.json()
 }
