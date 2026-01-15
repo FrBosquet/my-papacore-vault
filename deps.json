@@ -86,9 +86,6 @@
     "Datacore/utils/habits.js": [
       "Datacore/components/habits/widget.jsx"
     ],
-    "Datacore/components/habits/habit-config.js": [
-      "Datacore/components/habits/widget.jsx"
-    ],
     "Datacore/utils/spotify.js": [
       "Datacore/components/music/add-album-modal.jsx"
     ],

@@ -1,4 +1,4 @@
-import { MarkdownPage } from '@blacksmithgu/datacore'
+import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import { useEffect, useState } from 'preact/hooks'
 import {
@@ -7,17 +7,22 @@ import {
 } from '../../hooks/markdown'
 import { classMerge } from '../../utils/classMerge'
 import { createFromTemplate, getDailyNoteDatetime } from '../../utils/files'
-import { calculateStreak, Streak } from '../../utils/habits'
+import { calculateStreak, type Streak } from '../../utils/habits'
 import { getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
-import { habitConfig } from './habit-config'
 
-const habitList = Object.entries(habitConfig)
-  .map(([key, value]) => ({
-    ...value,
-    key,
+const habitList = dc
+  .query(`@page and path("Habits")`)
+  .map(p => p as MarkdownPage)
+  .map((page) => ({
+    key: page.$name,
+    label: page.$frontmatter?.label?.value as string,
+    icon: page.$frontmatter?.icon?.value as string,
+    category: page.$frontmatter?.category?.value as string,
+    highlight: page.$frontmatter?.highlight?.value as boolean,
+    tooltip: ``,
   }))
   .sort((a, b) => a.key.localeCompare(b.key))
 
@@ -149,9 +154,12 @@ const getStreak = (notes: MarkdownPage[], targetDate: DateTime) => {
   })
 }
 
-const useStreak = (notes: MarkdownPage[], targetPath: string): Streak | null => {
+const useStreak = (
+  notes: MarkdownPage[],
+  targetPath: string
+): Streak | null => {
   const [streak, setStreak] = useState<Streak | null>(null)
-  
+
   useEffect(() => {
     const targetDate = getDailyNoteDatetime(targetPath)
 
@@ -170,8 +178,9 @@ const HabitToggle = ({
   targetPath: string
   faded?: boolean
 }) => {
-  const notes = dc
-    .useQuery<MarkdownPage>(`@page and path("Journal") and ${habit.key}`)
+  const notes = dc.useQuery<MarkdownPage>(
+    `@page and path("Journal") and ${habit.key}`
+  )
 
   const streak = useStreak(notes, targetPath)
 
@@ -204,21 +213,21 @@ const HabitToggle = ({
     }
   }, [togglePending, page])
 
-const renderStreak = () => {
-  if(!streak) return null
+  const renderStreak = () => {
+    if (!streak) return null
 
-  if (streak?.type === 'streak') {
-    if (streak?.days === 1) return null
+    if (streak?.type === 'streak') {
+      if (streak?.days === 1) return null
 
-    return `+${streak?.days}`
+      return `+${streak?.days}`
+    }
+
+    if (streak?.type === 'hiatus') {
+      return `${streak?.days} days`
+    }
+
+    return 'Never done'
   }
-
-  if (streak?.type === 'hiatus') {
-    return `${streak?.days} days`
-  }
-
-  return 'Never done'
-}
 
   return (
     <button
@@ -234,17 +243,20 @@ const renderStreak = () => {
         icon={isLoading ? 'loader' : habit.icon}
       />
       <span>{habit.label}</span>
-      {(
-        <div className={classMerge(
-          "absolute bottom-0 to-transparent bg-size-[100%_200%] bg-position-[50%_10px] bg-no-repeat uppercase text-xs font-semibold p-2 bg-radial h-6 w-full",
-          inStreak ? 'from-green-50 text-primary-900 text-base h-8 bg-position-[50%_8px]' : undefined,
-          inWarningHiatus ? 'from-yellow-700/20 text-yellow-400' : undefined,
-          inDangerHiatus ? 'from-red-700/20 text-red-400' : undefined,
-          
-          )}>
+      {
+        <div
+          className={classMerge(
+            'absolute bottom-0 to-transparent bg-size-[100%_200%] bg-position-[50%_10px] bg-no-repeat uppercase text-xs font-semibold p-2 bg-radial h-6 w-full',
+            inStreak
+              ? 'from-green-50 text-primary-900 text-base h-8 bg-position-[50%_8px]'
+              : undefined,
+            inWarningHiatus ? 'from-yellow-700/20 text-yellow-400' : undefined,
+            inDangerHiatus ? 'from-red-700/20 text-red-400' : undefined
+          )}
+        >
           {renderStreak()}
         </div>
-      )}
+      }
     </button>
   )
 }
