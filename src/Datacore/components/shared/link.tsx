@@ -1,8 +1,7 @@
 import type { ComponentChildren } from 'preact'
-import { useEffect, useRef } from 'preact/hooks'
 import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
-import { cleanPath } from '../../utils/files'
+import { getFile, getLeaf } from '../../utils/files'
 
 type Props = {
   path: string
@@ -14,38 +13,36 @@ type Props = {
   tooltip?: string
 }
 
-/**
- * @deprecated
- */
-export const Link = ({ path, children, icon, className, iconClassName, tooltip, wrapperClassName }: Props) => {
-  const pRef = useRef<HTMLParagraphElement>(null)
+export const Link = ({
+  path,
+  children,
+  icon,
+  className,
+  iconClassName,
+  tooltip,
+}: Props) => {
+  const handleClick = (e: MouseEvent) => {
+    const file = getFile(path)
+    if (!file) return
 
-  // Create a link to the file
-  const link = dc.fileLink(cleanPath(path)).withDisplay(
-    (
-      <div className={`flex items-center gap-2 ${className}`}>
-        {icon && <dc.Icon icon={icon} className={iconClassName} />}
-        {children}
-      </div>
-    ) as unknown as string
-  ) // Allows to pass a React element as a string
-
-  useEffect(() => {
-    const aRef = pRef.current?.querySelector('a')
-
-    if (tooltip && aRef) {
-      aRef.setAttribute('aria-label', tooltip)
-    }
-  }, [])
+    const isCtrlPressed = e.ctrlKey || e.metaKey
+    getLeaf(isCtrlPressed).openFile(file)
+  }
 
   return (
-    <span
-      ref={pRef}
-      className={classMerge("uppercase p-0 m-0 no-underline text-sm pc-link tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full", wrapperClassName)}
+    <a
+      onClick={handleClick}
+      className={classMerge(
+        'uppercase p-0 m-0 no-underline text-sm tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full flex items-center gap-2',
+        className
+      )}
+      href={path}
+      rel="noopener"
+      target="_blank"
+      aria-label={tooltip}
     >
-      <dc.Link
-        link={link}
-      />
-    </span>
+      {icon && <dc.Icon icon={icon} className={iconClassName} />}
+      {children}
+    </a>
   )
 }

@@ -57,7 +57,8 @@
       "Datacore/components/games/widget.jsx",
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/widget.jsx",
-      "Datacore/components/projects/widget.jsx"
+      "Datacore/components/projects/widget.jsx",
+      "Datacore/components/shared/widget.jsx"
     ],
     "Datacore/components/shared/scroller.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -186,6 +187,7 @@
       "Gaming Log/Games/GNorp Apologue.md",
       "Gaming Log/Games/GT4 Spec 2.md",
       "Gaming Log/Games/Galaxy on Fire 2.md",
+      "Gaming Log/Games/Hacknet.md",
       "Gaming Log/Games/Hades II.md",
       "Gaming Log/Games/Heavens Vault.md",
       "Gaming Log/Games/Hellblade Senuas Sacrifice.md",
@@ -207,6 +209,7 @@
       "Gaming Log/Games/Steamworld Heist 2.md",
       "Gaming Log/Games/Stories Untold.md",
       "Gaming Log/Games/Strange Horticulture.md",
+      "Gaming Log/Games/Super Wooden Rally Edge.md",
       "Gaming Log/Games/The Excavation of Hobs Barrow.md",
       "Gaming Log/Games/The Last Campfire.md",
       "Gaming Log/Games/The Operator.md",

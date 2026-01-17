@@ -63,7 +63,7 @@ const ProjectItem = ({ project }: { project: MarkdownPage }) => {
     <WidgetItem
       page={project}
       tooltip={project.$name}
-      className="h-6 text-primary-300 text-xs gap-0 tracking-normal"
+      className="h-6 text-primary-300 text-xs gap-2 tracking-normal"
     >
       <div>
         <p className="">{project.$name}</p>

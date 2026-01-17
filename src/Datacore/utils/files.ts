@@ -92,6 +92,10 @@ export const createFromTemplate = async (
   }
 }
 
+export const getLeaf = (active: boolean) => {
+  return dc.app.workspace.getLeaf(active)
+}
+
 export const getFile = (path: string) => {
   return dc.app.vault.getFileByPath(path)
 }
