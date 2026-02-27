@@ -49,6 +49,7 @@ export const Dialog = (props: Props) => {
         {triggerProps?.label ?? title ?? 'Open Dialog'}
       </Button>
       <dialog
+        className="pc-dialog"
         ref={dialogRef}
         onMouseDown={(e) => {
           // Track if mousedown happened on the overlay (dialog element itself)

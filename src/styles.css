@@ -72,7 +72,7 @@
   unicode-bidi: unset;
 }
 
-::backdrop {
+dialog.pc-dialog::backdrop {
   background-image: linear-gradient(
     45deg,
     var(--color-primary-950),
@@ -90,6 +90,40 @@
 
   .grid-cols-auto-fit {
     grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
+  }
+
+    /* Animated background for ongoing tasks */
+  .ongoing-task {
+    position: relative;
+    overflow: hidden;
+    background-color: color-mix(in srgb, var(--color-green) 10%, var(--color-base-05));
+  }
+
+  .ongoing-task::before {
+    pointer-events: none;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transform: skewX(-35deg);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--color-green) 20%, transparent),
+      transparent
+    );
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
   }
 }
 

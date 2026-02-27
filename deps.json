@@ -2,7 +2,10 @@
   "graph": {
     "Datacore/utils/time.js": [
       "Datacore/components/example/index.jsx",
-      "Datacore/components/habits/widget.jsx"
+      "Datacore/components/habits/widget.jsx",
+      "Datacore/components/tasks/task-row.jsx",
+      "Datacore/utils/tasks.js",
+      "Datacore/views/ProjectManager.jsx"
     ],
     "Datacore/components/example/counter.jsx": [
       "Datacore/components/example/index.jsx"
@@ -17,7 +20,10 @@
       "Datacore/components/music/utils.js",
       "Datacore/components/projects/widget.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/hooks/markdown.js"
+      "Datacore/components/tasks/task-row.jsx",
+      "Datacore/hooks/markdown.js",
+      "Datacore/utils/tasks.js",
+      "Datacore/views/ProjectManager.jsx"
     ],
     "Datacore/utils/perplexity.js": [
       "Datacore/components/games/get-game-modal.jsx",
@@ -30,6 +36,7 @@
       "Datacore/components/music/album-list.jsx",
       "Datacore/components/shared/button.stories.jsx",
       "Datacore/components/shared/dialog.jsx",
+      "Datacore/components/tasks/task-row.jsx",
       "Datacore/views/Music.jsx"
     ],
     "Datacore/components/shared/dialog.jsx": [
@@ -44,6 +51,7 @@
       "Datacore/components/music/album-item.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
+      "Datacore/components/tasks/task-row.jsx",
       "Datacore/hooks/markdown.js",
       "Datacore/utils/habits.js"
     ],
@@ -58,7 +66,8 @@
       "Datacore/components/habits/widget.jsx",
       "Datacore/components/music/widget.jsx",
       "Datacore/components/projects/widget.jsx",
-      "Datacore/components/shared/widget.jsx"
+      "Datacore/components/shared/widget.jsx",
+      "Datacore/components/tasks/task-row.jsx"
     ],
     "Datacore/components/shared/scroller.jsx": [
       "Datacore/components/games/widget.jsx",
@@ -80,9 +89,11 @@
       "Datacore/components/shared/anchor.jsx",
       "Datacore/components/shared/button.jsx",
       "Datacore/components/shared/class-variance-authority.js",
+      "Datacore/components/shared/context.jsx",
       "Datacore/components/shared/dialog.jsx",
       "Datacore/components/shared/link.jsx",
-      "Datacore/components/shared/widget.jsx"
+      "Datacore/components/shared/widget.jsx",
+      "Datacore/components/tasks/task-row.jsx"
     ],
     "Datacore/utils/habits.js": [
       "Datacore/components/habits/widget.jsx"
@@ -120,10 +131,19 @@
     ],
     "Datacore/components/shared/class-variance-authority.js": [
       "Datacore/components/shared/anchor.jsx",
-      "Datacore/components/shared/button.jsx"
+      "Datacore/components/shared/button.jsx",
+      "Datacore/components/shared/context.jsx",
+      "Datacore/components/shared/link.jsx"
     ],
     "Datacore/components/shared/image.jsx": [
       "Datacore/components/shared/widget.jsx"
+    ],
+    "Datacore/utils/tasks.js": [
+      "Datacore/components/tasks/task-row.jsx",
+      "Datacore/views/ProjectManager.jsx"
+    ],
+    "Datacore/components/shared/context.jsx": [
+      "Datacore/components/tasks/task-row.jsx"
     ],
     "Datacore/utils/ContentTransformer.js": [
       "Datacore/utils/files.js"
@@ -140,6 +160,9 @@
     "Datacore/components/music/song-viz.jsx": [
       "Datacore/views/Music.jsx"
     ],
+    "Datacore/components/tasks/task-row.jsx": [
+      "Datacore/views/ProjectManager.jsx"
+    ],
     "Datacore/components/games/widget.jsx": [
       "Datacore/views/Today.jsx"
     ],
@@ -155,78 +178,88 @@
   },
   "views": {
     "Datacore/views/GamePane.jsx": [
-      "Gaming Log/Games/13 Sentinels Aegis Rim.md",
-      "Gaming Log/Games/A short Hike.md",
-      "Gaming Log/Games/American Arcadia.md",
-      "Gaming Log/Games/Animal Well.md",
-      "Gaming Log/Games/Aria of Sorrow.md",
-      "Gaming Log/Games/Banquet for Fools.md",
-      "Gaming Log/Games/Blue Prince.md",
-      "Gaming Log/Games/Bookwalker.md",
-      "Gaming Log/Games/Caves of Qud.md",
-      "Gaming Log/Games/Chants of Senaar.md",
-      "Gaming Log/Games/Clam Man 2.md",
-      "Gaming Log/Games/Cosmic Wheel.md",
-      "Gaming Log/Games/Crisis Core Final Fantasy VII.md",
-      "Gaming Log/Games/Cyberpunk 2077.md",
-      "Gaming Log/Games/Darksiders 2.md",
-      "Gaming Log/Games/Dave the diver.md",
-      "Gaming Log/Games/Deliver at all Cost.md",
-      "Gaming Log/Games/Deus Ex Mankind Divided.md",
-      "Gaming Log/Games/Dyson Sphere Program.md",
-      "Gaming Log/Games/Echoes of the Eye.md",
-      "Gaming Log/Games/Everspace 2.md",
-      "Gaming Log/Games/Felvidek.md",
-      "Gaming Log/Games/Final Fantasy IX.md",
-      "Gaming Log/Games/Final Fantasy VI.md",
-      "Gaming Log/Games/Final Fantasy VII Remake.md",
-      "Gaming Log/Games/Final Fantasy X.md",
-      "Gaming Log/Games/Firewatch.md",
-      "Gaming Log/Games/Fortunes Run.md",
-      "Gaming Log/Games/Funeralopolis.md",
-      "Gaming Log/Games/GNorp Apologue.md",
-      "Gaming Log/Games/GT4 Spec 2.md",
-      "Gaming Log/Games/Galaxy on Fire 2.md",
-      "Gaming Log/Games/Hacknet.md",
-      "Gaming Log/Games/Hades II.md",
-      "Gaming Log/Games/Heavens Vault.md",
-      "Gaming Log/Games/Hellblade Senuas Sacrifice.md",
-      "Gaming Log/Games/Hope Town.md",
-      "Gaming Log/Games/Im Your Beast.md",
-      "Gaming Log/Games/Immortality.md",
-      "Gaming Log/Games/Inscryption.md",
-      "Gaming Log/Games/It Takes Two.md",
-      "Gaming Log/Games/Kingdom Come Deliverance II.md",
-      "Gaming Log/Games/Last day of June.md",
-      "Gaming Log/Games/Lies of P.md",
-      "Gaming Log/Games/Lorelei and the Laser eyes.md",
-      "Gaming Log/Games/Lunacid.md",
-      "Gaming Log/Games/Night Stones.md",
-      "Gaming Log/Games/No Case should remain unsolved.md",
-      "Gaming Log/Games/No Mans Sky.md",
-      "Gaming Log/Games/Panzer Dragon Saga.md",
-      "Gaming Log/Games/Skald Against the black priory.md",
-      "Gaming Log/Games/Steamworld Heist 2.md",
-      "Gaming Log/Games/Stories Untold.md",
-      "Gaming Log/Games/Strange Horticulture.md",
-      "Gaming Log/Games/Super Wooden Rally Edge.md",
-      "Gaming Log/Games/The Excavation of Hobs Barrow.md",
-      "Gaming Log/Games/The Last Campfire.md",
-      "Gaming Log/Games/The Operator.md",
-      "Gaming Log/Games/The Roottrees are Dead.md",
-      "Gaming Log/Games/The Unfinished Swan.md",
-      "Gaming Log/Games/The precinct.md",
-      "Gaming Log/Games/Titanfall 2.md",
-      "Gaming Log/Games/Turing Complete.md",
-      "Gaming Log/Games/Unicorn Overlord.md",
-      "Gaming Log/Games/Unpacking.md",
-      "Gaming Log/Games/Vagrant Story.md",
-      "Gaming Log/Games/Xenoblade Chronicles 3.md",
-      "Gaming Log/Games/Zelda Tears of the Kingdom.md",
+      "Gaming/Games/13 Sentinels Aegis Rim.md",
+      "Gaming/Games/A short Hike.md",
+      "Gaming/Games/American Arcadia.md",
+      "Gaming/Games/Animal Well.md",
+      "Gaming/Games/Aria of Sorrow.md",
+      "Gaming/Games/Ball x Pit.md",
+      "Gaming/Games/Banquet for Fools.md",
+      "Gaming/Games/Blue Prince.md",
+      "Gaming/Games/Bookwalker.md",
+      "Gaming/Games/Caves of Qud.md",
+      "Gaming/Games/Chants of Senaar.md",
+      "Gaming/Games/Clam Man 2.md",
+      "Gaming/Games/Cosmic Wheel.md",
+      "Gaming/Games/Crisis Core Final Fantasy VII.md",
+      "Gaming/Games/Cyberpunk 2077.md",
+      "Gaming/Games/Darksiders 2.md",
+      "Gaming/Games/Dave the diver.md",
+      "Gaming/Games/Deliver at all Cost.md",
+      "Gaming/Games/Deus Ex Mankind Divided.md",
+      "Gaming/Games/Dyson Sphere Program.md",
+      "Gaming/Games/Echoes of the Eye.md",
+      "Gaming/Games/Everspace 2.md",
+      "Gaming/Games/Felvidek.md",
+      "Gaming/Games/Final Fantasy IX.md",
+      "Gaming/Games/Final Fantasy VI.md",
+      "Gaming/Games/Final Fantasy VII Remake.md",
+      "Gaming/Games/Final Fantasy X.md",
+      "Gaming/Games/Firewatch.md",
+      "Gaming/Games/Fortunes Run.md",
+      "Gaming/Games/Funeralopolis.md",
+      "Gaming/Games/GNorp Apologue.md",
+      "Gaming/Games/GT4 Spec 2.md",
+      "Gaming/Games/Galaxy on Fire 2.md",
+      "Gaming/Games/Hacknet.md",
+      "Gaming/Games/Hades II.md",
+      "Gaming/Games/Heavens Vault.md",
+      "Gaming/Games/Hellblade Senuas Sacrifice.md",
+      "Gaming/Games/Hope Town.md",
+      "Gaming/Games/Im Your Beast.md",
+      "Gaming/Games/Immortality.md",
+      "Gaming/Games/Inscryption.md",
+      "Gaming/Games/It Takes Two.md",
+      "Gaming/Games/Kaizen.md",
+      "Gaming/Games/Kingdom Come Deliverance II.md",
+      "Gaming/Games/Last day of June.md",
+      "Gaming/Games/Lies of P.md",
+      "Gaming/Games/Lorelei and the Laser eyes.md",
+      "Gaming/Games/Lunacid.md",
+      "Gaming/Games/Night Stones.md",
+      "Gaming/Games/No Case should remain unsolved.md",
+      "Gaming/Games/No Mans Sky.md",
+      "Gaming/Games/Owlboy.md",
+      "Gaming/Games/Panzer Dragon Saga.md",
+      "Gaming/Games/Puzzle Quest.md",
+      "Gaming/Games/Skald Against the black priory.md",
+      "Gaming/Games/Sovereign Syndicate.md",
+      "Gaming/Games/Steamworld Heist 2.md",
+      "Gaming/Games/Stories Untold.md",
+      "Gaming/Games/Strange Horticulture.md",
+      "Gaming/Games/Super Wooden Rally Edge.md",
+      "Gaming/Games/The Excavation of Hobs Barrow.md",
+      "Gaming/Games/The Last Campfire.md",
+      "Gaming/Games/The Operator.md",
+      "Gaming/Games/The Roottrees are Dead.md",
+      "Gaming/Games/The Unfinished Swan.md",
+      "Gaming/Games/The precinct.md",
+      "Gaming/Games/Titanfall 2.md",
+      "Gaming/Games/Turing Complete.md",
+      "Gaming/Games/Unicorn Overlord.md",
+      "Gaming/Games/Unpacking.md",
+      "Gaming/Games/Vagrant Story.md",
+      "Gaming/Games/Xenoblade Chronicles 3.md",
+      "Gaming/Games/Zelda Tears of the Kingdom.md",
       "Templates/game.md"
     ],
     "Datacore/views/Music.jsx": [
       "Music/Hub.md"
+    ],
+    "Datacore/views/ProjectManager.jsx": [
+      "Projects/Obsidian Brain.md",
+      "Projects/VP Fran Bosquet.md",
+      "Projects/cristinadevaux.com.md"
     ],
     "Datacore/views/TestView.jsx": [],
     "Datacore/views/Today.jsx": [

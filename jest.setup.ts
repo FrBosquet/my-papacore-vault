@@ -31,6 +31,9 @@ const mockCoerceDate = (input: string | Date | number): DateTime | null => {
 // Using Object.assign to avoid TypeScript conflicts with the global type declaration
 Object.assign(globalThis, {
   dc: {
+    luxon: {
+      DateTime
+    },
     coerce: {
       date: mockCoerceDate,
     },

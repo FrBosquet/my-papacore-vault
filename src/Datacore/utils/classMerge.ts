@@ -1,4 +1,6 @@
-export const classMerge = (...classNames: Array<string | undefined>): string => {
+export const classMerge = (
+  ...classNames: Array<string | undefined | false | null>
+): string => {
   /**
    * This utility aims to be able to merge classNames to avoid type collisions
    * so if we have a first argument `h-4 w-auto` and a second argument `h-6`, we need to detect the common root and replace the h-4 with the h-6.
@@ -47,10 +49,13 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
     if ('border' === className) return '@core-border'
     if ('bg-no-repeat' === className) return '@core-bg-no-repeat'
 
-    if (['flex', 'block', 'inline', 'inline-flex'].includes(className)) return 'display-'
+    if (['flex', 'block', 'inline', 'inline-flex'].includes(className))
+      return 'display-'
 
     // Position utilities should all conflict with each other
-    if (['absolute', 'relative', 'fixed', 'sticky', 'static'].includes(className)) {
+    if (
+      ['absolute', 'relative', 'fixed', 'sticky', 'static'].includes(className)
+    ) {
       return 'position-'
     }
 
@@ -64,11 +69,27 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
       const second = parts[1]
 
       // Size classes
-      const sizes = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl', '8xl', '9xl']
+      const sizes = [
+        'xs',
+        'sm',
+        'base',
+        'lg',
+        'xl',
+        '2xl',
+        '3xl',
+        '4xl',
+        '5xl',
+        '6xl',
+        '7xl',
+        '8xl',
+        '9xl',
+      ]
       if (sizes.includes(second)) return 'text-size-'
 
       // Alignment classes
-      if (['left', 'center', 'right', 'justify', 'start', 'end'].includes(second)) {
+      if (
+        ['left', 'center', 'right', 'justify', 'start', 'end'].includes(second)
+      ) {
         return 'text-align-'
       }
 
@@ -78,7 +99,11 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
       }
 
       // Wrap/nowrap/truncate
-      if (['wrap', 'nowrap', 'balance', 'pretty', 'ellipsis', 'clip'].includes(second)) {
+      if (
+        ['wrap', 'nowrap', 'balance', 'pretty', 'ellipsis', 'clip'].includes(
+          second
+        )
+      ) {
         return 'text-wrap-'
       }
 
@@ -102,13 +127,13 @@ export const classMerge = (...classNames: Array<string | undefined>): string => 
   const classMap = new Map<string, string>()
 
   // Add first classes to the map
-  firstClasses.forEach(cls => {
+  firstClasses.forEach((cls) => {
     const key = getConflictKey(cls)
     classMap.set(key, cls)
   })
 
   // Override with second classes (later wins)
-  secondClasses.forEach(cls => {
+  secondClasses.forEach((cls) => {
     const key = getConflictKey(cls)
     classMap.set(key, cls)
 

@@ -1,4 +1,5 @@
 import type { DateTime } from 'luxon'
+import { PaneType } from 'obsidian'
 import { ContentTransformer } from './ContentTransformer'
 
 export const getPage = (path: string) => {
@@ -88,12 +89,14 @@ export const createFromTemplate = async (
       throw error
     }
   } else {
-    alert(`El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`)
+    alert(
+      `El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`
+    )
   }
 }
 
-export const getLeaf = (active: boolean) => {
-  return dc.app.workspace.getLeaf(active)
+export const getLeaf = (newLeaf: PaneType | boolean) => {
+  return dc.app.workspace.getLeaf(newLeaf)
 }
 
 export const getFile = (path: string) => {

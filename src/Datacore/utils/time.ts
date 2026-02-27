@@ -20,3 +20,7 @@ export const fromStringToDate = (dateString: string) => {
     parseInt(day, 10)
   )
 }
+
+export const getWeekTag = (datetime: DateTime): `${number}-W${string}` => {
+  return `${datetime.year}-W${datetime.weekNumber.toString().padStart(2, '0')}`
+}

@@ -1,7 +1,10 @@
 import type { MarkdownListItem, MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import { getDailyNoteDatetime } from '../../utils/files'
-import { cleanAnnotationFromLinks, getFrontmatterValue } from '../../utils/markdown'
+import {
+  cleanAnnotationFromLinks,
+  getFrontmatterValue,
+} from '../../utils/markdown'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
@@ -9,7 +12,7 @@ import { WidgetItem } from '../shared/widget'
 
 export const GameWidget = () => {
   const games = dc.useQuery<MarkdownPage>(
-    `@page AND path("Gaming Log/Games") AND start AND !end`
+    `@page AND path("Gaming/Games") AND start AND !end`
   )
 
   return (
@@ -17,7 +20,7 @@ export const GameWidget = () => {
       <Link path="Gaming Log/Games.base" icon="gamepad-2">
         Playing
       </Link>
-      <Scroller className='h-30' wrapperClassName='gap-2'>
+      <Scroller className="h-30" wrapperClassName="gap-2">
         {games.map((game) => (
           <GameItem key={game.$path} game={game} />
         ))}
@@ -38,12 +41,17 @@ const GameItem = ({ game }: { game: MarkdownPage }) => {
   )
   const lastAnnotation = annotations[annotations.length - 1]
 
-  const annotationDay = getDailyNoteDatetime(lastAnnotation.$file)
-  const daysSinceLastAnnotation = Math.floor(
-    -annotationDay.diffNow().as('days')
-  )
+  const annotationDay = lastAnnotation
+    ? getDailyNoteDatetime(lastAnnotation.$file)
+    : null
+  const daysSinceLastAnnotation = annotationDay
+    ? Math.floor(-annotationDay.diffNow().as('days'))
+    : 0
 
-  const lastAnnotationText = lastAnnotation.$text && cleanAnnotationFromLinks(lastAnnotation.$text)
+  const lastAnnotationText = lastAnnotation
+    ? cleanAnnotationFromLinks(lastAnnotation?.$text ?? '')
+    : 'Nunca anotado'
+
   const lastAnnotationLabel =
     daysSinceLastAnnotation === 0
       ? 'hoy'
@@ -52,11 +60,7 @@ const GameItem = ({ game }: { game: MarkdownPage }) => {
         : `hace ${daysSinceLastAnnotation} dias`
 
   return (
-    <WidgetItem
-      key={game.$id}
-      page={game}
-      tooltip={lastAnnotationText}
-    >
+    <WidgetItem key={game.$id} page={game} tooltip={lastAnnotationText}>
       <span className="normal-case text-primary-300 transition group-hover:text-primary-800">
         {game.$name}
       </span>
@@ -72,4 +76,3 @@ const GameItem = ({ game }: { game: MarkdownPage }) => {
     </WidgetItem>
   )
 }
-
