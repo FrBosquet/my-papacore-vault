@@ -17,12 +17,17 @@ declare global {
    * Global dc object - the Datacore Local API
    */
   const dc: DatacoreLocalApi & {
-    useQuery<T = Indexable>(query: string, settings?: { debounce?: number }): Array<Indexable & T>
+    useQuery<T = Indexable>(
+      query: string,
+      settings?: { debounce?: number }
+    ): Array<Indexable & T>
+    query<T = Indexable>(query: string): Array<Indexable & T> | undefined
   }
 
   namespace JSX {
     interface Element extends PreactJSX.Element {}
     interface IntrinsicElements extends PreactJSX.IntrinsicElements {}
-    interface ElementChildrenAttribute extends PreactJSX.ElementChildrenAttribute {}
+    interface ElementChildrenAttribute
+      extends PreactJSX.ElementChildrenAttribute {}
   }
 }

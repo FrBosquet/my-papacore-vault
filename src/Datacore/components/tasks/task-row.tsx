@@ -1,5 +1,6 @@
 import type { Link as LinkType, MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
+import { ComponentChildren } from 'preact'
 import { classMerge } from '../../utils/classMerge'
 import {
   createFromTemplate,
@@ -17,7 +18,6 @@ import {
   getTaskWeekTagFromDate,
   getWeekFromTag,
   getWeekFromTags,
-  getYearFromTag,
   moveToArchive,
   moveToDone,
   moveToOngoing,
@@ -49,20 +49,28 @@ const WeekBadge = ({
   weekTag?: WeekTag
   updater: Updater
 }) => {
-  const hasWeek = !!weekTag
+  const currentWeekTag = getWeekFromTags(task)
+
+  const hasWeek = !!currentWeekTag
 
   if (hasWeek) {
-    const currentWeekTag = getWeekFromTags(task)
     const nextWeekTag = getTaskWeekTagFromDate(
       getTodayDatetime().plus({ weeks: 1 })
     )
-    const weekPath = getPathFromTag(weekTag)
-    const weekYear = getYearFromTag(weekTag)
-    const week = getWeekFromTag(weekTag)
+    const weekPath = getPathFromTag(currentWeekTag)
+    const week = getWeekFromTag(currentWeekTag)
 
     const options: ContextOption[] = [
       {
-        icon: 'square-kanban',
+        icon: 'kanban',
+        label: 'Panel Kanban',
+        action: () => {
+          const file = getFile('Kanban/Board.md')
+          if (file) getLeaf(false).openFile(file)
+        },
+      },
+      {
+        icon: 'folder-kanban',
         label: 'Ver proyecto',
         action: () => {
           const project = getFrontmatterValue<LinkType>(task, 'parent')
@@ -138,6 +146,36 @@ const WeekBadge = ({
   )
 }
 
+const Badge = ({
+  children,
+  className,
+}: {
+  children: ComponentChildren
+  className?: string
+}) => {
+  return (
+    <span
+      className={classMerge(
+        'flex items-center gap-1 text-[0.45rem] leading-none px-1 py-0.5 rounded-full font-semibold uppercase whitespace-nowrap bg-theme-contrast',
+        className
+      )}
+    >
+      {children}
+    </span>
+  )
+}
+
+const ProjectBadge = ({ project }: { project: MarkdownPage }) => {
+  return (
+    <Link
+      path={project.$path}
+      className="bg-contrast-400 text-contrast-950 hover:bg-contrast-500 flex items-center gap-1 text-[0.45rem] leading-none px-1 py-0.5 rounded-full font-semibold uppercase whitespace-nowrap w-auto grow-0"
+    >
+      {project.$name}
+    </Link>
+  )
+}
+
 const DueBadge = ({ due }: { due?: DateTime }) => {
   if (!due) return null
 
@@ -156,15 +194,10 @@ const DueBadge = ({ due }: { due?: DateTime }) => {
     daysLeft === 0 ? 'Hoy' : daysLeft === 1 ? 'Mañana' : `En ${daysLeft} dias`
 
   return (
-    <span
-      className={classMerge(
-        'flex items-center gap-1 text-[0.45rem] leading-none px-1 py-0.5 rounded-full font-semibold uppercase whitespace-nowrap',
-        colorClass
-      )}
-    >
+    <Badge className={colorClass}>
       <dc.Icon icon="clock" className="size-2" />
       {label}
-    </span>
+    </Badge>
   )
 }
 
@@ -270,10 +303,20 @@ export const TaskRow = ({
   task: MarkdownPage
   targetWeek?: DateTime
 }) => {
-  const weekTag = getWeekFromTags(task)
   const due = getFrontmatterValue<DateTime>(task, 'due')
   const done = getFrontmatterValue<DateTime>(task, 'done')
   const status = getFrontmatterValue<string>(task, 'status')
+  const parent = task.value('parent')
+
+  const project = dc.useMemo(() => {
+    if (!parent || typeof parent !== 'object' || !('path' in parent))
+      return undefined
+
+    return dc.query<MarkdownPage>(`
+      @page AND $path = "${parent.path}"
+    `)?.[0]
+  }, [parent])
+
   const archived = status === 'archive'
   const target = dc.useMemo(() => {
     const candidate = targetWeek ?? getTodayDatetime()
@@ -324,7 +367,11 @@ export const TaskRow = ({
         isOngoing && 'ongoing-task'
       )}
     >
-      <WeekBadge task={task} weekTag={weekTag} updater={handleUpdateTask} />
+      <WeekBadge
+        task={task}
+        weekTag={targetWeekTag}
+        updater={handleUpdateTask}
+      />
       <section className="flex-1">
         <div className="flex items-center gap-2">
           <p
@@ -337,6 +384,7 @@ export const TaskRow = ({
               ? `Completado ${done.toLocaleString()}`
               : `Actualizado ${task.$mtime.toLocaleString()}`}
           </p>
+          {project && <ProjectBadge project={project} />}
           {!done && <DueBadge due={due} />}
         </div>
         <p

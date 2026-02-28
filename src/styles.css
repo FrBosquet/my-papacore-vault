@@ -46,6 +46,18 @@
   --color-theme-contrast-hover: color-mix(in srgb, var(--color-theme-contrast) 80%, white);
   --color-theme-contrast-disabled: color-mix(in srgb, var(--color-theme-contrast) 80%, black);
 
+  --color-contrast-50: #f6f3ff;
+  --color-contrast-100: #efeafd;
+  --color-contrast-200: #e2d7fd;
+  --color-contrast-300: #ccb8fa;
+  --color-contrast-400: #bb9af7;
+  --color-contrast-500: #9c61f1;
+  --color-contrast-600: #8f40e7;
+  --color-contrast-700: #7f2ed3;
+  --color-contrast-800: #6a26b1;
+  --color-contrast-900: #582191;
+  --color-contrast-950: #371362;
+
   /* Custom font sizes */
   --text-2xs: 0.5rem;
   --text-xs: 0.60rem;

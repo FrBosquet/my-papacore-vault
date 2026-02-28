@@ -22,8 +22,7 @@
       "Datacore/components/shared/widget.jsx",
       "Datacore/components/tasks/task-row.jsx",
       "Datacore/hooks/markdown.js",
-      "Datacore/utils/tasks.js",
-      "Datacore/views/ProjectManager.jsx"
+      "Datacore/utils/tasks.js"
     ],
     "Datacore/utils/perplexity.js": [
       "Datacore/components/games/get-game-modal.jsx",
@@ -140,7 +139,8 @@
     ],
     "Datacore/utils/tasks.js": [
       "Datacore/components/tasks/task-row.jsx",
-      "Datacore/views/ProjectManager.jsx"
+      "Datacore/views/ProjectManager.jsx",
+      "Datacore/views/WeekManager.jsx"
     ],
     "Datacore/components/shared/context.jsx": [
       "Datacore/components/tasks/task-row.jsx"
@@ -161,7 +161,9 @@
       "Datacore/views/Music.jsx"
     ],
     "Datacore/components/tasks/task-row.jsx": [
-      "Datacore/views/ProjectManager.jsx"
+      "Datacore/views/ProjectManager.jsx",
+      "Datacore/views/TaskManager.jsx",
+      "Datacore/views/WeekManager.jsx"
     ],
     "Datacore/components/games/widget.jsx": [
       "Datacore/views/Today.jsx"
@@ -257,13 +259,48 @@
       "Music/Hub.md"
     ],
     "Datacore/views/ProjectManager.jsx": [
+      "Projects/DD Interviewing.md",
+      "Projects/DD enablement.md",
+      "Projects/DataDog AQFS.md",
+      "Projects/Expentrac.md",
+      "Projects/Marc.md",
       "Projects/Obsidian Brain.md",
+      "Projects/ThreeJS Journey.md",
       "Projects/VP Fran Bosquet.md",
-      "Projects/cristinadevaux.com.md"
+      "Projects/Wanthat.md",
+      "Projects/cristinadevaux.com.md",
+      "Projects/franbosquet.com.md",
+      "Templates/project.md"
+    ],
+    "Datacore/views/TaskManager.jsx": [
+      "Kanban/Tasks/Mejorar Week Manager.md"
     ],
     "Datacore/views/TestView.jsx": [],
     "Datacore/views/Today.jsx": [
       "TODAY.md"
+    ],
+    "Datacore/views/WeekManager.jsx": [
+      "Templates/week.md",
+      "Weeks/2025/2025 Week 39.md",
+      "Weeks/2025/2025 Week 40.md",
+      "Weeks/2025/2025 Week 41.md",
+      "Weeks/2025/2025 Week 42.md",
+      "Weeks/2025/2025 Week 43.md",
+      "Weeks/2025/2025 Week 44.md",
+      "Weeks/2025/2025 Week 45.md",
+      "Weeks/2025/2025 Week 46.md",
+      "Weeks/2025/2025 Week 47.md",
+      "Weeks/2025/2025 Week 48.md",
+      "Weeks/2025/2025 Week 49.md",
+      "Weeks/2025/2025 Week 50.md",
+      "Weeks/2025/2025 Week 52.md",
+      "Weeks/2025/2025 Week 53.md",
+      "Weeks/2026/2026 Week 1.md",
+      "Weeks/2026/2026 Week 2.md",
+      "Weeks/2026/2026 Week 3.md",
+      "Weeks/2026/2026 Week 4.md",
+      "Weeks/2026/2026 Week 8.md",
+      "Weeks/2026/2026 Week 9.md"
     ]
   }
 }

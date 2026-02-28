@@ -110,7 +110,11 @@ export const ContextMenu = ({
                   key={option.label}
                   type="button"
                   className="appearance-none shadow-none bg-transparent border-none rounded-none flex justify-start items-center gap-3 px-3 py-2 text-sm text-primary-200 hover:bg-primary-800 hover:text-theme-accent cursor-pointer transition-colors w-full"
-                  onClick={() => handleOptionClick(option.action)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleOptionClick(option.action)
+                  }}
                 >
                   <dc.Icon icon={option.icon} className="size-4" />
                   <span>{option.label}</span>

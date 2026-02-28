@@ -2,7 +2,10 @@ import { DateTime } from 'luxon'
 import {
   getDateFromWeekTag,
   getDateFromYearAndWeek,
+  getFileNameFromTag,
   getLastDayOfWeektag,
+  getPathFromTag,
+  getTagFromFileName,
   getTaskWeekTagFromDate,
   isWeekTag,
 } from './tasks'
@@ -58,6 +61,21 @@ describe('tasks utils', () => {
       expect(date).toHaveProperty('weekYear', 2026)
       expect(date).toHaveProperty('weekNumber', 8)
       expect(date).toHaveProperty('weekday', 7)
+    })
+
+    it('should compose the filename from the tag', () => {
+      const fileName = getFileNameFromTag('2026-W08')
+      expect(fileName).toBe('2026 Week 8')
+    })
+
+    it('should compose the file path from the tag', () => {
+      const path = getPathFromTag('2026-W08')
+      expect(path).toBe('Weeks/2026/2026 Week 8.md')
+    })
+
+    it('should compose the tag from the file name', () => {
+      const tag = getTagFromFileName('2026 Week 8.md')
+      expect(tag).toBe('2026-W08')
     })
   })
 })
