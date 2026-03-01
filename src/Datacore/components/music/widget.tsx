@@ -39,7 +39,7 @@ export const MusicWidget = () => {
 
   return (
     <Card>
-      <Link path="Music/Hub" icon="disc-3" iconClassName="animate-spin">
+      <Link path="Music/Hub.md" icon="disc-3" iconClassName="animate-spin">
         Listening
       </Link>
       <Scroller className="max-h-30" wrapperClassName="gap-2">
@@ -50,5 +50,3 @@ export const MusicWidget = () => {
     </Card>
   )
 }
-
-

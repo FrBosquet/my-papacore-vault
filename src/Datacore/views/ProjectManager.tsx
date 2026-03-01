@@ -1,5 +1,8 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { Button } from '../components/shared/button'
+import { Card } from '../components/shared/card'
 import { TaskRow } from '../components/tasks/task-row'
+import { createFromTemplate } from '../utils/files'
 import {
   getTasksByMoment,
   getTaskWeekTagFromDate,
@@ -9,6 +12,21 @@ import { getTodayDatetime } from '../utils/time'
 
 export const ProjectManager = () => {
   const thisProject = dc.useCurrentFile()
+
+  const handleAddTask = async (e: Event) => {
+    e.preventDefault()
+    const target = e.currentTarget as HTMLFormElement
+    const formData = new FormData(target)
+    const task = formData.get('task') as string
+
+    await createFromTemplate(`Kanban/Tasks/${task}.md`, 'task', (content) => {
+      content.setFrontmatter('parent', `"${thisProject.$link.toString()}"`)
+      content.setFrontmatter('status', 'backlog')
+      return content
+    })
+
+    target.reset()
+  }
 
   const subtasks = dc.useQuery<MarkdownPage>(`
     @file AND path("Kanban/Tasks") AND parent = [[${thisProject.$name}]]
@@ -20,21 +38,34 @@ export const ProjectManager = () => {
   )
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2>Project Manager</h2>
-
+    <Card>
       {present.length > 0 && (
         <>
-          <h3>This week tasks: ({present.length})</h3>
+          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+            This week tasks: ({present.length})
+          </h3>
           {present.sort(taskSorter).map((subtask) => (
             <TaskRow key={subtask.$id} task={subtask} />
           ))}
         </>
       )}
 
+      <form className="flex gap-2 w-full" onSubmit={handleAddTask}>
+        <input
+          type="text"
+          name="task"
+          placeholder="Add a task"
+          className="flex-1 rounded-none"
+        />
+        <Button type="submit" iconRight="plus">
+          Add
+        </Button>
+      </form>
       {carryOver.length > 0 && (
         <>
-          <h3>Carry over tasks: ({carryOver.length})</h3>
+          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+            Carry over tasks: ({carryOver.length})
+          </h3>
           {carryOver.sort(taskSorter).map((subtask) => (
             <TaskRow key={subtask.$id} task={subtask} />
           ))}
@@ -43,7 +74,9 @@ export const ProjectManager = () => {
 
       {nonWeek.length > 0 && (
         <>
-          <h3>Pending tasks: ({nonWeek.length})</h3>
+          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+            Pending tasks: ({nonWeek.length})
+          </h3>
           {nonWeek.sort(taskSorter).map((subtask) => (
             <TaskRow key={subtask.$id} task={subtask} />
           ))}
@@ -52,7 +85,9 @@ export const ProjectManager = () => {
 
       {future.length > 0 && (
         <>
-          <h3>Future tasks: ({future.length})</h3>
+          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+            Future tasks: ({future.length})
+          </h3>
           {future.sort(taskSorter).map((subtask) => (
             <TaskRow key={subtask.$id} task={subtask} />
           ))}
@@ -61,12 +96,14 @@ export const ProjectManager = () => {
 
       {past.length > 0 && (
         <>
-          <h3>Past tasks: ({past.length})</h3>
+          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+            Past tasks: ({past.length})
+          </h3>
           {past.sort(taskSorter).map((subtask) => (
             <TaskRow key={subtask.$id} task={subtask} />
           ))}
         </>
       )}
-    </div>
+    </Card>
   )
 }

@@ -17,7 +17,7 @@ export const GameWidget = () => {
 
   return (
     <Card>
-      <Link path="Gaming Log/Games.base" icon="gamepad-2">
+      <Link path="Gaming/Games.base" icon="gamepad-2">
         Playing
       </Link>
       <Scroller className="h-30" wrapperClassName="gap-2">
