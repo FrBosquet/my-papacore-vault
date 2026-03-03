@@ -15,7 +15,8 @@ import { Link } from '../shared/link'
 
 const habitList = dc
   .query(`@page and path("Habits")`)
-  .map(p => p as MarkdownPage)
+  .map((p) => p as MarkdownPage)
+  .filter((p) => p.value('paused') !== true)
   .map((page) => ({
     key: page.$name,
     label: page.$frontmatter?.label?.value as string,
@@ -188,23 +189,32 @@ const HabitToggle = ({
   const notes = dc.useQuery<MarkdownPage>(
     `@page and path("Journal") and ${habit.key}`
   )
-  
-  const tooltipDescriptor = dc.useQuery<MarkdownSection>(`@section and $title="Tooltip" and $file="Habits/${habit.key}.md"`)
+
+  const tooltipDescriptor = dc.useQuery<MarkdownSection>(
+    `@section and $title="Tooltip" and $file="Habits/${habit.key}.md"`
+  )
 
   const loadTooltipContent = async () => {
-    if( !tooltipDescriptor[0]?.$position ) return
+    if (!tooltipDescriptor[0]?.$position) return
 
     const position = tooltipDescriptor[0]?.$position
 
-    const fileContent = await getFileContent(tooltipDescriptor[0]?.$file as string)
-    if( !fileContent ) return
+    const fileContent = await getFileContent(
+      tooltipDescriptor[0]?.$file as string
+    )
+    if (!fileContent) return
 
     const lines = fileContent.split('\n')
-    const tooltipLines = lines.splice(position.start + 1, position.end - position.start)
+    const tooltipLines = lines.splice(
+      position.start + 1,
+      position.end - position.start
+    )
     setTooltipContent(tooltipLines.join('\n'))
   }
 
-  useEffect(() => { loadTooltipContent() }, [tooltipDescriptor])
+  useEffect(() => {
+    loadTooltipContent()
+  }, [tooltipDescriptor])
 
   const streak = useStreak(notes, targetPath)
 
