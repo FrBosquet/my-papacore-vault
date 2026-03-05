@@ -389,7 +389,8 @@ export const TaskRow = ({
         </div>
         <p
           className={classMerge(
-            isOngoing ? 'text-primary-300' : 'text-primary-400',
+            isOngoing ? 'text-primary-100' : 'text-primary-300',
+            done && 'text-green-600',
             archived && 'line-through text-primary-600'
           )}
         >

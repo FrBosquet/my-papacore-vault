@@ -13,29 +13,38 @@ import { Button } from '../shared/button'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 
-const habitList = dc
-  .query(`@page and path("Habits")`)
-  .map((p) => p as MarkdownPage)
-  .filter((p) => p.value('paused') !== true)
-  .map((page) => ({
-    key: page.$name,
-    label: page.$frontmatter?.label?.value as string,
-    icon: page.$frontmatter?.icon?.value as string,
-    category: page.$frontmatter?.category?.value as string,
-    highlight: page.$frontmatter?.highlight?.value as boolean,
-    tooltip: ``,
-  }))
-  .sort((a, b) => a.key.localeCompare(b.key))
+type Habit = {
+  key: string
+  label: string
+  icon: string
+  category: string
+  highlight: boolean
+  tooltip: string
+  skipon: number[]
+}
 
-const dailyHabitList = habitList.filter(
-  (habit) => habit.category === 'personal'
-)
-
-const workHabitList = habitList.filter((habit) => habit.category === 'work')
-
-type Habit = (typeof habitList)[number]
+const CATEGORIES_ORDER = ['trabajo', 'mañana', 'tarde', 'noche']
 
 export const HabitWidget = () => {
+  const habitList = dc
+    .useQuery<MarkdownPage>(`@page and path("Habits")`)
+    .filter((p) => p.value('paused') !== true)
+    .map(
+      (page): Habit => ({
+        key: page.$name,
+        label: page.value('label') as string,
+        icon: page.value('icon') as string,
+        category: page.value('category') as string,
+        highlight: page.value('highlight') as boolean,
+        tooltip: ``,
+        skipon: (() => {
+          const skipon = page.value('skipon')
+          return skipon != null ? (skipon as string).split(',').map(Number) : []
+        })(),
+      })
+    )
+    .sort((a, b) => a.key.localeCompare(b.key))
+
   const [isLoading, setIsLoading] = useState(false)
   const [td, setTd] = useFrontmatterState<DateTime>('target-date')
 
@@ -46,15 +55,14 @@ export const HabitWidget = () => {
   const today = getTodayDatetime()
   const targetDate = td ?? today
   const isToday = targetDate.toISODate() === today.toISODate()
-
   const weekNumber = targetDate.weekNumber
+  const weekday = targetDate.weekday
   const localWeekday = targetDate.weekdayLong
   const localDay = targetDate.day
   const monthNumber = targetDate.month
   const localMonth = targetDate.monthLong
   const localYear = targetDate.year
   const relativeCal = targetDate.toRelativeCalendar()
-  const isWeekend = targetDate.isWeekend
 
   const path = `Journal/${localYear}-${monthNumber.toString().padStart(2, '0')}-${localDay.toString().padStart(2, '0')}.md`
 
@@ -87,6 +95,34 @@ export const HabitWidget = () => {
     setTd(undefined)
   }
 
+  const filteredHabits = habitList.filter(
+    (habit) => !habit.skipon.includes(weekday)
+  )
+  const byCategory = Object.entries(
+    filteredHabits.reduce(
+      (acc, habit) => {
+        const category = habit.category ?? 'default'
+
+        if (!acc[category]) {
+          acc[category] = []
+        }
+
+        acc[category].push(habit)
+        return acc
+      },
+      {} as Record<string, Habit[]>
+    )
+  ).sort((a, b) => {
+    const aIndex = CATEGORIES_ORDER.indexOf(a[0])
+    const bIndex = CATEGORIES_ORDER.indexOf(b[0])
+
+    if (aIndex === bIndex) {
+      return a[0].localeCompare(b[0])
+    }
+
+    return aIndex - bIndex
+  })
+
   return (
     <Card>
       <Link icon="shell" path="TODAY.md">
@@ -98,9 +134,7 @@ export const HabitWidget = () => {
         <Link path={path}>{dateLabel}</Link>
       </section>
       <header className="flex gap-1 w-full justify-end item">
-        <div className="flex items-center flex-1">
-          <p className="text-xs uppercase font-semibold">Diarios:</p>
-        </div>
+        <div className="flex items-center flex-1" />
         <div className="flex items-center pr-1">
           <p className="text-xs capitalize">{`${relativeCal}, W${weekNumber}`}</p>
         </div>
@@ -134,14 +168,17 @@ export const HabitWidget = () => {
 
       {/* Habits */}
       <section className="grid grid-cols-auto-4 gap-2">
-        {dailyHabitList.map((habit) => (
-          <HabitToggle habit={habit} targetPath={path} />
-        ))}
-        <p className="col-start-1 -col-end-1 text-xs uppercase font-semibold">
-          Trabajo:
-        </p>
-        {workHabitList.map((habit) => (
-          <HabitToggle habit={habit} targetPath={path} faded={isWeekend} />
+        {byCategory.map(([category, habits]) => (
+          <>
+            {category !== 'default' && (
+              <p className="text-xs uppercase font-semibold col-span-full">
+                {category.replace('_', ' ')}
+              </p>
+            )}
+            {habits.map((habit) => (
+              <HabitToggle habit={habit} targetPath={path} />
+            ))}
+          </>
         ))}
       </section>
     </Card>
@@ -272,10 +309,14 @@ const HabitToggle = ({
       onClick={handleClick}
       className="aspect-square flex-col flex items-center justify-center h-auto text-xs gap-2 cursor-pointer data-[is-done=true]:bg-theme-accent data-[is-done=true]:text-primary-950 rounded-none border-none bg-primary-900 shadow-none data-[faded=true]:opacity-50 relative"
     >
-      <dc.Icon
-        className={isLoading ? 'animate-spin' : ''}
-        icon={isLoading ? 'loader' : habit.icon}
-      />
+      {habit.icon ? (
+        <dc.Icon
+          className={isLoading ? 'animate-spin' : ''}
+          icon={isLoading ? 'loader' : habit.icon}
+        />
+      ) : (
+        habit.key
+      )}
       <span>{habit.label}</span>
       {
         <div
