@@ -84,7 +84,7 @@ export const createFromTemplate = async (
           : templateContent
       )
 
-      return targetPath
+      return getFile(targetPath)
     } catch (error) {
       throw error
     }
@@ -92,6 +92,7 @@ export const createFromTemplate = async (
     alert(
       `El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`
     )
+    return null
   }
 }
 

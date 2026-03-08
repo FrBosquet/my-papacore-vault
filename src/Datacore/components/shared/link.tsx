@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact'
 import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
-import { getFile, getLeaf } from '../../utils/files'
+import { createFromTemplate, getFile, getLeaf } from '../../utils/files'
 import { cva } from './class-variance-authority'
 
 type Props = {
@@ -15,14 +15,24 @@ type Props = {
 } & (
   | { path: string; onClick?: never }
   | { path?: never; onClick: (e: MouseEvent) => void }
-)
+) &
+  (
+    | {
+        createIfNotExists: true
+        template?: string
+      }
+    | {
+        createIfNotExists?: false
+        template?: never
+      }
+  )
 
 const getVariant = cva({
   base: 'no-underline',
   variants: {
     default:
       'uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full flex items-center gap-2',
-    plain: 'text-primary-300 hover:text-theme-contrast',
+    plain: 'text-primary-300 hover:text-contrast-300 hover:bg-contrast-950',
   },
   sizes: {
     default: '',
@@ -38,10 +48,12 @@ export const Link = ({
   className,
   iconClassName,
   tooltip,
+  createIfNotExists,
+  template,
 }: Props) => {
   const variantValue = getVariant(variant)
 
-  const handleClick = (e: MouseEvent) => {
+  const handleClick = async (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -50,9 +62,16 @@ export const Link = ({
       return
     }
 
-    const file = getFile(path)
+    let file = getFile(path)
 
-    if (!file) return
+    if (!file) {
+      if (!createIfNotExists || !template) return
+
+      await createFromTemplate(path, template)
+      file = getFile(path)
+
+      if (!file) throw new Error(`Failed to create file: ${path}`)
+    }
 
     const isCtrlPressed = e.ctrlKey || e.metaKey
     getLeaf(isCtrlPressed).openFile(file)

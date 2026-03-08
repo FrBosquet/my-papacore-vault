@@ -8,7 +8,7 @@ import {
 import { classMerge } from '../../utils/classMerge'
 import { createFromTemplate, getDailyNoteDatetime } from '../../utils/files'
 import { calculateStreak, type Streak } from '../../utils/habits'
-import { getTodayDatetime } from '../../utils/time'
+import { getDailyNotePath, getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
@@ -59,12 +59,11 @@ export const HabitWidget = () => {
   const weekday = targetDate.weekday
   const localWeekday = targetDate.weekdayLong
   const localDay = targetDate.day
-  const monthNumber = targetDate.month
   const localMonth = targetDate.monthLong
   const localYear = targetDate.year
   const relativeCal = targetDate.toRelativeCalendar()
 
-  const path = `Journal/${localYear}-${monthNumber.toString().padStart(2, '0')}-${localDay.toString().padStart(2, '0')}.md`
+  const path = getDailyNotePath(targetDate)
 
   const dateLabel = `${localWeekday}, ${localDay} ${localMonth} ${localYear}`
 

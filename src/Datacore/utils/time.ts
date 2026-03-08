@@ -24,3 +24,13 @@ export const fromStringToDate = (dateString: string) => {
 export const getWeekTag = (datetime: DateTime): `${number}-W${string}` => {
   return `${datetime.year}-W${datetime.weekNumber.toString().padStart(2, '0')}`
 }
+
+export const getDailyNotePath = (targetDate: DateTime) => {
+  const localYear = targetDate.year
+  const monthNumber = targetDate.month
+  const localDay = targetDate.day
+
+  const path = `Journal/${localYear}-${monthNumber.toString().padStart(2, '0')}-${localDay.toString().padStart(2, '0')}.md`
+
+  return path
+}
