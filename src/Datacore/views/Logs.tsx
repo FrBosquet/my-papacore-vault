@@ -2,13 +2,14 @@ import type { MarkdownListItem, MarkdownPage } from '@blacksmithgu/datacore'
 import { Button } from '../components/shared/button'
 import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
+import { YearGraph } from '../components/yeargraph/graph'
 import {
   createFromTemplate,
   getDailyNoteDatetime,
   getFile,
   writeAtTheEndOfTheFile,
 } from '../utils/files'
-import { cleanLogText, getValueFromLogText } from '../utils/logs'
+import { cleanLogText, getPrevValue, getValueFromLogText } from '../utils/logs'
 import {
   moveToArchive,
   moveToDone,
@@ -131,6 +132,7 @@ export const Logs = () => {
       >
         Logs
       </Link>
+      <YearGraph logs={logs} refDate={today} />
       <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
         <textarea
           name="log-content"
@@ -174,10 +176,8 @@ export const Logs = () => {
 
           const cleanedText = cleanLogText(text ?? '')
           const value = getValueFromLogText(cleanedText)
-          const prevValue =
-            index < logs.length
-              ? getValueFromLogText(cleanLogText(logs[index + 1]?.$text ?? ''))
-              : 0
+
+          const prevValue = getPrevValue(logs, index)
           const textWithoutValue = value
             ? cleanedText.replace(value?.toString() ?? '', '')
             : cleanedText

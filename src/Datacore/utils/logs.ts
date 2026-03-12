@@ -1,3 +1,5 @@
+import type { MarkdownListItem } from '@blacksmithgu/datacore'
+
 export const capitalizeFirstLetter = (text: string): string => {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
@@ -32,4 +34,10 @@ export const getValueFromLogText = (text?: string) => {
   // value is a number that appears at the very beginning of the text
   const value = text.match(/^\d+/)?.[0]
   return value ? parseInt(value, 10) : undefined
+}
+
+export const getPrevValue = (logs: MarkdownListItem[], index: number) => {
+  return index < logs.length
+    ? getValueFromLogText(cleanLogText(logs[index + 1]?.$text ?? ''))
+    : 0
 }

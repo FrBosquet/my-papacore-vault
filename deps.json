@@ -55,6 +55,7 @@
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
       "Datacore/components/tasks/task-row.jsx",
+      "Datacore/components/yeargraph/graph.jsx",
       "Datacore/hooks/markdown.js",
       "Datacore/utils/habits.js",
       "Datacore/views/Logs.jsx",
@@ -104,7 +105,8 @@
       "Datacore/components/shared/dialog.jsx",
       "Datacore/components/shared/link.jsx",
       "Datacore/components/shared/widget.jsx",
-      "Datacore/components/tasks/task-row.jsx"
+      "Datacore/components/tasks/task-row.jsx",
+      "Datacore/components/yeargraph/graph.jsx"
     ],
     "Datacore/utils/habits.js": [
       "Datacore/components/habits/widget.jsx"
@@ -165,13 +167,17 @@
       "Datacore/views/TaskManager.jsx",
       "Datacore/views/WeekManager.jsx"
     ],
+    "Datacore/utils/logs.js": [
+      "Datacore/components/yeargraph/graph.jsx",
+      "Datacore/views/Logs.jsx"
+    ],
     "Datacore/utils/ContentTransformer.js": [
       "Datacore/utils/files.js"
     ],
     "Datacore/components/games/get-game-modal.jsx": [
       "Datacore/views/GamePane.jsx"
     ],
-    "Datacore/utils/logs.js": [
+    "Datacore/components/yeargraph/graph.jsx": [
       "Datacore/views/Logs.jsx"
     ],
     "Datacore/components/music/add-album-modal.jsx": [
@@ -212,6 +218,7 @@
       "Gaming/Games/Bookwalker.md",
       "Gaming/Games/Caves of Qud.md",
       "Gaming/Games/Chants of Senaar.md",
+      "Gaming/Games/Chrono trigger.md",
       "Gaming/Games/Clam Man 2.md",
       "Gaming/Games/Cosmic Wheel.md",
       "Gaming/Games/Crisis Core Final Fantasy VII.md",
@@ -272,6 +279,7 @@
       "Gaming/Games/Unicorn Overlord.md",
       "Gaming/Games/Unpacking.md",
       "Gaming/Games/Vagrant Story.md",
+      "Gaming/Games/Warhammer 40000 Rogue Trader.md",
       "Gaming/Games/Xenoblade Chronicles 3.md",
       "Gaming/Games/Zelda Tears of the Kingdom.md",
       "Templates/game.md"
@@ -306,6 +314,7 @@
       "Gaming/Games/Castlevania SOTN.md",
       "Gaming/Games/Caves of Qud.md",
       "Gaming/Games/Chants of Senaar.md",
+      "Gaming/Games/Chrono trigger.md",
       "Gaming/Games/Citizen Sleeper.md",
       "Gaming/Games/Clam Man 2.md",
       "Gaming/Games/Cosmic Wheel.md",
@@ -375,6 +384,7 @@
       "Gaming/Games/Unicorn Overlord.md",
       "Gaming/Games/Unpacking.md",
       "Gaming/Games/Vagrant Story.md",
+      "Gaming/Games/Warhammer 40000 Rogue Trader.md",
       "Gaming/Games/What remains of Edith Finch.md",
       "Gaming/Games/Xenoblade Chronicles 3.md",
       "Gaming/Games/Zelda Tears of the Kingdom.md",
@@ -575,6 +585,7 @@
       "Kanban/Tasks/SJ Step 8.md",
       "Kanban/Tasks/SJ Step 9.md",
       "Kanban/Tasks/Save guest response in DB.md",
+      "Kanban/Tasks/Sentarme con Cris a revisar estilos y contenidos y elaborar una lista de cambios.md",
       "Kanban/Tasks/Shape an RFC for a programmable Discovery extensibility API.md",
       "Kanban/Tasks/Show challenges in today view.md",
       "Kanban/Tasks/Show minimal info card for accepted invitations.md",
@@ -834,6 +845,7 @@
       "Kanban/Tasks/SJ Step 9.md",
       "Kanban/Tasks/Save guest response in DB.md",
       "Kanban/Tasks/Self reflection.md",
+      "Kanban/Tasks/Sentarme con Cris a revisar estilos y contenidos y elaborar una lista de cambios.md",
       "Kanban/Tasks/Shape an RFC for a programmable Discovery extensibility API.md",
       "Kanban/Tasks/Show challenges in today view.md",
       "Kanban/Tasks/Show minimal info card for accepted invitations.md",
@@ -883,6 +895,7 @@
       "Weeks/2025/2025 Week 53.md",
       "Weeks/2026/2026 Week 1.md",
       "Weeks/2026/2026 Week 10.md",
+      "Weeks/2026/2026 Week 11.md",
       "Weeks/2026/2026 Week 2.md",
       "Weeks/2026/2026 Week 3.md",
       "Weeks/2026/2026 Week 4.md",
