@@ -141,7 +141,7 @@ export const Logs = () => {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
-              ;(e.currentTarget.form as HTMLFormElement).requestSubmit()
+                ; (e.currentTarget.form as HTMLFormElement).requestSubmit()
             }
           }}
         />
@@ -149,10 +149,10 @@ export const Logs = () => {
           <RadioOption
             name="log-day"
             value="today"
-            label="Today"
+            label={`TODAY (${today.weekdayLong})`}
             defaultChecked
           />
-          <RadioOption name="log-day" value="yesterday" label="Yesterday" />
+          <RadioOption name="log-day" value="yesterday" label={`Yesterday (${yesterday.weekdayLong})`} />
           <Button
             className="focus:bg-contrast-300"
             iconRight="arrow-right"
