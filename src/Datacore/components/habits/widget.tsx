@@ -1,17 +1,17 @@
 import type { MarkdownPage, MarkdownSection } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
-import { useEffect, useState } from 'preact/hooks'
 import {
   useFileFrontmatterState,
   useFrontmatterState,
 } from '../../hooks/markdown'
 import { classMerge } from '../../utils/classMerge'
-import { createFromTemplate, getDailyNoteDatetime } from '../../utils/files'
+import { createFromTemplate, getDailyNoteDatetime, getFile, getLeaf } from '../../utils/files'
 import { calculateStreak, type Streak } from '../../utils/habits'
 import { getDailyNotePath, getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
+import { LongPressButton } from '../shared/long-press-button'
 
 type Habit = {
   key: string
@@ -45,10 +45,10 @@ export const HabitWidget = () => {
     )
     .sort((a, b) => a.key.localeCompare(b.key))
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = dc.useState(false)
   const [td, setTd] = useFrontmatterState<DateTime>('target-date')
 
-  useEffect(() => {
+  dc.useEffect(() => {
     setIsLoading(false)
   }, [td])
 
@@ -195,9 +195,9 @@ const useStreak = (
   notes: MarkdownPage[],
   targetPath: string
 ): Streak | null => {
-  const [streak, setStreak] = useState<Streak | null>(null)
+  const [streak, setStreak] = dc.useState<Streak | null>(null)
 
-  useEffect(() => {
+  dc.useEffect(() => {
     const targetDate = getDailyNoteDatetime(targetPath)
 
     getStreak(notes, targetDate).then((streak) => setStreak(streak as Streak))
@@ -221,7 +221,7 @@ const HabitToggle = ({
   targetPath: string
   faded?: boolean
 }) => {
-  const [tooltipContent, setTooltipContent] = useState<string>(``)
+  const [tooltipContent, setTooltipContent] = dc.useState<string>(``)
   const notes = dc.useQuery<MarkdownPage>(
     `@page and path("Journal") and ${habit.key}`
   )
@@ -248,7 +248,7 @@ const HabitToggle = ({
     setTooltipContent(tooltipLines.join('\n'))
   }
 
-  useEffect(() => {
+  dc.useEffect(() => {
     loadTooltipContent()
   }, [tooltipDescriptor])
 
@@ -258,7 +258,7 @@ const HabitToggle = ({
   const inWarningHiatus = streak?.type === 'hiatus' && streak?.days < 3
   const inDangerHiatus = streak?.type === 'hiatus' && streak?.days >= 3
 
-  const [togglePending, setTogglePending] = useState(false)
+  const [togglePending, setTogglePending] = dc.useState(false)
   const [page] = dc.useQuery(`@page and $path = "${targetPath}"`)
   const [isDone, setIsDone, isLoading] = useFileFrontmatterState<boolean>(
     targetPath,
@@ -275,8 +275,7 @@ const HabitToggle = ({
     setIsDone(!isDone)
   }
 
-  // Small hack to wait for the page to be created
-  useEffect(() => {
+  dc.useEffect(() => {
     if (togglePending && page) {
       setIsDone(!isDone)
       setTogglePending(false)
@@ -299,13 +298,24 @@ const HabitToggle = ({
     return 'Never done'
   }
 
+  const handleLongPress = async () => {
+    // navigate to the habit page using leaf
+    const leaf = getLeaf(true)
+    const file = getFile(`Habits/${habit.key}.md`)
+
+    if (!file) {
+      throw new Error(`Habit file not found: Habits/${habit.key}.md`)
+    }
+    leaf.openFile(file)
+  }
+
   return (
-    <button
-      aria-label={tooltipContent ?? habit.label}
-      type="button"
-      data-is-done={isDone}
-      data-faded={faded}
+    <LongPressButton
+      ariaLabel={tooltipContent ?? habit.label}
+      isDone={isDone}
+      faded={faded}
       onClick={handleClick}
+      onLongPress={handleLongPress}
       className="aspect-square flex-col flex items-center justify-center h-auto text-xs gap-2 cursor-pointer data-[is-done=true]:bg-theme-accent data-[is-done=true]:text-primary-950 rounded-none border-none bg-primary-900 shadow-none data-[faded=true]:opacity-50 relative"
     >
       {habit.icon ? (
@@ -331,6 +341,6 @@ const HabitToggle = ({
           {renderStreak()}
         </div>
       }
-    </button>
+    </LongPressButton>
   )
 }
