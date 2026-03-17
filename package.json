@@ -20,7 +20,6 @@
     "install": "echo \"papacore install step skipped on pnpm i\"",
     "papacore:install": "papacore build",
     "config": "papacore config",
-    "scan": "papacore scan",
     "generate:icons": "papacore generate-icons",
     "test": "jest",
     "test:watch": "jest --watch",
