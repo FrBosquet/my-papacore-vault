@@ -52,8 +52,8 @@ importers:
         specifier: 1.10.2-1
         version: 1.10.2-1(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
       papacore:
-        specifier: file:../papacore
-        version: file:../papacore(@blacksmithgu/datacore@0.1.24(@types/react@19.2.2)(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(jiti@2.6.1)(preact@10.27.2)
+        specifier: ^0.2.1
+        version: 0.2.1(@blacksmithgu/datacore@0.1.24(@types/react@19.2.2)(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(jiti@2.6.1)(preact@10.27.2)
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -2000,8 +2000,8 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
-  papacore@file:../papacore:
-    resolution: {directory: ../papacore, type: directory}
+  papacore@0.2.1:
+    resolution: {integrity: sha512-5PAYrePz0R3Vb2xTXqpdv6t5A8WFg/QXTcYfcvNkZvfnhhz5HcNEc0aqEbLJ+wXU/Swynya1ldPgk8nDf9P+6w==}
     hasBin: true
     peerDependencies:
       '@blacksmithgu/datacore': '*'
@@ -4774,7 +4774,7 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
-  papacore@file:../papacore(@blacksmithgu/datacore@0.1.24(@types/react@19.2.2)(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(jiti@2.6.1)(preact@10.27.2):
+  papacore@0.2.1(@blacksmithgu/datacore@0.1.24(@types/react@19.2.2)(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(jiti@2.6.1)(preact@10.27.2):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-react': 7.27.1(@babel/core@7.28.4)
