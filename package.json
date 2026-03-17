@@ -12,15 +12,16 @@
   },
   "homepage": "https://github.com/FrBosquet/papacore#readme",
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "papacore build",
     "build:css": "postcss src/styles.css -o dist/styles.css --minify",
     "build:css:watch": "postcss src/styles.css -o dist/styles.css --watch",
-    "watch": "node scripts/build.js --watch",
-    "dev": "node scripts/build.js --install",
-    "install": "node scripts/install.js",
-    "config": "node scripts/config.js",
-    "scan": "node scripts/scan-vault.js",
-    "generate:icons": "node scripts/generate-icons.js",
+    "watch": "papacore dev",
+    "dev": "papacore dev",
+    "install": "echo \"papacore install step skipped on pnpm i\"",
+    "papacore:install": "papacore build",
+    "config": "papacore config",
+    "scan": "papacore scan",
+    "generate:icons": "papacore generate-icons",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -54,7 +55,8 @@
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
     "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "papacore": "file:../papacore"
   },
   "dependencies": {
     "@blacksmithgu/datacore": "^0.1.24"
