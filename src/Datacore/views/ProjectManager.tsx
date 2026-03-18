@@ -1,6 +1,7 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { Button } from '../components/shared/button'
 import { Card } from '../components/shared/card'
+import { Scroller } from '../components/shared/scroller'
 import { TaskRow } from '../components/tasks/task-row'
 import { createFromTemplate } from '../utils/files'
 import {
@@ -99,9 +100,12 @@ export const ProjectManager = () => {
           <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
             Past tasks: ({past.length})
           </h3>
-          {past.sort(taskSorter).map((subtask) => (
-            <TaskRow key={subtask.$id} task={subtask} />
-          ))}
+          <Scroller className='max-h-56'>
+
+            {past.sort(taskSorter).map((subtask) => (
+              <TaskRow key={subtask.$id} task={subtask} />
+            ))}
+          </Scroller>
         </>
       )}
     </Card>
