@@ -5,7 +5,12 @@ import {
   useFrontmatterState,
 } from '../../hooks/markdown'
 import { classMerge } from '../../utils/classMerge'
-import { createFromTemplate, getDailyNoteDatetime, getFile, getLeaf } from '../../utils/files'
+import {
+  createFromTemplate,
+  getDailyNoteDatetime,
+  getFile,
+  getLeaf,
+} from '../../utils/files'
 import { calculateStreak, type Streak } from '../../utils/habits'
 import { getDailyNotePath, getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
