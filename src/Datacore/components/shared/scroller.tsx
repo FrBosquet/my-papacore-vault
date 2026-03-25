@@ -20,8 +20,6 @@ export const Scroller = ({ children, className, wrapperClassName }: Props) => {
       const scrollHeight = element.scrollHeight
       const clientHeight = element.clientHeight
 
-
-      console.log(scrollPosition, scrollHeight, clientHeight)
       // If content fits within container (no scrolling needed), hide both bands
       if (scrollHeight <= clientHeight + 5) {
         setScrollState('no-scroll')
