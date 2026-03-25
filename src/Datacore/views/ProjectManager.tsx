@@ -7,13 +7,13 @@ import { createFromTemplate } from '../utils/files'
 import {
   getTasksByMoment,
   getTaskWeekTagFromDate,
+  moveToArchive,
   taskSorter,
 } from '../utils/tasks'
 import { getTodayDatetime } from '../utils/time'
 
 export const ProjectManager = () => {
   const thisProject = dc.useCurrentFile()
-
   const handleAddTask = async (e: Event) => {
     e.preventDefault()
     const target = e.currentTarget as HTMLFormElement
@@ -37,6 +37,12 @@ export const ProjectManager = () => {
     subtasks,
     getTaskWeekTagFromDate(getTodayDatetime())
   )
+
+  const handleArchiveAll = () => {
+    past.forEach((task) => {
+      if (task.value('status') === 'done') moveToArchive(task)
+    })
+  }
 
   return (
     <Card>
@@ -97,9 +103,12 @@ export const ProjectManager = () => {
 
       {past.length > 0 && (
         <>
-          <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
-            Past tasks: ({past.length})
-          </h3>
+          <header className="flex items-center justify-between">
+            <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+              Past tasks: ({past.length})
+            </h3>
+            <Button iconRight="chevron-down" size='sm' onClick={handleArchiveAll}>Archive all</Button>
+          </header>
           <Scroller className='max-h-56'>
 
             {past.sort(taskSorter).map((subtask) => (
