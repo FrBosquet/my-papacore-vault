@@ -39,12 +39,28 @@
   --color-green-950: #17270c;
 
   --color-theme-accent: #9ece6a;
-  --color-theme-accent-hover: color-mix(in srgb, var(--color-theme-accent) 80%, white);
-  --color-theme-accent-disabled: color-mix(in srgb, var(--color-theme-accent) 80%, black);
+  --color-theme-accent-hover: color-mix(
+    in srgb,
+    var(--color-theme-accent) 80%,
+    white
+  );
+  --color-theme-accent-disabled: color-mix(
+    in srgb,
+    var(--color-theme-accent) 80%,
+    black
+  );
 
   --color-theme-contrast: #bb9af7;
-  --color-theme-contrast-hover: color-mix(in srgb, var(--color-theme-contrast) 80%, white);
-  --color-theme-contrast-disabled: color-mix(in srgb, var(--color-theme-contrast) 80%, black);
+  --color-theme-contrast-hover: color-mix(
+    in srgb,
+    var(--color-theme-contrast) 80%,
+    white
+  );
+  --color-theme-contrast-disabled: color-mix(
+    in srgb,
+    var(--color-theme-contrast) 80%,
+    black
+  );
 
   --color-contrast-50: #f6f3ff;
   --color-contrast-100: #efeafd;
@@ -60,7 +76,7 @@
 
   /* Custom font sizes */
   --text-2xs: 0.5rem;
-  --text-xs: 0.60rem;
+  --text-xs: 0.6rem;
   --text-sm: 0.75rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
@@ -95,6 +111,14 @@ dialog.pc-dialog::backdrop {
   opacity: 0.8;
 }
 
+/* Hide outline and edit button in datacore blocks */
+.cm-lang-datacorejsx {
+  box-shadow: none !important;
+  .edit-block-button {
+    display: none !important;
+  }
+}
+
 @layer utilities {
   .grid-cols-auto-4 {
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -104,16 +128,20 @@ dialog.pc-dialog::backdrop {
     grid-template-columns: repeat(auto-fit, minmax(var(--column-width), 1fr));
   }
 
-    /* Animated background for ongoing tasks */
+  /* Animated background for ongoing tasks */
   .ongoing-task {
     position: relative;
     overflow: hidden;
-    background-color: color-mix(in srgb, var(--color-green) 10%, var(--color-base-05));
+    background-color: color-mix(
+      in srgb,
+      var(--color-green) 10%,
+      var(--color-base-05)
+    );
   }
 
   .ongoing-task::before {
     pointer-events: none;
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;

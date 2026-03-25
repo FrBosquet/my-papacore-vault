@@ -7,7 +7,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**/*.ts", "src/**/*.tsx", "scripts/**/*.js"]
+    "includes": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "src/**/*.css",
+      "scripts/**/*.js"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -30,6 +35,11 @@
       "jsxQuoteStyle": "double",
       "semicolons": "asNeeded",
       "trailingCommas": "es5"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }
