@@ -119,6 +119,10 @@ dialog.pc-dialog::backdrop {
   }
 }
 
+.copy-to-clipboard-icon {
+  display: inline-block !important;
+}
+
 @layer utilities {
   .grid-cols-auto-4 {
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));

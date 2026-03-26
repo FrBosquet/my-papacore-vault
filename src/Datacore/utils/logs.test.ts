@@ -36,6 +36,25 @@ describe('logs utils', () => {
       const cleanedText = cleanLogText(text)
       expect(cleanedText).toBe('Hello world')
     })
+
+    it('should be able to target a file and stop removing text once found', () => {
+      const text = '[[Hello]] [[World]] from Fran'
+      const cleanedText = cleanLogText(text, 'Hello')
+      expect(cleanedText).toBe('[[World]] from Fran')
+    })
+
+    it('should be able to target a file and stop removing text once found using a markdown link', () => {
+      const text = '[Hello](https://example.com/hello) [[World]] from Fran'
+      const cleanedText = cleanLogText(text, 'https://example.com/hello')
+      expect(cleanedText).toBe('[[World]] from Fran')
+    })
+
+    it('should be able to target a file and stop removing text once found using a markdown link', () => {
+      const text =
+        '[[Projects/Obsidian Brain.md|Obsidian Brain]] [[World]] from Fran'
+      const cleanedText = cleanLogText(text, 'Projects/Obsidian Brain.md')
+      expect(cleanedText).toBe('[[World]] from Fran')
+    })
   })
 
   describe('capitalizeFirstLetter', () => {

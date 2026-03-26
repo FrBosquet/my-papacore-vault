@@ -181,10 +181,14 @@ export const Logs = () => {
           const cleanedText = cleanLogText(text ?? '')
           const value = getValueFromLogText(cleanedText)
 
+          let textWithParentLink = cleanLogText(text ?? '', thisFile.$path)
+
+          if (value) {
+            const valueAsText = value.toString()
+            textWithParentLink = textWithParentLink.replace(valueAsText, '')
+          }
+
           const prevValue = getPrevValue(logs, index)
-          const textWithoutValue = value
-            ? cleanedText.replace(value?.toString() ?? '', '')
-            : cleanedText
 
           const label = isToday
             ? 'Today'
@@ -204,11 +208,11 @@ export const Logs = () => {
               <span className="text-xs uppercase block w-16 shrink-0 text-0 p-1 text-contrast-300 ">
                 {label}
               </span>
-              <dc.Markdown
+              {/* <dc.Markdown
                 className="flex-1"
                 content={cleanLogText(textWithoutValue ?? '')}
-              />
-
+              /> */}
+              <dc.Markdown className="flex-1" content={textWithParentLink} />
               <ProgressBar
                 value={value}
                 prevValue={prevValue}
