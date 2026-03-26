@@ -108,9 +108,9 @@ export const Logs = () => {
 
     if (file && logContent.trim().length > 0) {
       const actualContent = [
-        '- ',
-        thisFileLink.toString(),
+        '-',
         parentLink?.toString(),
+        thisFileLink.toString(),
         logContent,
       ]
         .filter(Boolean)
@@ -141,7 +141,7 @@ export const Logs = () => {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
-                ; (e.currentTarget.form as HTMLFormElement).requestSubmit()
+              ;(e.currentTarget.form as HTMLFormElement).requestSubmit()
             }
           }}
         />
@@ -152,7 +152,11 @@ export const Logs = () => {
             label={`TODAY (${today.weekdayLong})`}
             defaultChecked
           />
-          <RadioOption name="log-day" value="yesterday" label={`Yesterday (${yesterday.weekdayLong})`} />
+          <RadioOption
+            name="log-day"
+            value="yesterday"
+            label={`Yesterday (${yesterday.weekdayLong})`}
+          />
           <Button
             className="focus:bg-contrast-300"
             iconRight="arrow-right"
