@@ -34,3 +34,20 @@ export const getDailyNotePath = (targetDate: DateTime) => {
 
   return path
 }
+
+export const getOffsetWithToday = (datetime: DateTime) => {
+  const today = getTodayDatetime()
+
+  return today.diff(datetime, 'days').days
+}
+
+export const getSemanticDateOffset = (datetime: DateTime, long = false) => {
+  const offset = getOffsetWithToday(datetime)
+  const isToday = offset === 0
+  const isYesterday = offset === 1
+
+  if (isToday) return 'Today'
+  if (isYesterday) return 'Yesterday'
+  if (offset < 8) return `${offset} ${long ? 'days ago' : 'DA'}`
+  return datetime.toFormat('MMM dd')
+}

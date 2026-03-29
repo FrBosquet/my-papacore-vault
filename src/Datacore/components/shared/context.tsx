@@ -16,13 +16,13 @@ export type ContextOption =
 
 type Props = {
   children: ComponentChildren
-  options: ContextOption[]
+  options: [ContextOption, ...ContextOption[]]
   className?: string
   variant?: Parameters<typeof getVariant>[0]
 }
 
 const getVariant = cva({
-  base: 'appearance-none bg-transparent border-none rounded-none p-0 m-0 cursor-pointer backdrop:bg-primary-950',
+  base: 'appearance-none bg-transparent border-none rounded-none p-0 m-0 cursor-pointer backdrop:bg-primary-950 shadow-none',
   variants: {
     default:
       'uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden flex items-center gap-2',

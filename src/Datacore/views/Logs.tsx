@@ -1,4 +1,5 @@
 import type { MarkdownListItem, MarkdownPage } from '@blacksmithgu/datacore'
+import { ProgressBar } from '../components/logs/progress-bar'
 import { Button } from '../components/shared/button'
 import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
@@ -16,7 +17,11 @@ import {
   moveToOngoing,
   removeFromWeek,
 } from '../utils/tasks'
-import { getDailyNotePath, getTodayDatetime } from '../utils/time'
+import {
+  getDailyNotePath,
+  getSemanticDateOffset,
+  getTodayDatetime,
+} from '../utils/time'
 
 const RadioOption = ({
   name,
@@ -171,9 +176,6 @@ export const Logs = () => {
           const filePath = l.$file
           const datetime = getDailyNoteDatetime(filePath)
 
-          const isToday = datetime.equals(today)
-          const isYesterday = datetime.equals(today.minus({ days: 1 }))
-          const daysOfDifference = today.diff(datetime, 'days').days
           const daysSinceStart = datetime.diff(firstAnnotationDate, 'days').days
 
           const text = l.$text
@@ -190,13 +192,7 @@ export const Logs = () => {
 
           const prevValue = getPrevValue(logs, index)
 
-          const label = isToday
-            ? 'Today'
-            : isYesterday
-              ? 'Yesterday'
-              : daysOfDifference < 8
-                ? `${daysOfDifference} da`
-                : datetime.toFormat('MMM dd')
+          const label = getSemanticDateOffset(datetime)
 
           return (
             <Link
@@ -208,10 +204,6 @@ export const Logs = () => {
               <span className="text-xs uppercase block w-16 shrink-0 text-0 p-1 text-contrast-300 ">
                 {label}
               </span>
-              {/* <dc.Markdown
-                className="flex-1"
-                content={cleanLogText(textWithoutValue ?? '')}
-              /> */}
               <dc.Markdown className="flex-1" content={textWithParentLink} />
               <ProgressBar
                 value={value}
@@ -227,49 +219,4 @@ export const Logs = () => {
       </section>
     </Card>
   )
-}
-
-const ProgressBar = ({
-  progressFn,
-  progressTarget,
-  index,
-  value,
-  prevValue,
-  daysPassed,
-}: {
-  progressFn: string
-  progressTarget: number
-  index: number
-  value?: number
-  prevValue?: number
-  daysPassed: number
-}) => {
-  if (!progressFn) return null
-
-  switch (progressFn) {
-    case 'days': {
-      return (
-        <span className="text-xs uppercase block shrink-0 text-0 p-1 text-contrast-300 justify-self-end">
-          {daysPassed} / {progressTarget}
-        </span>
-      )
-    }
-    case 'count':
-      return (
-        <span className="text-xs uppercase block shrink-0 text-0 p-1 text-contrast-300 justify-self-end">
-          {index} / {progressTarget}
-        </span>
-      )
-    case 'value': {
-      const progress = (value ?? 0) - (prevValue ?? 0)
-
-      return (
-        <span className="text-xs uppercase block shrink-0 text-0 p-1 text-contrast-300 justify-self-end">
-          <strong>+{progress}</strong> {value} / {progressTarget}
-        </span>
-      )
-    }
-    default:
-      return null
-  }
 }

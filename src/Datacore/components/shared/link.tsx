@@ -12,6 +12,7 @@ type Props = {
   iconClassName?: string
   tooltip?: string
   variant?: Parameters<typeof getVariant>[0]
+  size?: Parameters<typeof getVariant>[1]
 } & (
   | { path: string; onClick?: never }
   | { path?: never; onClick: (e: MouseEvent) => void }
@@ -28,7 +29,7 @@ type Props = {
   )
 
 const getVariant = cva({
-  base: 'no-underline',
+  base: 'no-underline flex items-center gap-2',
   variants: {
     default:
       'uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full flex items-center gap-2',
@@ -36,6 +37,7 @@ const getVariant = cva({
   },
   sizes: {
     default: '',
+    lg: 'text-base',
   },
 })
 
@@ -50,8 +52,9 @@ export const Link = ({
   tooltip,
   createIfNotExists,
   template,
+  size,
 }: Props) => {
-  const variantValue = getVariant(variant)
+  const variantValue = getVariant(variant, size)
 
   const handleClick = async (e: MouseEvent) => {
     e.preventDefault()
