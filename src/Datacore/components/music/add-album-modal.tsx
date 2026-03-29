@@ -20,31 +20,36 @@ type Action =
   | { type: 'abort' }
   | { type: 'loading-wiki' }
 
-const contentTransformer = (source: Album, reason: string, wikiContent: string) => (content: ContentTransformer) => {
-  content.setFrontmatter('year', source.release_date.split('-')[0])
-  content.setFrontmatter('album', source.external_urls.spotify)
-  content.setFrontmatter('image', source.images[0].url)
-  content.setFrontmatter('artist', source.artists.map((artist) => `[[${artist}]]`))
+const contentTransformer =
+  (source: Album, reason: string, wikiContent: string) =>
+  (content: ContentTransformer) => {
+    content.setFrontmatter('year', source.release_date.split('-')[0])
+    content.setFrontmatter('album', source.external_urls.spotify)
+    content.setFrontmatter('image', source.images[0].url)
+    content.setFrontmatter(
+      'artist',
+      source.artists.map((artist) => `[[${artist}]]`)
+    )
 
-  // If the first line is an h3, remove it and 
-  let cleanContent = wikiContent.split('\n')
+    // If the first line is an h3, remove it and
+    let cleanContent = wikiContent.split('\n')
 
-  if (cleanContent[0].startsWith('###')) {
-    cleanContent = cleanContent.slice(1)
-
-    if (cleanContent[0].length === 0) {
+    if (cleanContent[0].startsWith('###')) {
       cleanContent = cleanContent.slice(1)
+
+      if (cleanContent[0].length === 0) {
+        cleanContent = cleanContent.slice(1)
+      }
     }
+
+    content.insertInSection('wiki', cleanContent.join('\n'))
+
+    if (reason.length > 0) {
+      content.insertInSection('My take', reason)
+    }
+
+    return content
   }
-
-  content.insertInSection('wiki', cleanContent.join('\n'))
-
-  if (reason.length > 0) {
-    content.insertInSection('My take', reason)
-  }
-
-  return content
-}
 
 type Props = {
   apiKey: string
@@ -61,7 +66,10 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
         case 'loading-wiki':
           return { ...state, state: 'loading-wiki' }
         case 'abort':
-          return { ...state, state: state.results.length > 0 ? 'success' : 'idle' }
+          return {
+            ...state,
+            state: state.results.length > 0 ? 'success' : 'idle',
+          }
         case 'setAlbums':
           return {
             selected: null,
@@ -120,7 +128,10 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
     const source = state.selected
     if (!source) return
 
-    const safeAlbumName = `${source.artists[0]} - ${source.name}`.replace(/[/:*?"<>|]/g, '')
+    const safeAlbumName = `${source.artists[0]} - ${source.name}`.replace(
+      /[/:*?"<>|]/g,
+      ''
+    )
     const fileName = `${safeAlbumName}.md`
     const filePath = `Music/Albums/${fileName}`
 
@@ -148,7 +159,11 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
         }
       }
 
-      await createFromTemplate(filePath, 'album', contentTransformer(source, reason ?? '', wiki))
+      await createFromTemplate(
+        filePath,
+        'album',
+        contentTransformer(source, reason ?? '', wiki)
+      )
 
       dispatch({ type: 'abort' })
       close()
@@ -180,19 +195,26 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
     >
       <form className="flex gap-4 w-full" onSubmit={handleSearch}>
         <input className="flex-1" type="text" name="albumName" />
-        <Button variant="secondary" size="icon" type="submit" isLoading={isLoading} icon="search" />
+        <Button
+          variant="secondary"
+          size="icon"
+          type="submit"
+          isLoading={isLoading}
+          icon="search"
+        />
       </form>
       <div
         className="grid grid-cols-auto-fit gap-1 mt-4"
         style={{ '--column-width': '60px' }}
       >
-        {notSearched
-          ? <p className="text-primary-600 py-4 text-center w-full">{
-            state.state === 'loading'
+        {notSearched ? (
+          <p className="text-primary-600 py-4 text-center w-full">
+            {state.state === 'loading'
               ? 'Buscando album...'
-              : 'Empieza buscando un album'
-          }</p>
-          : state.results.map((album) => {
+              : 'Empieza buscando un album'}
+          </p>
+        ) : (
+          state.results.map((album) => {
             const smallestImage = album.images[album.images.length - 1]
 
             return (
@@ -214,22 +236,31 @@ export const AddAlbumModal = ({ apiKey }: Props) => {
                 </span>
               </button>
             )
-          })}
+          })
+        )}
       </div>
       {state.selected && (
         <div className="mt-4">
           <h3 className="mb-1">
-            {state.selected.name} ({state.selected.release_date.split('-')[0]}
-            )
+            {state.selected.name} ({state.selected.release_date.split('-')[0]})
           </h3>
           <div className="flex gap-2 w-full">
-            <p className="text-primary-300">{state.selected.artists.join(', ')}</p>
-            <p className="text-primary-600 flex-1">{state.selected.total_tracks} canciones</p>
+            <p className="text-primary-300">
+              {state.selected.artists.join(', ')}
+            </p>
+            <p className="text-primary-600 flex-1">
+              {state.selected.total_tracks} canciones
+            </p>
           </div>
           <form onSubmit={handleCreate} className="flex gap-2 w-full pt-4">
-            <label htmlFor="reason" className="text-xs uppercase text-primary-700">Razón:</label>
+            <label
+              htmlFor="reason"
+              className="text-xs uppercase text-primary-700"
+            >
+              Razón:
+            </label>
             <input type="text" name="reason" className="flex-1" />
-            <Button type="submit" isLoading={isLoading} iconRight='save'>
+            <Button type="submit" isLoading={isLoading} iconRight="save">
               Añadir
             </Button>
           </form>

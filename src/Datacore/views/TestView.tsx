@@ -4,5 +4,5 @@ export const TestView = () => {
       <h1 className="text-2xl font-bold">TestView</h1>
       <p>Your view content here</p>
     </div>
-  );
-};
+  )
+}

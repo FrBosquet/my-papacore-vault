@@ -12,7 +12,9 @@ export class ContentTransformer {
   }
 
   static async fromTemplate(templateName: string) {
-    const templateFile = dc.app.vault.getFileByPath(`Templates/${templateName}.md`)
+    const templateFile = dc.app.vault.getFileByPath(
+      `Templates/${templateName}.md`
+    )
 
     if (!templateFile) {
       return null
@@ -36,7 +38,10 @@ export class ContentTransformer {
    * @param value - The value to set (string, number, boolean, or object)
    * @returns this for chaining
    */
-  setFrontmatter(key: string, value: string | number | boolean | object | null): this {
+  setFrontmatter(
+    key: string,
+    value: string | number | boolean | object | null
+  ): this {
     const { start, end } = this.findFrontmatterBounds()
 
     if (start === -1) {
@@ -58,7 +63,11 @@ export class ContentTransformer {
    * @param createIfMissing - Create the section if it doesn't exist (default: true)
    * @returns this for chaining
    */
-  insertInSection(sectionTitle: string, content: string, createIfMissing = true): this {
+  insertInSection(
+    sectionTitle: string,
+    content: string,
+    createIfMissing = true
+  ): this {
     const sectionIndex = this.findSectionIndex(sectionTitle)
 
     if (sectionIndex === -1) {
@@ -98,7 +107,10 @@ export class ContentTransformer {
     return { start: -1, end: -1 }
   }
 
-  private createFrontmatter(key: string, value: string | number | boolean | object | null): void {
+  private createFrontmatter(
+    key: string,
+    value: string | number | boolean | object | null
+  ): void {
     const newFrontmatter = ['---']
 
     if (Array.isArray(value)) {
@@ -183,7 +195,9 @@ export class ContentTransformer {
     }
   }
 
-  private formatYamlValue(value: string | number | boolean | object | null): string {
+  private formatYamlValue(
+    value: string | number | boolean | object | null
+  ): string {
     if (value === null) {
       return 'null'
     }

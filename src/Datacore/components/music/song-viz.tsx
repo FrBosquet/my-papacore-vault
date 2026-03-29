@@ -1,13 +1,9 @@
-import type { MarkdownListItem, MarkdownPage } from "@blacksmithgu/datacore"
-import { getFrontmatterValue } from "../../utils/markdown"
-import { SongList } from "./song-list"
-import { months, type Song, type YearString } from "./utils"
+import type { MarkdownListItem, MarkdownPage } from '@blacksmithgu/datacore'
+import { getFrontmatterValue } from '../../utils/markdown'
+import { SongList } from './song-list'
+import { months, type Song, type YearString } from './utils'
 
-export const SongViz = ({
-  time,
-}: {
-  time: 'month' | 'year'
-}) => {
+export const SongViz = ({ time }: { time: 'month' | 'year' }) => {
   const songs = dc.useQuery<MarkdownListItem>(`
     @list-item 
       AND path("Music/Albums")
@@ -56,41 +52,49 @@ export const SongViz = ({
             month,
             albumUrl,
             albumPath: page.$path,
-            albumImage
-          }
-        ]
-      }
+            albumImage,
+          },
+        ],
+      },
     }
   }, {})
 
-  const years = Object.keys(songData).sort((a, b) => parseInt(b, 10) - parseInt(a, 10))
+  const years = Object.keys(songData).sort(
+    (a, b) => parseInt(b, 10) - parseInt(a, 10)
+  )
 
-  return <div>
-    {
-      years.map((year) => {
+  return (
+    <div>
+      {years.map((year) => {
         return (
           <div key={year}>
             <h2>{year}</h2>
-            {
-              time === 'year'
-                ? <SongList songs={Object.values(songData[year as YearString]).flat() as Song[]} />
-                : Object.keys(songData[year as YearString])
-                  .sort((a, b) => parseInt(b, 10) - parseInt(a, 10))
-                  .map((month) => {
-                    return (
-                      <>
-                        <h3>{months[parseInt(month, 10)]}</h3>
-                        <SongList
-                          key={month}
-                          songs={songData[year as YearString][parseInt(month, 10)]}
-                        />
-                      </>
-                    )
-                  })
-            }
+            {time === 'year' ? (
+              <SongList
+                songs={
+                  Object.values(songData[year as YearString]).flat() as Song[]
+                }
+              />
+            ) : (
+              Object.keys(songData[year as YearString])
+                .sort((a, b) => parseInt(b, 10) - parseInt(a, 10))
+                .map((month) => {
+                  return (
+                    <>
+                      <h3>{months[parseInt(month, 10)]}</h3>
+                      <SongList
+                        key={month}
+                        songs={
+                          songData[year as YearString][parseInt(month, 10)]
+                        }
+                      />
+                    </>
+                  )
+                })
+            )}
           </div>
         )
-      })
-    }
-  </div>
+      })}
+    </div>
+  )
 }

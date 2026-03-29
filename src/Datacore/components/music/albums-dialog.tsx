@@ -1,39 +1,42 @@
-
-import type { MarkdownPage } from "@blacksmithgu/datacore"
-import { useMemo } from "preact/hooks"
-import { useDebouncedState } from "../../hooks/state"
-import { Dialog, type Props as DialogProps, useDialog } from "../shared/dialog"
-import { Scroller } from "../shared/scroller"
-import { AlbumList } from "./album-list"
+import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { useMemo } from 'preact/hooks'
+import { useDebouncedState } from '../../hooks/state'
+import { Dialog, type Props as DialogProps, useDialog } from '../shared/dialog'
+import { Scroller } from '../shared/scroller'
+import { AlbumList } from './album-list'
 
 export const AlbumDialog = ({
   albums,
   triggerProps,
-  onClick
+  onClick,
 }: {
-  albums: MarkdownPage[],
-  triggerProps?: DialogProps['triggerProps'],
-  onClick?: (album: MarkdownPage) => void,
+  albums: MarkdownPage[]
+  triggerProps?: DialogProps['triggerProps']
+  onClick?: (album: MarkdownPage) => void
 }) => {
   const [search, setSearch] = useDebouncedState('')
   const { ref } = useDialog()
 
-  const filteredAlbums = useMemo(() => albums.filter((album) => {
-    const title = album.$name.toLowerCase()
-    const searchLower = search.toLowerCase()
+  const filteredAlbums = useMemo(
+    () =>
+      albums.filter((album) => {
+        const title = album.$name.toLowerCase()
+        const searchLower = search.toLowerCase()
 
-    return title.includes(searchLower)
-  }), [albums, search])
+        return title.includes(searchLower)
+      }),
+    [albums, search]
+  )
 
   return (
     <Dialog
       title={`Pendientes (${albums.length})`}
       dialogRef={ref}
       icon="disc-3"
-      className='w-full'
+      className="w-full"
       triggerProps={{
         size: 'sm',
-        ...triggerProps
+        ...triggerProps,
       }}
     >
       <input
@@ -43,7 +46,7 @@ export const AlbumDialog = ({
         value={search}
         onChange={(e) => setSearch(e?.currentTarget.value)}
       />
-      <Scroller className='max-h-60'>
+      <Scroller className="max-h-60">
         <AlbumList albums={filteredAlbums} onClick={onClick} />
       </Scroller>
     </Dialog>

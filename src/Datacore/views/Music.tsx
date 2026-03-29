@@ -12,8 +12,8 @@ type Props = {
 }
 
 export const Music = ({ apiKey }: Props) => {
-  const [mode, setMode] = useFrontmatterState< 'song' | 'album' >('mode', 'album')
-  const [time, setTime] = useFrontmatterState< 'month' | 'year' >('time', 'month')
+  const [mode, setMode] = useFrontmatterState<'song' | 'album'>('mode', 'album')
+  const [time, setTime] = useFrontmatterState<'month' | 'year'>('time', 'month')
 
   const albums = dc.useQuery<MarkdownPage>(`@page AND path("Music/Albums")`)
 

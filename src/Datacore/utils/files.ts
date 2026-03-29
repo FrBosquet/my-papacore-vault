@@ -1,5 +1,5 @@
 import type { DateTime } from 'luxon'
-import { PaneType } from 'obsidian'
+import type { PaneType } from 'obsidian'
 import { ContentTransformer } from './ContentTransformer'
 
 export const getPage = (path: string) => {

@@ -1,4 +1,4 @@
-import { GetGameDataModal } from "../components/games/get-game-modal";
+import { GetGameDataModal } from '../components/games/get-game-modal'
 
 export const GamePane = ({ apiKey }: { apiKey: string }) => {
   const file = dc.useCurrentFile()
@@ -9,5 +9,5 @@ export const GamePane = ({ apiKey }: { apiKey: string }) => {
         <GetGameDataModal apiKey={apiKey} file={file} />
       </div>
     </menu>
-  );
-};
+  )
+}

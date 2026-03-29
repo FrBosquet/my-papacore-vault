@@ -1,6 +1,6 @@
 import type { Link as LinkType, MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
-import { ComponentChildren } from 'preact'
+import type { ComponentChildren } from 'preact'
 import { classMerge } from '../../utils/classMerge'
 import {
   createFromTemplate,

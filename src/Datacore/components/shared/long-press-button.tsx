@@ -27,7 +27,9 @@ export const LongPressButton = ({
     }
   }
 
-  const handlePointerDown: preact.JSX.MouseEventHandler<HTMLButtonElement> = () => {
+  const handlePointerDown: preact.JSX.MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
     longPressFiredRef.current = false
     timerRef.current = window.setTimeout(async () => {
       longPressFiredRef.current = true
@@ -35,14 +37,18 @@ export const LongPressButton = ({
     }, 500)
   }
 
-  const handlePointerUp: preact.JSX.MouseEventHandler<HTMLButtonElement> = async () => {
+  const handlePointerUp: preact.JSX.MouseEventHandler<
+    HTMLButtonElement
+  > = async () => {
     clearTimer()
     if (!longPressFiredRef.current) {
       await onClick()
     }
   }
 
-  const handlePointerLeave: preact.JSX.MouseEventHandler<HTMLButtonElement> = () => {
+  const handlePointerLeave: preact.JSX.MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
     clearTimer()
   }
 

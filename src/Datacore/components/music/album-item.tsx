@@ -1,8 +1,8 @@
 import type { Link as LinkType, MarkdownPage } from '@blacksmithgu/datacore'
 import type { ComponentChildren } from 'preact'
-import { getFileName } from "../../utils/files"
-import { getFrontmatterValue } from "../../utils/markdown"
-import { WidgetItem } from "../shared/widget"
+import { getFileName } from '../../utils/files'
+import { getFrontmatterValue } from '../../utils/markdown'
+import { WidgetItem } from '../shared/widget'
 
 export type Props = {
   album: MarkdownPage
@@ -20,12 +20,17 @@ export const AlbumItem = ({ album, actions }: Props) => {
     ? album.$name.split(' - ')[1]
     : album.$name
 
-  const artistName = (artist?.map)
+  const artistName = artist?.map
     ? artist.map((a) => getFileName(a.path)).join(', ')
     : '-'
 
   return (
-    <WidgetItem key={album.$id} page={album} tooltip={album.$name} actions={actions}>
+    <WidgetItem
+      key={album.$id}
+      page={album}
+      tooltip={album.$name}
+      actions={actions}
+    >
       <span className="normal-case text-primary-300 group-hover:text-primary-800 text-ellipsis overflow-hidden text-nowrap w-full block">
         {albumName}
       </span>
@@ -42,13 +47,11 @@ export const AlbumItem = ({ album, actions }: Props) => {
           data-hasrating={hasRating}
           className="text-xs normal-case flex gap-1/2 items-center data-[hasrating=true]:text-yellow-200 text-primary-600"
         >
-          {
-            Array(Number(rating))
-              .fill(null)
-              .map((_, i) => (
-                <dc.Icon key={i} className="size-2" icon="star" />
-              ))
-          }
+          {Array(Number(rating))
+            .fill(null)
+            .map((_, i) => (
+              <dc.Icon key={i} className="size-2" icon="star" />
+            ))}
         </span>
       </footer>
     </WidgetItem>

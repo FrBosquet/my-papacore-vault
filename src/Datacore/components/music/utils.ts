@@ -1,5 +1,5 @@
-import type { MarkdownPage } from "@blacksmithgu/datacore"
-import { getFrontmatterValue } from "../../utils/markdown"
+import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { getFrontmatterValue } from '../../utils/markdown'
 
 export const sortByLastModified = (a: MarkdownPage, b: MarkdownPage) => {
   return b.$mtime.millisecond - a.$mtime.millisecond
@@ -25,48 +25,51 @@ export type YearString = `${number}`
 export type YearsAndMonths = {
   [year: YearString]: {
     [month: number]: MarkdownPage[]
-  },
+  }
   unlisted: MarkdownPage[]
 }
 
 export const buildAlbumHierarchy = (albums: MarkdownPage[]) => {
-  return albums.reduce<YearsAndMonths>((acc, album) => {
-    const listening = getFrontmatterValue<string>(album, 'listening')
+  return albums.reduce<YearsAndMonths>(
+    (acc, album) => {
+      const listening = getFrontmatterValue<string>(album, 'listening')
 
-    if (!listening) {
-      acc.unlisted.push(album)
+      if (!listening) {
+        acc.unlisted.push(album)
+        return acc
+      }
+
+      const year = listening.split(' ')[0] as YearString
+      const monthStr = listening.split(' ')[1]
+      const month = months.indexOf(monthStr)
+
+      if (!acc[year]) {
+        acc[year] = {}
+      }
+
+      if (!acc[year][month]) {
+        acc[year][month] = []
+      }
+
+      acc[year][month].push(album)
+
       return acc
+    },
+    {
+      unlisted: [],
     }
-
-    const year = listening.split(' ')[0] as YearString
-    const monthStr = listening.split(' ')[1]
-    const month = months.indexOf(monthStr)
-
-    if (!acc[year]) {
-      acc[year] = {}
-    }
-
-    if (!acc[year][month]) {
-      acc[year][month] = []
-    }
-
-    acc[year][month].push(album)
-
-    return acc
-  }, {
-    unlisted: [],
-  })
+  )
 }
 
 export type Song = {
-  page: MarkdownPage,
-  artist: string,
-  albumName: string,
-  listening: string,
-  songTitle: string,
-  songComment: string,
-  month: string,
-  albumUrl: string,
-  albumPath: string,
-  albumImage: string,
+  page: MarkdownPage
+  artist: string
+  albumName: string
+  listening: string
+  songTitle: string
+  songComment: string
+  month: string
+  albumUrl: string
+  albumPath: string
+  albumImage: string
 }

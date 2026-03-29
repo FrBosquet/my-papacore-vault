@@ -107,10 +107,15 @@ export const ProjectManager = () => {
             <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
               Past tasks: ({past.length})
             </h3>
-            <Button iconRight="chevron-down" size='sm' onClick={handleArchiveAll}>Archive all</Button>
+            <Button
+              iconRight="chevron-down"
+              size="sm"
+              onClick={handleArchiveAll}
+            >
+              Archive all
+            </Button>
           </header>
-          <Scroller className='max-h-56'>
-
+          <Scroller className="max-h-56">
             {past.sort(taskSorter).map((subtask) => (
               <TaskRow key={subtask.$id} task={subtask} />
             ))}

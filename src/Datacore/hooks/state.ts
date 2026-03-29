@@ -1,4 +1,4 @@
-import { useRef, useState } from "preact/hooks"
+import { useRef, useState } from 'preact/hooks'
 
 export const useDebouncedState = <T>(defaultValue: T, debounce = 175) => {
   const [state, setState] = useState(defaultValue)

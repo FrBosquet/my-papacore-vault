@@ -22,7 +22,8 @@ export const useFileFrontmatterState = <T extends Literal>(
 
   const frontmatter = page?.$frontmatter
 
-  const currentValue = frontmatter?.[key.toLowerCase()]?.value as T ?? defaultValue
+  const currentValue =
+    (frontmatter?.[key.toLowerCase()]?.value as T) ?? defaultValue
 
   const setValue = async (
     value: T | undefined | ((currentValue: T | undefined) => T | undefined)
@@ -33,7 +34,9 @@ export const useFileFrontmatterState = <T extends Literal>(
       return
     }
 
-    setPageFrontmatterValue(page, key,
+    setPageFrontmatterValue(
+      page,
+      key,
       value === defaultValue ? undefined : value
     )
   }

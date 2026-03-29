@@ -1,4 +1,4 @@
-import { classMerge } from "../../utils/classMerge"
+import { classMerge } from '../../utils/classMerge'
 
 type BaseVariant = Record<string, string> & { default: string }
 type BaseSize = {
@@ -16,10 +16,10 @@ export const cva =
     variants: V
     sizes: S
   }) =>
-    (variant?: keyof V, size?: keyof S) => {
-      const base = config.base
-      const variantClasses = config.variants[variant ?? 'default']
-      const sizeClasses = config.sizes[size ?? 'default'] as string
+  (variant?: keyof V, size?: keyof S) => {
+    const base = config.base
+    const variantClasses = config.variants[variant ?? 'default']
+    const sizeClasses = config.sizes[size ?? 'default'] as string
 
-      return classMerge(base, variantClasses, sizeClasses)
-    }
+    return classMerge(base, variantClasses, sizeClasses)
+  }
