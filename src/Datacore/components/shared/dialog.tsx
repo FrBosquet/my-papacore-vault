@@ -12,6 +12,7 @@ export type Props = {
   dialogRef: Ref<HTMLDialogElement>
   triggerProps?: Partial<Omit<ButtonProps, 'onClick'>>
   onOpen?: () => void
+  hideTrigger?: boolean
 }
 
 export const useDialog = (defaultOpen = false) => {
@@ -31,15 +32,27 @@ export const useDialog = (defaultOpen = false) => {
 }
 
 export const Dialog = (props: Props) => {
-  const { children, className, icon, title, dialogRef, triggerProps, onOpen } =
-    props
+  const {
+    children,
+    className,
+    icon,
+    title,
+    dialogRef,
+    triggerProps,
+    onOpen,
+    hideTrigger = false,
+  } = props
   const mouseDownOnOverlay = useRef(false)
 
   return (
     <div className="contents">
       <Button
         {...triggerProps}
-        className={classMerge('cursor-pointer', triggerProps?.className)}
+        className={classMerge(
+          'cursor-pointer',
+          triggerProps?.className,
+          hideTrigger && 'hidden'
+        )}
         onClick={() => {
           if (dialogRef && 'current' in dialogRef) {
             dialogRef.current?.showModal()

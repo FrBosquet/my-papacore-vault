@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/useKeyWithClickEvents: <explanation> */
+/** biome-ignore-all lint/a11y/useKeyWithClickEvents: overlay closes on click; keyboard not required for this dismiss surface */
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { useState } from 'preact/hooks'
 import { setPageFrontmatterValue } from '../../utils/markdown'

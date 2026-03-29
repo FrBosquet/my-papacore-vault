@@ -127,7 +127,7 @@ export const getProgress = ({
 }) => {
   const index = logs.indexOf(log)
   const [rawTargetValue, ...rawTargetUnits] = target.split(' ')
-  const targetValue = rawTargetValue ? parseInt(rawTargetValue) : 0
+  const targetValue = rawTargetValue ? parseInt(rawTargetValue, 10) : 0
   const targetUnits = rawTargetUnits.join(' ')
 
   const prevValue = getProgressValue(logs, index + 1, progressFn)

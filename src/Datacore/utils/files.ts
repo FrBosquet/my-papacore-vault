@@ -14,7 +14,7 @@ export const cleanPath = (path: string) => {
   if (path.endsWith('.base')) return path
 
   // otherwise, return path + .base
-  return path + '.md'
+  return `${path}.md`
 }
 
 export const trimExtension = (path: string) => {
@@ -76,18 +76,14 @@ export const createFromTemplate = async (
   const templateContent = await getTemplateContent(templatePath)
 
   if (templateContent !== null) {
-    try {
-      await dc.app.vault.create(
-        targetPath,
-        transformer
-          ? transformer(new ContentTransformer(templateContent)).toString()
-          : templateContent
-      )
+    await dc.app.vault.create(
+      targetPath,
+      transformer
+        ? transformer(new ContentTransformer(templateContent)).toString()
+        : templateContent
+    )
 
-      return getFile(targetPath)
-    } catch (error) {
-      throw error
-    }
+    return getFile(targetPath)
   } else {
     alert(
       `El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`
@@ -109,14 +105,10 @@ export const fileExists = (path: string) => {
 }
 
 export const writeAtTheEndOfTheFile = async (path: string, content: string) => {
-  try {
-    const file = getFile(path)
-    if (file) {
-      const fileContent = await dc.app.vault.read(file)
-      const newContent = fileContent + '\n' + content
-      await dc.app.vault.modify(file, newContent)
-    }
-  } catch (error) {
-    throw error
+  const file = getFile(path)
+  if (file) {
+    const fileContent = await dc.app.vault.read(file)
+    const newContent = `${fileContent}\n${content}`
+    await dc.app.vault.modify(file, newContent)
   }
 }
