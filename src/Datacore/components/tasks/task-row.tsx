@@ -26,8 +26,10 @@ import {
   type WeekTag,
 } from '../../utils/tasks'
 import { getTodayDatetime } from '../../utils/time'
+import { LogAnnotationForm } from '../logs/log-annotation-form'
 import { Button } from '../shared/button'
 import { ContextMenu, type ContextOption } from '../shared/context'
+import { Dialog, useDialog } from '../shared/dialog'
 import { Link } from '../shared/link'
 
 type Updater = (
@@ -44,10 +46,12 @@ const WeekBadge = ({
   task,
   weekTag,
   updater,
+  openAnnotateDialog,
 }: {
   task: MarkdownPage
   weekTag?: WeekTag
   updater: Updater
+  openAnnotateDialog: () => void
 }) => {
   const currentWeekTag = getWeekFromTags(task)
 
@@ -60,7 +64,7 @@ const WeekBadge = ({
     const weekPath = getPathFromTag(currentWeekTag)
     const week = getWeekFromTag(currentWeekTag)
 
-    const options: ContextOption[] = [
+    const options: [ContextOption, ...ContextOption[]] = [
       {
         icon: 'kanban',
         label: 'Panel Kanban',
@@ -80,6 +84,11 @@ const WeekBadge = ({
 
           if (file) getLeaf('split').openFile(file)
         },
+      },
+      {
+        icon: 'notebook-pen',
+        label: 'Anotar',
+        action: () => openAnnotateDialog(),
       },
       {
         type: 'divider',
@@ -303,6 +312,8 @@ export const TaskRow = ({
   task: MarkdownPage
   targetWeek?: DateTime
 }) => {
+  const { ref: dialogRef, open: openAnnotateDialog, close } = useDialog()
+
   const due = getFrontmatterValue<DateTime>(task, 'due')
   const done = getFrontmatterValue<DateTime>(task, 'done')
   const status = getFrontmatterValue<string>(task, 'status')
@@ -371,7 +382,11 @@ export const TaskRow = ({
         task={task}
         weekTag={targetWeekTag}
         updater={handleUpdateTask}
+        openAnnotateDialog={openAnnotateDialog}
       />
+      <Dialog dialogRef={dialogRef} hideTrigger>
+        <LogAnnotationForm targetPage={task} onSubmit={() => close()} />
+      </Dialog>
       <section className="flex-1">
         <div className="flex items-center gap-2">
           <p
