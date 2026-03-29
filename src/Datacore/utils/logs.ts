@@ -117,7 +117,7 @@ export type ProgressFn = 'days' | 'count' | 'value'
 export const getProgress = ({
   logs,
   log = logs[0],
-  target,
+  target = '',
   progressFn,
 }: {
   target: string
@@ -126,7 +126,7 @@ export const getProgress = ({
   logs: MarkdownListItem[]
 }) => {
   const index = logs.indexOf(log)
-  const [rawTargetValue, ...rawTargetUnits] = target.split(' ')
+  const [rawTargetValue, ...rawTargetUnits] = target?.split(' ') ?? []
   const targetValue = rawTargetValue ? parseInt(rawTargetValue, 10) : 0
   const targetUnits = rawTargetUnits.join(' ')
 

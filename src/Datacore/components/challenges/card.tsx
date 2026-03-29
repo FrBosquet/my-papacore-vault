@@ -21,7 +21,7 @@ import { ProgressBar } from '../shared/progress-bar'
 
 const IconMap: Record<string, IconName> = {
   reading: 'book-a',
-  health: 'trophy',
+  health: 'biceps-flexed',
   learning: 'glasses',
 }
 
@@ -56,6 +56,7 @@ export const ChallengeItem = ({ challenge }: Props) => {
 
   const progressFn = challenge.value('progressFn') as ProgressFn
   const start = getFrontmatterValue<DateTime>(challenge, 'start')
+  const end = getFrontmatterValue<DateTime>(challenge, 'end')
   const category = challenge.value('category') as string
   const target = challenge.value('target') as string
   const icon = getIcon(category)
@@ -75,6 +76,8 @@ export const ChallengeItem = ({ challenge }: Props) => {
     progressFn,
   })
 
+  const isOngoing = !end && start
+
   return (
     <>
       <Dialog
@@ -85,7 +88,7 @@ export const ChallengeItem = ({ challenge }: Props) => {
         <LogAnnotationForm targetPage={challenge} onSubmit={() => close()} />
       </Dialog>
       <article
-        data-type={offsetWithToday === 0 ? 'today' : type}
+        data-type={isOngoing && (offsetWithToday === 0 ? 'today' : type)}
         className={`
         grid grid-cols-[1fr_auto] shadow-2xl
         bg-radial from-primary-900/50 to-primary-900 bg-no-repeat bg-size-[200%_100%]
@@ -95,7 +98,7 @@ export const ChallengeItem = ({ challenge }: Props) => {
         key={challenge.$id}
       >
         {/* main */}
-        <section className="flex flex-col gap-2 p-2">
+        <section className="flex flex-col gap-2 p-2 min-w-0">
           <Link path={path} icon={icon} size="lg" className="min-w-0">
             <span className="min-w-0 flex-1 truncate">{challenge.$name}</span>
           </Link>
@@ -125,24 +128,32 @@ export const ChallengeItem = ({ challenge }: Props) => {
         </section>
 
         {/* streak */}
-        <article
-          data-type={type}
-          className={`
+        {isOngoing && (
+          <article
+            data-type={type}
+            className={`
             flex flex-col items-center justify-center p-2 
             data-[type='today']:text-green-400
             data-[type='streak']:text-green-400
             data-[type='hiatus']:text-red-400
             `}
-        >
-          <strong className="text-5xl text-current">{days}</strong>
-          <p className="text-2xs uppercase font-semibold">
-            {isStreak ? 'streak days' : 'days missed'}
-          </p>
-        </article>
+          >
+            <strong className="text-5xl text-current">{days}</strong>
+            <p className="text-2xs uppercase font-semibold">
+              {isStreak ? 'streak days' : 'days missed'}
+            </p>
+          </article>
+        )}
 
-        <article className="col-span-2 p-2">
-          <ProgressBar progress={progress} />
-        </article>
+        {(isOngoing || end) && (
+          <article className="col-span-2 p-2">
+            {end ? (
+              <p>Completed on {getSemanticDateOffset(end, true)}</p>
+            ) : (
+              <ProgressBar progress={end ? 1 : progress} />
+            )}
+          </article>
+        )}
 
         {/* footer */}
         <footer className="grid grid-cols-3 col-span-2 p-2 text-primary-300">
