@@ -44,17 +44,42 @@ export const ContextMenu = ({
   const panelRef = useRef<HTMLDivElement>(null)
   const mouseDownOnOverlay = useRef(false)
 
+  const positionPanelInViewport = () => {
+    const trigger = triggerRef.current
+    const panel = panelRef.current
+    if (!trigger || !panel) return
+
+    const rect = trigger.getBoundingClientRect()
+    const margin = 4
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const { width: pw, height: ph } = panel.getBoundingClientRect()
+
+    let top = rect.bottom + margin
+    let left = rect.left
+
+    if (top + ph > vh - margin) {
+      top = rect.top - ph - margin
+    }
+    top = Math.max(margin, Math.min(top, vh - ph - margin))
+
+    if (left + pw > vw - margin) {
+      left = rect.right - pw
+    }
+    left = Math.max(margin, Math.min(left, vw - pw - margin))
+
+    panel.style.top = `${top}px`
+    panel.style.left = `${left}px`
+  }
+
   const handleTriggerClick = (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    const rect = triggerRef.current?.getBoundingClientRect()
-    if (rect && panelRef.current) {
-      panelRef.current.style.top = `${rect.bottom + 4}px`
-      panelRef.current.style.left = `${rect.left}px`
-    }
-
     dialogRef.current?.showModal()
+    requestAnimationFrame(() => {
+      positionPanelInViewport()
+    })
   }
 
   const handleOptionClick = (action: () => void) => {

@@ -1,11 +1,18 @@
-import { MarkdownPage } from "@blacksmithgu/datacore"
-import { useState } from "preact/hooks"
-import { setPageFrontmatterValue } from "../../utils/markdown"
-import { GameData, getGameData } from "../../utils/perplexity"
-import { Button } from "../shared/button"
-import { Dialog, useDialog } from "../shared/dialog"
+/** biome-ignore-all lint/a11y/useKeyWithClickEvents: <explanation> */
+import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { useState } from 'preact/hooks'
+import { setPageFrontmatterValue } from '../../utils/markdown'
+import { type GameData, getGameData } from '../../utils/perplexity'
+import { Button } from '../shared/button'
+import { Dialog, useDialog } from '../shared/dialog'
 
-export const GetGameDataModal = ({ apiKey, file }: { apiKey: string, file: MarkdownPage }) => {
+export const GetGameDataModal = ({
+  apiKey,
+  file,
+}: {
+  apiKey: string
+  file: MarkdownPage
+}) => {
   const { ref: dialogRef, close } = useDialog()
   const [state, setState] = useState<'loading' | 'success' | 'error'>('loading')
   const fileName = file.$name
@@ -29,7 +36,7 @@ export const GetGameDataModal = ({ apiKey, file }: { apiKey: string, file: Markd
   }
 
   const cycleImages = () => {
-    setVisibleImages(prev => {
+    setVisibleImages((prev) => {
       const first = prev[0]
       const rest = prev.slice(1)
       return [...rest, first]
@@ -44,7 +51,7 @@ export const GetGameDataModal = ({ apiKey, file }: { apiKey: string, file: Markd
     await setPageFrontmatterValue(file, 'metacritic', result.metacritic)
     await setPageFrontmatterValue(file, 'hltb', result.howlongtobeat)
 
-    if(visibleImages.length) {
+    if (visibleImages.length) {
       await setPageFrontmatterValue(file, 'image', visibleImages[0])
     }
 
@@ -56,42 +63,71 @@ export const GetGameDataModal = ({ apiKey, file }: { apiKey: string, file: Markd
       case 'success':
         if (!result) throw new Error('Result is null and state is success')
 
-        return <div className="flex flex-col gap-2">
-          {
-            visibleImages.length > 0 && <img src={visibleImages[0]} alt={fileName} onClick={cycleImages} className="cursor-pointer"/>
-          }
-          <p>{visibleImages.length} imágenes encontradas</p>
-          <div className="hidden">
-            {result.image.map((image) => (
-              <img src={image} alt={fileName} 
-              onLoad={event => {
-                setVisibleImages(prev => [...prev, (event.target as HTMLImageElement).src])
-        
-              }}
+        return (
+          <div className="flex flex-col gap-2">
+            {visibleImages.length > 0 && (
+              <img
+                src={visibleImages[0]}
+                alt={fileName}
+                onClick={cycleImages}
+                className="cursor-pointer"
               />
-            ))}
-          </div>
-          <p>Año: {result.year}</p>
-          <p>Precio: {result.price}</p>
-          <p>Puntuación: {result.metacritic}</p>
-          <p>Duración: {result.howlongtobeat}</p>
-          <Button onClick={handleApplyData}>Aplicar datos</Button>
-          <aside className="h-0.5 bg-primary-500 w-full my-2"></aside>
+            )}
+            <p>{visibleImages.length} imágenes encontradas</p>
+            <div className="hidden">
+              {result.image.map((image) => (
+                <img
+                  src={image}
+                  alt={fileName}
+                  onLoad={(event) => {
+                    setVisibleImages((prev) => [
+                      ...prev,
+                      (event.target as HTMLImageElement).src,
+                    ])
+                  }}
+                />
+              ))}
+            </div>
+            <p>Año: {result.year}</p>
+            <p>Precio: {result.price}</p>
+            <p>Puntuación: {result.metacritic}</p>
+            <p>Duración: {result.howlongtobeat}</p>
+            <Button onClick={handleApplyData}>Aplicar datos</Button>
+            <aside className="h-0.5 bg-primary-500 w-full my-2"></aside>
 
-          {result.metacriticDataUrl && <p className={'text-sm text-primary-500'}><a href={result.metacriticDataUrl}>Metacritic</a></p>}
-          {result.howLongToBeatUrl && <p className={'text-sm text-primary-500'}><a href={result.howLongToBeatUrl}>HowLongToBeat</a></p>}
-          {result.dataUrl && <p className={'text-sm text-primary-500'}><a href={result.dataUrl}>Informacion</a></p>}
-        </div>
+            {result.metacriticDataUrl && (
+              <p className={'text-sm text-primary-500'}>
+                <a href={result.metacriticDataUrl}>Metacritic</a>
+              </p>
+            )}
+            {result.howLongToBeatUrl && (
+              <p className={'text-sm text-primary-500'}>
+                <a href={result.howLongToBeatUrl}>HowLongToBeat</a>
+              </p>
+            )}
+            {result.dataUrl && (
+              <p className={'text-sm text-primary-500'}>
+                <a href={result.dataUrl}>Informacion</a>
+              </p>
+            )}
+          </div>
+        )
       case 'loading':
-        return <div className="flex flex-col gap-2 justify-center items-center">
-          <p>Cargando...</p>
-          <dc.Icon icon="loader" className="animate-spin [&>svg]:size-10" />
-        </div>
+        return (
+          <div className="flex flex-col gap-2 justify-center items-center">
+            <p>Cargando...</p>
+            <dc.Icon icon="loader" className="animate-spin [&>svg]:size-10" />
+          </div>
+        )
       case 'error':
-        return <div className="flex flex-col gap-2">
-          <p>Error obteniendo los datos del juego</p>
-          <Button onClick={handleOpen} icon="refresh-ccw">Intentar de nuevo</Button>
-        </div>
+        return (
+          <div className="flex flex-col gap-2">
+            <p>Error obteniendo los datos del juego</p>
+            <Button onClick={handleOpen} icon="refresh-ccw">
+              Intentar de nuevo
+            </Button>
+          </div>
+        )
     }
   }
 
@@ -100,8 +136,8 @@ export const GetGameDataModal = ({ apiKey, file }: { apiKey: string, file: Markd
       title="Obtener datos del juego"
       dialogRef={dialogRef}
       triggerProps={{
-        icon: "wand",
-        label: "Obtener datos",
+        icon: 'wand',
+        label: 'Obtener datos',
       }}
       onOpen={handleOpen}
     >

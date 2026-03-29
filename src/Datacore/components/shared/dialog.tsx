@@ -1,15 +1,15 @@
-import type { Ref } from 'preact';
-import { useEffect, useRef } from 'preact/hooks';
-import type { IconName } from '../../../icons';
-import { classMerge } from '../../utils/classMerge';
-import { Button, type Props as ButtonProps } from './button';
+import type { Ref } from 'preact'
+import { useEffect, useRef } from 'preact/hooks'
+import type { IconName } from '../../../icons'
+import { classMerge } from '../../utils/classMerge'
+import { Button, type Props as ButtonProps } from './button'
 
 export type Props = {
   children: React.ReactNode
   className?: string
   title?: string
   icon?: IconName
-  dialogRef?: Ref<HTMLDialogElement>
+  dialogRef: Ref<HTMLDialogElement>
   triggerProps?: Partial<Omit<ButtonProps, 'onClick'>>
   onOpen?: () => void
 }
@@ -26,19 +26,20 @@ export const useDialog = (defaultOpen = false) => {
   return {
     ref,
     open: () => ref.current?.showModal(),
-    close: () => ref.current?.close()
+    close: () => ref.current?.close(),
   }
 }
 
 export const Dialog = (props: Props) => {
-  const { children, className, icon, title, dialogRef, triggerProps, onOpen } = props
+  const { children, className, icon, title, dialogRef, triggerProps, onOpen } =
+    props
   const mouseDownOnOverlay = useRef(false)
 
   return (
     <div className="contents">
       <Button
         {...triggerProps}
-        className={classMerge("cursor-pointer", triggerProps?.className)}
+        className={classMerge('cursor-pointer', triggerProps?.className)}
         onClick={() => {
           if (dialogRef && 'current' in dialogRef) {
             dialogRef.current?.showModal()
@@ -73,12 +74,17 @@ export const Dialog = (props: Props) => {
             className
           )}
         >
-
           {(title || icon) && (
             <header className="text-yellow-500 flex items-center gap-2 pb-4">
               {icon && <dc.Icon className="text-inherit" icon={icon} />}
               {title && (
-                <h2 className={classMerge('text-xl font-bold my-0 tracking-[0.4ch] uppercase')}>{title}</h2>
+                <h2
+                  className={classMerge(
+                    'text-xl font-bold my-0 tracking-[0.4ch] uppercase'
+                  )}
+                >
+                  {title}
+                </h2>
               )}
             </header>
           )}
