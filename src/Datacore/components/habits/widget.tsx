@@ -189,28 +189,6 @@ export const HabitWidget = () => {
   )
 }
 
-const getStreak = (notes: MarkdownPage[], targetDate: DateTime) => {
-  return new Promise((resolve) => {
-    const streak = calculateStreak(notes, targetDate)
-    resolve(streak)
-  })
-}
-
-const useStreak = (
-  notes: MarkdownPage[],
-  targetPath: string
-): Streak | null => {
-  const [streak, setStreak] = dc.useState<Streak | null>(null)
-
-  dc.useEffect(() => {
-    const targetDate = getDailyNoteDatetime(targetPath)
-
-    getStreak(notes, targetDate).then((streak) => setStreak(streak as Streak))
-  }, [notes, targetPath])
-
-  return streak
-}
-
 const getFileContent = async (path: string) => {
   const file = dc.app.vault.getFileByPath(path)
   if (!file) return null
@@ -257,7 +235,8 @@ const HabitToggle = ({
     loadTooltipContent()
   }, [tooltipDescriptor])
 
-  const streak = useStreak(notes, targetPath)
+  const targetDate = getDailyNoteDatetime(targetPath)
+  const streak = calculateStreak(notes, targetDate)
 
   const inStreak = streak?.type === 'streak' && streak?.days > 1
   const inWarningHiatus = streak?.type === 'hiatus' && streak?.days < 3

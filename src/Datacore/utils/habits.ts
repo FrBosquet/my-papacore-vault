@@ -30,7 +30,7 @@ export const calculateStreak = (
     )
     .map((note) => getDailyNoteDatetime(note.$path))
 
-  const daysSinceFirstNote = referenceDate.diff(dates[0]).as('days')
+  const daysSinceFirstNote = Math.round(referenceDate.diff(dates[0]).as('days'))
 
   if (referenceDate.diff(dates[0]).as('days') > 0) {
     return {
