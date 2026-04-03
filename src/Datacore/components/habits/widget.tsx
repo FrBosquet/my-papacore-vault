@@ -11,7 +11,7 @@ import {
   getFile,
   getLeaf,
 } from '../../utils/files'
-import { calculateStreak, type Streak } from '../../utils/habits'
+import { calculateStreak } from '../../utils/habits'
 import { getDailyNotePath, getTodayDatetime } from '../../utils/time'
 import { Button } from '../shared/button'
 import { Card } from '../shared/card'
@@ -239,7 +239,8 @@ const HabitToggle = ({
   const streak = calculateStreak(notes, targetDate)
 
   const inStreak = streak?.type === 'streak' && streak?.days > 1
-  const inWarningHiatus = streak?.type === 'hiatus' && streak?.days < 3
+  const inWarningHiatus =
+    streak?.type === 'hiatus' && streak?.days < 3 && streak?.days > 1
   const inDangerHiatus = streak?.type === 'hiatus' && streak?.days >= 3
 
   const [togglePending, setTogglePending] = dc.useState(false)
@@ -268,10 +269,9 @@ const HabitToggle = ({
 
   const renderStreak = () => {
     if (!streak) return null
+    if (streak?.days === 1) return null
 
     if (streak?.type === 'streak') {
-      if (streak?.days === 1) return null
-
       return `+${streak?.days}`
     }
 

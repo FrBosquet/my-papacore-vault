@@ -6,10 +6,27 @@ export const getTodayString = () => {
 }
 
 export const getTodayDatetime = () => {
-  {
-    const str = getTodayString()
-    return dc.api.coerce.date(str) as DateTime
-  }
+  const str = getTodayString()
+  return fromStringToDatetime(str)
+}
+
+export const fromStringToDatetime = (dateString: string) => {
+  const parts = dateString.split('-')
+
+  if (parts.length !== 3)
+    throw new Error(`Not an ISO date string ${dateString}`)
+  if (parts[0].length !== 4)
+    throw new Error(`Not a valid year ${parts[0]} in ${dateString}`)
+  if (parts[1].length !== 2)
+    throw new Error(`Not a valid month ${parts[1]} in ${dateString}`)
+  if (parts[2].length !== 2)
+    throw new Error(`Not a valid day ${parts[2]} in ${dateString}`)
+
+  const date = dc.luxon.DateTime.fromISO(dateString, { zone: 'local' })
+
+  if (!date.isValid) throw new Error(`Invalid date ${dateString}`)
+
+  return date
 }
 
 export const fromStringToDate = (dateString: string) => {

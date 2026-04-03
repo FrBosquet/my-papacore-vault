@@ -75,8 +75,7 @@ export const calculateStreak = (
 
   const isoReferenceDate = referenceDate.toISODate() as string
 
-  const sortedLogs = [...logs].sort((a, b) => b.$file.localeCompare(a.$file))
-  const dates = [...sortedLogs]
+  const sortedLogs = [...logs]
     .filter(
       (log) =>
         log.$file
@@ -84,16 +83,17 @@ export const calculateStreak = (
           .replace('Journal/', '')
           .localeCompare(isoReferenceDate) <= 0
     )
-    .map((log) => getDailyNoteDatetime(log.$file))
+    .sort((a, b) => b.$file.localeCompare(a.$file))
+  const dates = [...sortedLogs].map((log) => getDailyNoteDatetime(log.$file))
 
   const lastLog = sortedLogs[0]
-  const daysSinceFirstLog = referenceDate.diff(dates[0]).as('days')
+  const daysSinceLastLog = Math.round(referenceDate.diff(dates[0]).as('days'))
 
-  if (daysSinceFirstLog > 1) {
+  if (daysSinceLastLog > 1) {
     return {
       count,
       type: 'hiatus',
-      days: daysSinceFirstLog,
+      days: daysSinceLastLog,
       logs: sortedLogs,
       lastLog,
     }

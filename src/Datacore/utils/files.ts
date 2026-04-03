@@ -1,6 +1,6 @@
-import type { DateTime } from 'luxon'
 import type { PaneType } from 'obsidian'
 import { ContentTransformer } from './ContentTransformer'
+import { fromStringToDatetime } from './time'
 
 export const getPage = (path: string) => {
   return dc.api.page(path)
@@ -35,9 +35,13 @@ export const trimExtension = (path: string) => {
  * @param path
  */
 export const getDailyNoteDatetime = (path: string) => {
-  const date = trimExtension(path).split('/').pop() as string
+  const dateStr = trimExtension(path).split('/').pop() as string
 
-  return dc.coerce.date(date) as DateTime
+  // `Journal/YYYY-MM-DD.md` is already an ISO date; interpret it as midnight
+  // in the user's local timezone (not UTC).
+  const date = fromStringToDatetime(dateStr)
+
+  return date
 }
 
 export const getResourcePath = (pathInVault: string) => {
