@@ -9,6 +9,7 @@ import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
 import { WidgetItem } from '../shared/widget'
+import { AddGameModal } from './add-modal'
 
 export const GameWidget = () => {
   const games = dc.useQuery<MarkdownPage>(
@@ -17,9 +18,12 @@ export const GameWidget = () => {
 
   return (
     <Card>
-      <Link path="Gaming/Games.base" icon="gamepad-2">
-        Playing
-      </Link>
+      <header className="flex justify-between items-center">
+        <Link path="Gaming/Games.base" icon="gamepad-2">
+          Playing
+        </Link>
+        <AddGameModal />
+      </header>
       <Scroller className="h-30" wrapperClassName="gap-2">
         {games.map((game) => (
           <GameItem key={game.$path} game={game} />

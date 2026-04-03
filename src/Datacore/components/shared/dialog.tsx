@@ -60,7 +60,8 @@ export const Dialog = (props: Props) => {
           }
         }}
       >
-        {triggerProps?.label ?? title ?? 'Open Dialog'}
+        {triggerProps?.label ??
+          (triggerProps?.icon ? '' : (title ?? 'Open Dialog'))}
       </Button>
       <dialog
         className="pc-dialog"
@@ -83,7 +84,7 @@ export const Dialog = (props: Props) => {
       >
         <div
           className={classMerge(
-            'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl pointer-events-auto max-w-[min(700px,90vw)]',
+            'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl w-full pointer-events-auto max-w-[min(700px,90vw)]',
             className
           )}
         >
