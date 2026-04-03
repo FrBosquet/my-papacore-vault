@@ -69,7 +69,7 @@ export const Logs = () => {
               variant="plain"
               key={l.$id}
               path={filePath}
-              className="flex gap-2 py-0.5"
+              className="flex gap-2 py-0.5 items-start"
             >
               <span className="text-xs uppercase block w-16 shrink-0 text-0 p-1 text-contrast-300 ">
                 {label}
