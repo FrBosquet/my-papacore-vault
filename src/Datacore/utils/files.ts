@@ -116,3 +116,58 @@ export const writeAtTheEndOfTheFile = async (path: string, content: string) => {
     await dc.app.vault.modify(file, newContent)
   }
 }
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/**
+ * Appends new content to a list-item that starts with the connector. If the list-item is not found, it creates a new one at the end of the file..
+ * A connector is just a link in md format. An annotation looks like `- [[Hello]] World`. The ida is that `appendToLog('...', '[[Hello]]', 'from fran')` will find that annotation and append the new content to it. so it ends up like `- [[Hello]] World from fran`
+ *
+ * @param path - The path to the file to append to.
+ * @param connector - The links  use to detect the annotation.
+ * @param newContent - The new content to the annotation.
+ */
+export const appendToLog = async (
+  path: string,
+  connector: string,
+  newContent: string
+) => {
+  const file = getFile(path)
+  if (!file) return
+
+  const fileContent = await dc.app.vault.read(file)
+  const trimmedConnector = connector.trim()
+  const trimmedNewContent = newContent.trim()
+
+  const eol = fileContent.includes('\r\n') ? '\r\n' : '\n'
+  const lines = fileContent.split(/\r?\n/)
+
+  // Matches a list item line starting with the connector:
+  // - [[Hello]] World
+  // - [title](url) World
+  const connectorRe = escapeRegExp(trimmedConnector)
+  const listItemRe = new RegExp(`^\\s*[-*+]\\s*${connectorRe}(?:\\s|$)`)
+
+  const index = lines.findIndex((line) => listItemRe.test(line))
+
+  if (index !== -1) {
+    const existingLine = lines[index].trimEnd()
+    const suffix = trimmedNewContent ? `. ${trimmedNewContent}` : ''
+    lines[index] = `${existingLine}${suffix}`
+    await dc.app.vault.modify(file, lines.join(eol))
+    return
+  }
+
+  // If we didn't find the list item, create it at the end of the file.
+  const newLine = trimmedNewContent
+    ? `- ${trimmedConnector} ${trimmedNewContent}`
+    : `- ${trimmedConnector}`
+
+  const updatedContent =
+    fileContent.trimEnd().length === 0
+      ? newLine
+      : `${fileContent.trimEnd()}${eol}${newLine}`
+
+  await dc.app.vault.modify(file, updatedContent)
+}

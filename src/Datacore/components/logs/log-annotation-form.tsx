@@ -1,9 +1,5 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
-import {
-  createFromTemplate,
-  getFile,
-  writeAtTheEndOfTheFile,
-} from '../../utils/files'
+import { appendToLog, createFromTemplate, getFile } from '../../utils/files'
 import {
   moveToArchive,
   moveToDone,
@@ -95,11 +91,9 @@ export const LogAnnotationForm = ({ targetPage, onSubmit }: Props) => {
     }
 
     if (file && logContent.trim().length > 0) {
-      const actualContent = ['-', parentLinkText, thisFileLink, logContent]
-        .filter(Boolean)
-        .join(' ')
+      const connector = [parentLinkText, thisFileLink].filter(Boolean).join(' ')
 
-      await writeAtTheEndOfTheFile(targetPath, actualContent)
+      await appendToLog(targetPath, connector, logContent)
     }
 
     form.reset()
