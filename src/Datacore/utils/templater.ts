@@ -1,35 +1,66 @@
-type Templater = {
-  current_functions_object: {
-    file: {
-      create_new: (content: string, path: string) => Promise<void>
-      find_tfile: (templateName: string) => Promise<string>
-    }
-  }
+import type { TFile } from 'obsidian'
+
+/** Public Templater core API used from outside template execution. */
+type TemplaterCore = {
+  create_new_note_from_template: (
+    template: TFile | string,
+    folder?: string,
+    filename?: string,
+    open_new_note?: boolean
+  ) => Promise<TFile | undefined>
 }
 
-const getTemplaterInstance = () => {
-  // @ts-expect-error this is unsafe
+const getTemplaterCore = (): TemplaterCore => {
+  // @ts-expect-error Obsidian plugin instance shape is not in Datacore types
   const plugins = dc.app.plugins as {
-    getPlugin: (name: string) => { templater: Templater }
+    getPlugin: (id: string) => { templater: TemplaterCore } | null
   }
   const instance = plugins.getPlugin('templater-obsidian')
-
   if (!instance) {
     throw new Error('Templater plugin not found')
   }
-
   return instance.templater
 }
 
+/**
+ * Same resolution as Templater's tp.file.find_tfile (sync).
+ * @see https://github.com/SilentVoid13/Templater/blob/master/src/core/functions/internal_functions/file/InternalModuleFile.ts
+ */
+const findTFile = (filename: string): TFile | null => {
+  const path = filename.replace(/\\/g, '/')
+  const dest = dc.app.metadataCache.getFirstLinkpathDest(path, '')
+  if (!dest) {
+    return null
+  }
+  return dest as TFile
+}
+
 export const createNewGame = async (title: string) => {
-  const templater = getTemplaterInstance()
-  const template =
-    await templater.current_functions_object.file.find_tfile('game')
+  const template = findTFile('game')
   if (!template) {
     throw new Error('Game template not found')
   }
-  await templater.current_functions_object.file.create_new(
+  const templater = getTemplaterCore()
+  const file = await templater.create_new_note_from_template(
     template,
-    `Gaming/Games/${title}.md`
+    'Gaming/Games',
+    title,
+    false
   )
+  return file
+}
+
+export const createNewTask = async (title: string) => {
+  const template = findTFile('task')
+  if (!template) {
+    throw new Error('Task template not found')
+  }
+  const templater = getTemplaterCore()
+  const file = await templater.create_new_note_from_template(
+    template,
+    'Kanban/Tasks',
+    title,
+    false
+  )
+  return file
 }

@@ -4,6 +4,7 @@ import { getTodayDatetime } from '../../utils/time'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
+import { AddTaskModal } from './add-modal'
 import { TaskRow } from './task-row'
 
 export const TasksWidget = () => {
@@ -18,9 +19,12 @@ export const TasksWidget = () => {
 
   return (
     <Card>
-      <Link path="Kanban/Board.md" icon="kanban">
-        Tasks (#{weekTag} | {tasks.length})
-      </Link>
+      <header className="flex justify-between items-center">
+        <Link path="Kanban/Board.md" icon="kanban">
+          Tasks (#{weekTag} | {tasks.length})
+        </Link>
+        <AddTaskModal />
+      </header>
       <Scroller className="max-h-100" wrapperClassName="gap-2">
         {tasks.sort(taskSorter).map((task) => (
           <TaskRow key={task.$id} task={task} />
