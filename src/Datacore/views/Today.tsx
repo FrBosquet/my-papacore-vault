@@ -3,6 +3,7 @@ import { GameWidget } from '../components/games/widget'
 import { HabitWidget } from '../components/habits/widget'
 import { MusicWidget } from '../components/music/widget'
 import { ProjectsWidget } from '../components/projects/widget'
+import { ReadLaterWidget } from '../components/read-later/widget'
 import { TasksWidget } from '../components/tasks/widget'
 
 export const Today = () => {
@@ -13,6 +14,7 @@ export const Today = () => {
         <GameWidget />
         <MusicWidget />
       </header>
+      <ReadLaterWidget />
       <TasksWidget />
       <HabitWidget />
       <ChallengesWidget />

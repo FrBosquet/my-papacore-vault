@@ -5,7 +5,7 @@ import { createFromTemplate, getFile, getLeaf } from '../../utils/files'
 import { cva } from './class-variance-authority'
 
 type Props = {
-  children: ComponentChildren
+  children?: ComponentChildren
   className?: string
   wrapperClassName?: string
   icon?: IconName
@@ -14,8 +14,9 @@ type Props = {
   variant?: Parameters<typeof getVariant>[0]
   size?: Parameters<typeof getVariant>[1]
 } & (
-  | { path: string; onClick?: never }
-  | { path?: never; onClick: (e: MouseEvent) => void }
+  | { path?: never; onClick?: never; href: string }
+  | { path: string; onClick?: never; href?: never }
+  | { path?: never; onClick: (e: MouseEvent) => void; href?: never }
 ) &
   (
     | {
@@ -43,6 +44,7 @@ const getVariant = cva({
 
 export const Link = ({
   path,
+  href,
   children,
   onClick,
   variant,
@@ -65,19 +67,26 @@ export const Link = ({
       return
     }
 
-    let file = getFile(path)
-
-    if (!file) {
-      if (!createIfNotExists || !template) return
-
-      await createFromTemplate(path, template)
-      file = getFile(path)
-
-      if (!file) throw new Error(`Failed to create file: ${path}`)
+    if (href) {
+      window.open(href, '_blank')
+      return
     }
 
-    const isCtrlPressed = e.ctrlKey || e.metaKey
-    getLeaf(isCtrlPressed).openFile(file)
+    if (path) {
+      let file = getFile(path)
+
+      if (!file) {
+        if (!createIfNotExists || !template) return
+
+        await createFromTemplate(path, template)
+        file = getFile(path)
+
+        if (!file) throw new Error(`Failed to create file: ${path}`)
+      }
+
+      const isCtrlPressed = e.ctrlKey || e.metaKey
+      getLeaf(isCtrlPressed).openFile(file)
+    }
   }
 
   return (
