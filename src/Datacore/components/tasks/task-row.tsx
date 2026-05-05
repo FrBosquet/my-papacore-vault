@@ -211,7 +211,7 @@ const DueBadge = ({ due }: { due?: DateTime }) => {
 }
 
 const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
-  const status = getFrontmatterValue<string>(task, 'status')
+  const status = getFrontmatterValue<(typeof STATUSES)[number]>(task, 'status')
 
   const handleAction = (e: MouseEvent) => {
     e.preventDefault()
@@ -245,16 +245,15 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
     }
   }
 
-  const progress = status ? STATUSES.indexOf(status) : -1
+  const progress = (status ? STATUSES.indexOf(status) : 0) - 1
   const bgColor = [
-    'var(--color-red-300)',
     'var(--color-purple-300)',
     'var(--color-blue-300)',
     'var(--color-green-300)',
     'var(--color-green-500)',
   ][progress]
 
-  const progressWidth = Math.min(3, progress) / 3
+  const progressWidth = Math.min(2, progress) / 2
 
   if (status === 'archive') return null
   if (status === 'backlog') return null
@@ -266,16 +265,9 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
     >
       <Button
         onClick={handleAction}
-        dataAttributes={{ 'data-action': 'backlog' }}
-        className="bg-(--bg-color) hover:bg-red-500 size-4 rounded-full z-10"
-        tooltip="Remove from week"
-      />
-      <Button
-        onClick={handleAction}
         dataAttributes={{ 'data-action': 'this-week' }}
         className={classMerge(
-          'bg-(--bg-color) hover:bg-purple-500 size-4 rounded-full z-10',
-          progress < 1 && 'bg-primary-600'
+          'bg-(--bg-color) hover:bg-purple-500 size-4 rounded-full z-10'
         )}
         tooltip="Move to backlog"
       />
@@ -284,7 +276,7 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
         dataAttributes={{ 'data-action': 'ongoing' }}
         className={classMerge(
           'bg-(--bg-color) hover:bg-blue-500 size-4 rounded-full z-10',
-          progress < 2 && 'bg-primary-600'
+          progress < 1 && 'bg-primary-600'
         )}
         tooltip="Move to in progress"
       />
@@ -293,7 +285,7 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
         dataAttributes={{ 'data-action': 'done' }}
         className={classMerge(
           'bg-(--bg-color) hover:bg-green-500 size-4 rounded-full z-10',
-          progress < 3 && 'bg-primary-600'
+          progress < 2 && 'bg-primary-600'
         )}
         tooltip={status === 'done' ? 'Archive' : 'Complete'}
       />

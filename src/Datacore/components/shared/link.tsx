@@ -3,6 +3,7 @@ import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
 import { createFromTemplate, getFile, getLeaf } from '../../utils/files'
 import { cva } from './class-variance-authority'
+import { useLongPress } from './use-long-press'
 
 type Props = {
   children?: ComponentChildren
@@ -13,6 +14,7 @@ type Props = {
   tooltip?: string
   variant?: Parameters<typeof getVariant>[0]
   size?: Parameters<typeof getVariant>[1]
+  onLongPress?: () => void | Promise<void>
 } & (
   | { path?: never; onClick?: never; href: string }
   | { path: string; onClick?: never; href?: never }
@@ -47,6 +49,7 @@ export const Link = ({
   href,
   children,
   onClick,
+  onLongPress,
   variant,
   icon,
   className,
@@ -57,8 +60,20 @@ export const Link = ({
   size,
 }: Props) => {
   const variantValue = getVariant(variant, size)
+  const {
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerLeave,
+    consumeLongPress,
+  } = useLongPress<HTMLAnchorElement>({ onLongPress })
 
   const handleClick = async (e: MouseEvent) => {
+    if (consumeLongPress()) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+
     e.preventDefault()
     e.stopPropagation()
 
@@ -92,6 +107,9 @@ export const Link = ({
   return (
     <a
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
       className={classMerge(variantValue, className)}
       href={path}
       rel="noopener"

@@ -3,6 +3,8 @@ import type { ComponentChildren } from 'preact'
 import { classMerge } from '../../utils/classMerge'
 import { getResourcePath } from '../../utils/files'
 import { getFrontmatterValue } from '../../utils/markdown'
+import { LogAnnotationModal } from '../logs/log-annotation-modal'
+import { useDialog } from './dialog'
 import { Image } from './image'
 import { Link } from './link'
 
@@ -12,6 +14,7 @@ export type Props = {
   tooltip?: string
   className?: string
   actions?: ComponentChildren
+  omitModalLogger?: boolean
 }
 
 export const WidgetItem = ({
@@ -20,12 +23,20 @@ export const WidgetItem = ({
   tooltip,
   className,
   actions,
+  omitModalLogger = false,
 }: Props) => {
   const image = getFrontmatterValue<string>(page, 'image')
+  const { ref: dialogRef, close, open } = useDialog()
+
+  const hasModalLogger = !omitModalLogger
 
   return (
     <div className="bg-primary-950 flex w-full gap-2 overflow-hidden">
+      {hasModalLogger ? (
+        <LogAnnotationModal page={page} dialogRef={dialogRef} close={close} />
+      ) : null}
       <Link
+        onLongPress={hasModalLogger ? open : undefined}
         path={page.$path}
         tooltip={tooltip}
         key={page.$path}

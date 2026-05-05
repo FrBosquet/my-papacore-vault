@@ -3,14 +3,20 @@ import type { DateTime } from 'luxon'
 import { getFrontmatterValue, setPageFrontmatterValue } from './markdown'
 import { getTodayDatetime } from './time'
 
-export const STATUSES = ['backlog', 'this-week', 'ongoing', 'done', 'archive']
-export const STATUS_ORDER: Array<(typeof STATUSES)[number]> = [
+export const STATUSES = [
+  'backlog',
+  'this-week',
+  'ongoing',
+  'done',
+  'archive',
+] as const
+export const STATUS_ORDER = [
   'backlog',
   'archive',
   'done',
   'this-week',
   'ongoing',
-]
+] as const
 
 export type WeekTag = `${number}-W${string}`
 
@@ -142,8 +148,14 @@ export const moveToArchive = (task: MarkdownPage) => {
 }
 
 export const taskSorter = (a: MarkdownPage, b: MarkdownPage) => {
-  const aStatus = getFrontmatterValue<string>(a, 'status')
-  const bStatus = getFrontmatterValue<string>(b, 'status')
+  const aStatus = getFrontmatterValue<(typeof STATUS_ORDER)[number]>(
+    a,
+    'status'
+  )
+  const bStatus = getFrontmatterValue<(typeof STATUS_ORDER)[number]>(
+    b,
+    'status'
+  )
 
   const aIndex = aStatus ? STATUS_ORDER.indexOf(aStatus) : -1
   const bIndex = bStatus ? STATUS_ORDER.indexOf(bStatus) : -1

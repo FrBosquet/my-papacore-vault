@@ -26,6 +26,7 @@ export const AlbumItem = ({ album, actions }: Props) => {
 
   return (
     <WidgetItem
+      omitModalLogger
       key={album.$id}
       page={album}
       tooltip={album.$name}

@@ -1,3 +1,5 @@
+import { useLongPress } from './use-long-press'
+
 type LongPressButtonProps = {
   ariaLabel: string
   isDone: boolean | undefined
@@ -17,40 +19,21 @@ export const LongPressButton = ({
   onLongPress,
   children,
 }: LongPressButtonProps) => {
-  const timerRef = dc.useRef<number | null>(null)
-  const longPressFiredRef = dc.useRef(false)
+  const {
+    handlePointerDown,
+    handlePointerUp: handlePointerUpFromLongPress,
+    handlePointerLeave,
+    consumeLongPress,
+  } = useLongPress<HTMLButtonElement>({ onLongPress })
 
-  const clearTimer = () => {
-    if (timerRef.current != null) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
+  const handlePointerUp: preact.JSX.MouseEventHandler<HTMLButtonElement> =
+    async (event) => {
+      handlePointerUpFromLongPress(event)
+
+      if (!consumeLongPress()) {
+        await onClick()
+      }
     }
-  }
-
-  const handlePointerDown: preact.JSX.MouseEventHandler<
-    HTMLButtonElement
-  > = () => {
-    longPressFiredRef.current = false
-    timerRef.current = window.setTimeout(async () => {
-      longPressFiredRef.current = true
-      await onLongPress()
-    }, 500)
-  }
-
-  const handlePointerUp: preact.JSX.MouseEventHandler<
-    HTMLButtonElement
-  > = async () => {
-    clearTimer()
-    if (!longPressFiredRef.current) {
-      await onClick()
-    }
-  }
-
-  const handlePointerLeave: preact.JSX.MouseEventHandler<
-    HTMLButtonElement
-  > = () => {
-    clearTimer()
-  }
 
   return (
     <button
