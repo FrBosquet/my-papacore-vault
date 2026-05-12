@@ -1,8 +1,11 @@
+import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { KanbanBoard } from '../components/tasks/kanban-board'
+
 export const Kanban = () => {
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Kanban</h1>
-      <p>Your view content here</p>
-    </div>
-  );
-};
+  const tasks = dc.useQuery<MarkdownPage>(`
+    @page
+    AND path("Kanban/Tasks")
+  `)
+
+  return <KanbanBoard tasks={tasks} />
+}
