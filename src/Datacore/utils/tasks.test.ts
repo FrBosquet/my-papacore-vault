@@ -7,6 +7,7 @@ import {
   getPathFromTag,
   getTagFromFileName,
   getTaskWeekTagFromDate,
+  isCarryoverTag,
   isWeekTag,
 } from './tasks'
 
@@ -30,6 +31,15 @@ describe('tasks utils', () => {
     it('should detect a week tag', () => {
       expect(isWeekTag('2025-W01')).toBe(true)
       expect(isWeekTag('2025-2026')).toBe(false)
+    })
+
+    it('should detect a carryover tag', () => {
+      expect(isCarryoverTag('carryover-2025-W01')).toBe(true)
+      expect(isCarryoverTag('2025-W01')).toBe(false)
+    })
+
+    it('should not detect a week tag in a carryover tag', () => {
+      expect(isWeekTag('carryover-2025-W01')).toBe(false)
     })
 
     it('should transform a date to a week tag', () => {

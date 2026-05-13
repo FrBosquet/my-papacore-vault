@@ -18,6 +18,7 @@ import {
   getTaskWeekTagFromDate,
   getWeekFromTag,
   getWeekFromTags,
+  isCarryoverTag,
   moveToArchive,
   moveToDone,
   moveToOngoing,
@@ -158,12 +159,15 @@ const WeekBadge = ({
 const Badge = ({
   children,
   className,
+  tooltip,
 }: {
   children: ComponentChildren
   className?: string
+  tooltip?: string
 }) => {
   return (
     <span
+      data-label={tooltip}
       className={classMerge(
         'flex items-center gap-1 text-[0.45rem] leading-none px-1 py-0.5 rounded-full font-semibold uppercase whitespace-nowrap bg-theme-contrast',
         className
@@ -309,6 +313,7 @@ export const TaskRow = ({
   const due = getFrontmatterValue<DateTime>(task, 'due')
   const done = getFrontmatterValue<DateTime>(task, 'done')
   const status = getFrontmatterValue<string>(task, 'status')
+  const tags = getFrontmatterValue<string[]>(task, 'tags')
   const parent = task.value('parent')
 
   const project = dc.useMemo(() => {
@@ -360,6 +365,8 @@ export const TaskRow = ({
   }
 
   const isOngoing = status === 'ongoing'
+  const carryoverTags = tags?.filter((tag) => isCarryoverTag(tag))
+  const carryoverCount = carryoverTags?.length ?? 0
 
   return (
     <Link
@@ -396,12 +403,21 @@ export const TaskRow = ({
         </div>
         <p
           className={classMerge(
+            'flex items-center gap-2',
             isOngoing ? 'text-primary-100' : 'text-primary-300',
             done && 'text-green-600',
             archived && 'line-through text-primary-600'
           )}
         >
           {task.$name}
+          {carryoverCount > 0 && (
+            <Badge
+              className="bg-red-600 text-red-100 inline"
+              tooltip={`${carryoverCount} carryover${carryoverCount > 1 ? 's' : ''}`}
+            >
+              +{carryoverCount} semanas
+            </Badge>
+          )}
         </p>
       </section>
       <TaskTimeline task={task} />

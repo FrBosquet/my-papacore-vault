@@ -1,6 +1,8 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { Button } from '../components/shared/button'
 import { TaskRow } from '../components/tasks/task-row'
 import {
+  addToWeek,
   getDateFromWeekTag,
   getTagFromFileName,
   getTasksByMoment,
@@ -36,9 +38,14 @@ export const WeekManager = () => {
 
   const { carryOver, future } = getTasksByMoment(tasksNotInThisWeek, tag)
 
+  const handleCarryAll = () => {
+    carryOver.forEach((task) => {
+      addToWeek(task, tag)
+    })
+  }
+
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-bold">WeekManager</h1>
       <p>
         Tagged as <strong>{tag}</strong>
       </p>
@@ -52,7 +59,18 @@ export const WeekManager = () => {
 
       {carryOver.length > 0 && (
         <>
-          <h3>Carryover ({carryOver.length}):</h3>
+          <header className="flex items-center justify-between">
+            <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
+              Carryover ({carryOver.length})
+            </h3>
+            <Button
+              iconRight="calendar-arrow-up"
+              size="sm"
+              onClick={handleCarryAll}
+            >
+              Carry all
+            </Button>
+          </header>
           {carryOver.length > 0 &&
             carryOver
               .sort(taskSorter)

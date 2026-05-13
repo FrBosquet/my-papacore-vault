@@ -19,6 +19,7 @@ export const STATUS_ORDER = [
 ] as const
 
 export type WeekTag = `${number}-W${string}`
+export type CarryoverTag = `carryover-${WeekTag}`
 
 const weekRegex = /^\d{4}-W\d{2}$/
 
@@ -70,8 +71,14 @@ export const getPathFromTag = (tag: WeekTag) => {
   return `Weeks/${year}/${getFileNameFromTag(tag)}.md`
 }
 
-export const isWeekTag = (tag: string) => {
+export const isWeekTag = (tag: string): tag is WeekTag => {
   return weekRegex.test(tag)
+}
+
+export const isCarryoverTag = (tag: string): tag is CarryoverTag => {
+  return (
+    tag.startsWith('carryover-') && isWeekTag(tag.replace('carryover-', ''))
+  )
 }
 
 export const getTaskWeekTagFromDate = (date: DateTime): WeekTag => {
@@ -127,8 +134,10 @@ export const addToWeek = (task: MarkdownPage, weekTag: WeekTag) => {
   setPageFrontmatterValue(task, 'done', undefined)
   setPageFrontmatterValue(task, 'due', getLastDayOfWeektag(weekTag))
   setPageFrontmatterValue(task, 'tags', (current) => {
-    const cleanTags =
-      (current as string[])?.filter((tag) => !isWeekTag(tag)) ?? []
+    const cleanTags = (current as string[])?.map((tag) => {
+      if (isWeekTag(tag)) return `carryover-${tag}`
+      return tag
+    })
     return [...cleanTags, weekTag]
   })
 }
