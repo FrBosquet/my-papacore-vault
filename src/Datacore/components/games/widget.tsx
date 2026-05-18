@@ -19,7 +19,7 @@ export const GameWidget = () => {
   return (
     <Card>
       <header className="flex justify-between items-center">
-        <Link path="Gaming/Games.base" icon="gamepad-2">
+        <Link path="Gaming/2. Next.base" icon="gamepad-2">
           Playing
         </Link>
         <AddGameModal />
