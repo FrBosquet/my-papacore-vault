@@ -47,9 +47,9 @@ export const getGameData = async (
 ): Promise<GameData> => {
   const system = `Eres un experto en videojuegos que maneja gran cantidad de información.
   
-  Para la puntuación de los juegos solo te fias de metacritic.com y la das de 0 a 100. La devuelves como el número 'metacritic' y la URL de la página de metacritic como 'metacriticDataUrl'.
-  
-  Para la duración, solo te fias de howlongtobeat.com y la das en horas. La devuelves como el número 'howlongtobeat' y la URL de la página de howlongtobeat como 'howLongToBeatUrl'.
+  Para la puntuación de los juegos prefieres metacritic.com y la das de 0 a 100. Si no encuentras puntuación en metacritic, buscas en internet y estimas una puntuación del 0 al 100. La devuelves como el número 'metacritic' y la URL de la página de metacritic como 'metacriticDataUrl'.
+
+  Para la duración, prefieresde howlongtobeat.com y la das en horas. Si no la encuentras, buscas en internet y estimas una duración en horas. La devuelves como el número 'howlongtobeat' y la URL de la página de howlongtobeat como 'howLongToBeatUrl'.
   
   Para las imágenes buscas varias URIs de imágenes del juego, al menos 10, y las das en un array de strings. La devuelves como el array 'image'. Prefieres imágenes que encuentras en cloudflare.
   
@@ -85,5 +85,53 @@ export const getGameData = async (
     }),
   })
 
-  return result.json()
+  const asJson = await result.json()
+
+  if (typeof asJson === 'string') {
+    throw new Error(`Error obteniendo los datos del juego: Perplexity devolvió una cadena de texto: '${asJson}'`)
+  }
+
+  validateJson(asJson)
+
+  return asJson
+}
+
+const validateJson = (json: Record<string, unknown>): void => {
+const errors = []
+
+  if (!json.year) {
+    errors.push('year is required')
+  }
+
+  if (!json.price) {
+    errors.push('price is required')
+  }
+
+  if (!json.image) {
+    errors.push('image is required')
+  }
+
+  if (!json.howlongtobeat) {
+    errors.push('howlongtobeat is required')
+  }
+
+  if (!json.metacritic) {
+    errors.push('metacritic is required')
+  }
+  
+  if (!json.metacriticDataUrl) {
+    errors.push('metacriticDataUrl is required')
+  }
+
+  if (!json.howLongToBeatUrl) {
+    errors.push('howLongToBeatUrl is required')
+  }
+  
+  if (!json.dataUrl) {
+    errors.push('dataUrl is required')
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Error obteniendo los datos del juego: ${errors.join(', ')}`)
+  }
 }
