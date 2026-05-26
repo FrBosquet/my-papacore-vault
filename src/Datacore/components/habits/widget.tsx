@@ -250,24 +250,33 @@ const HabitToggle = ({
     habit.key
   )
 
+  const [optimisticIsDone, setOptimisticIsDone] = dc.useState(isDone)
+
   const handleClick = async () => {
     if (!page) {
       await createFromTemplate(targetPath, 'daily')
       setTogglePending(true)
       return
     }
-
+    setOptimisticIsDone(!optimisticIsDone)
     setIsDone(!isDone)
   }
 
+  // dc.useEffect(() => {
+  //   if (togglePending && page) {
+  //     setIsDone(!isDone)
+  //     setTogglePending(false)
+  //   }
+  // }, [togglePending, page])
+
   dc.useEffect(() => {
-    if (togglePending && page) {
-      setIsDone(!isDone)
-      setTogglePending(false)
+    if (!isLoading && optimisticIsDone !== isDone) {
+      setOptimisticIsDone(isDone)
     }
-  }, [togglePending, page])
+  }, [isDone, optimisticIsDone, isLoading])
 
   const renderStreak = () => {
+    if (isLoading) return null
     if (!streak) return null
     if (streak?.days === 1) return null
 
@@ -296,7 +305,7 @@ const HabitToggle = ({
   return (
     <LongPressButton
       ariaLabel={tooltipContent ?? habit.label}
-      isDone={isDone}
+      isDone={optimisticIsDone}
       faded={faded}
       onClick={handleClick}
       onLongPress={handleLongPress}
@@ -311,20 +320,18 @@ const HabitToggle = ({
         habit.key
       )}
       <span>{habit.label}</span>
-      {
-        <div
-          className={classMerge(
-            'absolute bottom-0 to-transparent bg-size-[100%_200%] bg-position-[50%_10px] bg-no-repeat uppercase text-xs font-semibold p-2 bg-radial h-6 w-full',
-            inStreak
-              ? 'from-green-50 text-primary-900 text-base h-8 bg-position-[50%_8px]'
-              : undefined,
-            inWarningHiatus ? 'from-yellow-700/20 text-yellow-400' : undefined,
-            inDangerHiatus ? 'from-red-700/20 text-red-400' : undefined
-          )}
-        >
-          {renderStreak()}
-        </div>
-      }
+      <div
+        className={classMerge(
+          'absolute bottom-0 to-transparent bg-size-[100%_200%] bg-position-[50%_10px] bg-no-repeat uppercase text-xs font-semibold p-2 bg-radial h-6 w-full',
+          inStreak
+            ? 'from-green-50 text-primary-900 text-base h-8 bg-position-[50%_8px]'
+            : undefined,
+          inWarningHiatus ? 'from-yellow-700/20 text-yellow-400' : undefined,
+          inDangerHiatus ? 'from-red-700/20 text-red-400' : undefined
+        )}
+      >
+        {renderStreak()}
+      </div>
     </LongPressButton>
   )
 }
