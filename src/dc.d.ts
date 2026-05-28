@@ -24,6 +24,8 @@ declare global {
     query<T = Indexable>(query: string): Array<Indexable & T> | undefined
   }
 
+  const requestUrl: typeof import('obsidian').requestUrl 
+
   namespace JSX {
     interface Element extends PreactJSX.Element {}
     interface IntrinsicElements extends PreactJSX.IntrinsicElements {}

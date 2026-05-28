@@ -12,6 +12,8 @@ const getVariant = cva({
       'bg-theme-contrast text-white h-auto hover:bg-theme-contrast-hover tracking-wide disabled:bg-theme-contrast-disabled disabled:cursor-not-allowed active:bg-white active:text-theme-contrast',
     warning:
       'bg-red-700 text-red-300 h-auto hover:bg-red-500 tracking-wide disabled:bg-red-700 disabled:cursor-not-allowed active:bg-white active:text-red-700',
+    ghost:
+      'bg-transparent text-primary-500 h-auto hover:text-primary-300 tracking-wide disabled:cursor-not-allowed active:bg-white active:text-primary-300 outline-none shadow-none',
   },
   sizes: {
     default: 'px-2 text-sm',
@@ -19,7 +21,7 @@ const getVariant = cva({
     lg: 'px-3 text-base',
     icon: 'px-1 py-1 size-8 rounded-full text-xs aspect-square',
     'icon-xs':
-      'px-[0.25rem] py-[0.25rem] [&_.dc-icon]:size-3 rounded-full text-xs aspect-square',
+      'px-1 py-1 [&_.dc-icon]:size-3 rounded-full text-xs aspect-square',
   },
 })
 

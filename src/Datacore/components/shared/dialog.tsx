@@ -1,4 +1,4 @@
-import type { Ref } from 'preact'
+import type { Ref, RefObject } from 'preact'
 import { useEffect, useRef } from 'preact/hooks'
 import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
@@ -6,10 +6,11 @@ import { Button, type Props as ButtonProps } from './button'
 
 export type Props = {
   children: React.ReactNode
-  className?: string
+  className?: string,
+  wrapperClassName?: string
   title?: string
   icon?: IconName
-  dialogRef: Ref<HTMLDialogElement>
+  dialogRef: RefObject<HTMLDialogElement>
   triggerProps?: Partial<Omit<ButtonProps, 'onClick'>>
   onOpen?: () => void
   hideTrigger?: boolean
@@ -35,6 +36,7 @@ export const Dialog = (props: Props) => {
   const {
     children,
     className,
+    wrapperClassName,
     icon,
     title,
     dialogRef,
@@ -64,7 +66,7 @@ export const Dialog = (props: Props) => {
           (triggerProps?.icon ? '' : (title ?? 'Open Dialog'))}
       </Button>
       <dialog
-        className="pc-dialog"
+        className={wrapperClassName}
         ref={dialogRef}
         onMouseDown={(e) => {
           // Track if mousedown happened on the overlay (dialog element itself)
@@ -84,7 +86,7 @@ export const Dialog = (props: Props) => {
       >
         <div
           className={classMerge(
-            'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl w-full pointer-events-auto max-w-[min(700px,90vw)]',
+            'bg-primary-950 fixed flex flex-col p-4 left-1/2 top-1/2 transform -translate-x-[50%] -translate-y-1/2 shadow-2xl w-full pointer-events-auto max-w-[min(700px,calc(100vw-4rem))] max-h-[calc(100vh-2rem)]',
             className
           )}
         >
@@ -100,6 +102,8 @@ export const Dialog = (props: Props) => {
                   {title}
                 </h2>
               )}
+              <div className="flex-1" />
+              <Button icon="x" size="icon-xs" onClick={() => dialogRef?.current?.close()} />
             </header>
           )}
           {children}

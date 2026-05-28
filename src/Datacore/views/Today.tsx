@@ -6,12 +6,12 @@ import { ProjectsWidget } from '../components/projects/widget'
 import { ReadLaterWidget } from '../components/read-later/widget'
 import { TasksWidget } from '../components/tasks/widget'
 
-export const Today = () => {
+export const Today = ({ steamGridApiKey }: { steamGridApiKey: string }) => {
   return (
     <article className="flex flex-col gap-2 pb-2">
       <header className="grid xl:grid-cols-3 gap-2 w-full">
         <ProjectsWidget />
-        <GameWidget />
+        <GameWidget steamGridApiKey={steamGridApiKey} />
         <MusicWidget />
       </header>
       <ReadLaterWidget />

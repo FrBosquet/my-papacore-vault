@@ -9,9 +9,9 @@ import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
 import { WidgetItem } from '../shared/widget'
-import { AddGameModal } from './add-modal'
+import { GameStudioModal } from './game-studio/game-studio-modal'
 
-export const GameWidget = () => {
+export const GameWidget = ({ steamGridApiKey }: { steamGridApiKey: string }) => {
   const games = dc.useQuery<MarkdownPage>(
     `@page AND path("Gaming/Games") AND start AND !end`
   )
@@ -22,7 +22,7 @@ export const GameWidget = () => {
         <Link path="Gaming/2. Next.base" icon="gamepad-2">
           Playing
         </Link>
-        <AddGameModal />
+        <GameStudioModal steamGridApiKey={steamGridApiKey}/>
       </header>
       <Scroller className="h-30" wrapperClassName="gap-2">
         {games.map((game) => (
