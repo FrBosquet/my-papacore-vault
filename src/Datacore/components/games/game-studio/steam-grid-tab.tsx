@@ -6,6 +6,7 @@ interface Props {
   injectValue: (field: 'name' | 'year' | 'image', value: string) => void
   formData: Record<string, string>
   apiKey: string
+  isEditing: boolean
 }
 
 const BASE_URL = 'https://www.steamgriddb.com/api/v2'
@@ -29,6 +30,7 @@ export const SteamGridTab = ({
   injectValue,
   formData,
   apiKey,
+  isEditing,
 }: Props) => {
   const value = useDebouncedState(name)
 
@@ -91,7 +93,7 @@ export const SteamGridTab = ({
   return (
     <div className="w-full h-full overflow-y-scroll flex flex-col gap-2">
       <select
-        className="w-full"
+        className="w-full my-4"
         value={selectedGame?.id}
         onChange={(e) =>
           setSelectedGame(
@@ -118,7 +120,7 @@ export const SteamGridTab = ({
           icon="arrow-big-left"
           className="justify-start"
           onClick={() => injectValue('name', selectedGame.name)}
-          disabled={formData.name === selectedGame.name}
+          disabled={formData.name === selectedGame.name || isEditing}
         >
           {selectedGame.name} - Copy to form
         </Button>

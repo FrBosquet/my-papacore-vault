@@ -171,3 +171,23 @@ export const appendToLog = async (
 
   await dc.app.vault.modify(file, updatedContent)
 }
+
+/** Windows-forbidden, macOS `:` (legacy/cross-sync), control chars, Obsidian wikilink hazards. */
+export const INVALID_FILENAME_CHARS = /[<>:"/\\|?*#^[\]{}]|\p{Cc}/u
+
+/** Windows: names cannot end with a space or period. */
+export const INVALID_FILENAME_TRAILING = /[.\s]$/
+
+/** Windows reserved device names (case-insensitive, optional extension). */
+export const INVALID_FILENAME_RESERVED =
+  /^(con|prn|aux|nul|com[1-9]|lpt[1-9])($|\.)/i
+
+export const isInvalidFilename = (name: string): boolean => {
+  const trimmed = name.trim()
+  if (trimmed === '') return false
+  return (
+    INVALID_FILENAME_CHARS.test(name) ||
+    INVALID_FILENAME_TRAILING.test(name) ||
+    INVALID_FILENAME_RESERVED.test(trimmed)
+  )
+}

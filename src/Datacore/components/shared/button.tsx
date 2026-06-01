@@ -4,7 +4,7 @@ import { classMerge } from '../../utils/classMerge'
 import { cva } from './class-variance-authority'
 
 const getVariant = cva({
-  base: 'relative rounded-none cursor-pointer h-auto uppercase font-semibold transition-colors py-1 flex gap-1 items-center',
+  base: 'relative rounded-none cursor-pointer h-auto uppercase font-semibold transition-colors py-1 flex gap-2 items-center',
   variants: {
     default:
       'bg-theme-accent text-primary-950 h-auto hover:bg-theme-accent-hover tracking-wide disabled:bg-theme-accent-disabled disabled:cursor-not-allowed active:bg-white active:text-theme-disabled',

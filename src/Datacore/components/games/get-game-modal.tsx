@@ -6,6 +6,10 @@ import { type GameData, getGameData } from '../../utils/perplexity'
 import { Button } from '../shared/button'
 import { Dialog, useDialog } from '../shared/dialog'
 
+/**
+ *
+ * @deprecated Use GameStudioModal instead
+ */
 export const GetGameDataModal = ({
   apiKey,
   file,
