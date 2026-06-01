@@ -39,6 +39,7 @@ export type Props = {
   type?: 'button' | 'submit' | 'reset'
   label?: string | null
   dataAttributes?: Record<string, string>
+  form?: string
 }
 
 export const Button = ({
@@ -55,6 +56,7 @@ export const Button = ({
   type = 'button',
   label,
   dataAttributes,
+  form,
 }: Props) => {
   const variantValue = getVariant(variant, size)
   const calculatedClassName = classMerge(variantValue, className)
@@ -73,6 +75,7 @@ export const Button = ({
       className={calculatedClassName}
       disabled={disabled || isLoading}
       onClick={onClick}
+      form={form}
     >
       {icon && <dc.Icon icon={icon} />}
       {label === undefined ? children : label}

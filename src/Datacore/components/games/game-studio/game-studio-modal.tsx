@@ -1,7 +1,9 @@
+import { Button } from '../../shared/button'
 import { Dialog, useDialog } from '../../shared/dialog'
 import { InputField, type InputOnChange } from '../input-field'
 import { Tabs } from '../tabs'
 import { HLTBTab } from './hltb-tab'
+import { InstantGamingTab } from './instant-gaming-tab'
 import { MetacriticTab } from './metacritic-tab'
 import { SteamGridTab } from './steam-grid-tab'
 
@@ -9,17 +11,18 @@ type Props = {
   steamGridApiKey: string
 }
 
-const tabs = ['hltb', 'metacritic', 'steam-grid'] as const
+const tabs = ['steam-grid', 'hltb', 'metacritic', 'instant-gaming'] as const
 
 export const GameStudioModal = ({ steamGridApiKey }: Props) => {
-  const { ref: dialogRef } = useDialog()
-  const [activeTab, setActiveTab] = dc.useState<(typeof tabs)[number]>('hltb')
+  const { ref: dialogRef, close } = useDialog()
+  const [activeTab, setActiveTab] = dc.useState<(typeof tabs)[number]>(tabs[0])
   const [formData, setFormData] = dc.useState({
     name: '',
     year: '',
     image: '',
     hltb: '',
     metacritic: '',
+    price: '',
   })
 
   // const handleSubmit = async (e: Event) => {
@@ -65,8 +68,8 @@ export const GameStudioModal = ({ steamGridApiKey }: Props) => {
     >
       <div className="flex h-full gap-4 overflow-hidden">
         {/* form */}
-        <div className="flex-1 overflow-scroll">
-          <form className="flex flex-col gap-6">
+        <div className="flex-1 overflow-hidden flex flex-col gap-4">
+          <form className="flex flex-col gap-6 flex-1 overflow-y-scroll">
             {formData.image && <img src={formData.image} alt="Game hero" />}
             <InputField
               value={formData.name}
@@ -127,8 +130,37 @@ export const GameStudioModal = ({ steamGridApiKey }: Props) => {
               helpText="Score of the game. It indicates if its worth to commit to it or not. It could be a metacritic score, an steam score, or other source. MEasured from 0 to 100"
               type="number"
             />
-            <pre>{JSON.stringify(formData, null, 2)}</pre>
+            <InputField
+              disabled={!formData.name}
+              value={formData.price}
+              onChange={handleChange}
+              onFocus={() => {
+                setActiveTab('instant-gaming')
+              }}
+              label="Price"
+              id="price"
+              placeholder="Price"
+              helpText="Price of the game. It indicates if its worth to commit to it or not. It could be a steam price, an instant gaming price, or other source. Measured in euros."
+              type="number"
+            />
           </form>
+          <footer className="flex justify-end gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                close()
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={!formData.name}
+              form="game-studio-form"
+            >
+              Save
+            </Button>
+          </footer>
         </div>
         {/* helpers */}
         <div className="flex-1 h-full overflow-hidden">
@@ -139,6 +171,7 @@ export const GameStudioModal = ({ steamGridApiKey }: Props) => {
             tabContent={{
               hltb: <HLTBTab name={formData.name} />,
               metacritic: <MetacriticTab name={formData.name} />,
+              'instant-gaming': <InstantGamingTab name={formData.name} />,
               'steam-grid': (
                 <SteamGridTab
                   name={formData.name}

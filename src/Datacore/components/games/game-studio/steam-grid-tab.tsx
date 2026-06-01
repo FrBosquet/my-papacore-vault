@@ -24,7 +24,12 @@ type GameAsset = {
   thumb: string
 }
 
-export const SteamGridTab = ({ name, injectValue, formData, apiKey }: Props) => {
+export const SteamGridTab = ({
+  name,
+  injectValue,
+  formData,
+  apiKey,
+}: Props) => {
   const value = useDebouncedState(name)
 
   const [selectedGame, setSelectedGame] = dc.useState<GameOption | undefined>(
@@ -72,7 +77,12 @@ export const SteamGridTab = ({ name, injectValue, formData, apiKey }: Props) => 
     }
   }, [selectedGame])
 
-  if (!value.length) return <p>Add a name first</p>
+  if (!value.length)
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+        <p className="text-lg text-primary-500 uppercase">Add a name first</p>
+      </div>
+    )
 
   const year = selectedGame?.release_date
     ? new Date(selectedGame.release_date * 1000).getFullYear().toString()
