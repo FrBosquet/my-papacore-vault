@@ -41,11 +41,12 @@ export const GameStudioModal = ({
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault()
+    const isNewGame = !file
 
     const formData = new FormData(e.target as HTMLFormElement)
 
     // If its a new game, use the file name, otherwise use the form data
-    const name = file ? file.$name : (formData.get('name') as string)
+    const name = isNewGame ? (formData.get('name') as string) : file.$name
     const year = formData.get('year') as string
     const image = formData.get('image') as string
     const hltb = formData.get('hltb') as string
@@ -67,7 +68,10 @@ export const GameStudioModal = ({
         frontmatter.metacritic = +metacritic
         frontmatter.price = +price
       })
-      getLeaf(true).openFile(targetFile)
+
+      if (isNewGame) {
+        getLeaf(true).openFile(targetFile)
+      }
     }
 
     close()
