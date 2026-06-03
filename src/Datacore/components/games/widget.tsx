@@ -1,14 +1,8 @@
-import type { MarkdownListItem, MarkdownPage } from '@blacksmithgu/datacore'
-import type { DateTime } from 'luxon'
-import { getDailyNoteDatetime } from '../../utils/files'
-import {
-  cleanAnnotationFromLinks,
-  getFrontmatterValue,
-} from '../../utils/markdown'
+import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
-import { WidgetItem } from '../shared/widget'
+import { GameItem } from './game-item'
 import { GameStudioModal } from './game-studio/game-studio-modal'
 
 export const GameWidget = ({ steamGridApiKey }: { steamGridApiKey: string }) => {
@@ -30,53 +24,5 @@ export const GameWidget = ({ steamGridApiKey }: { steamGridApiKey: string }) => 
         ))}
       </Scroller>
     </Card>
-  )
-}
-
-const GameItem = ({ game }: { game: MarkdownPage }) => {
-  const path = game.$path
-
-  const start = getFrontmatterValue<DateTime>(game, 'start')
-
-  const days = start ? Math.floor(-start.diffNow().as('days')) : 0
-
-  const annotations = dc.useQuery<MarkdownListItem>(
-    `@list-item AND connected([[${path}]])`
-  )
-  const lastAnnotation = annotations[annotations.length - 1]
-
-  const annotationDay = lastAnnotation
-    ? getDailyNoteDatetime(lastAnnotation.$file)
-    : null
-  const daysSinceLastAnnotation = annotationDay
-    ? Math.floor(-annotationDay.diffNow().as('days'))
-    : 0
-
-  const lastAnnotationText = lastAnnotation
-    ? cleanAnnotationFromLinks(lastAnnotation?.$text ?? '')
-    : 'Nunca anotado'
-
-  const lastAnnotationLabel =
-    daysSinceLastAnnotation === 0
-      ? 'hoy'
-      : daysSinceLastAnnotation === 1
-        ? 'ayer'
-        : `hace ${daysSinceLastAnnotation} dias`
-
-  return (
-    <WidgetItem key={game.$id} page={game} tooltip={lastAnnotationText}>
-      <span className="normal-case text-primary-300 transition group-hover:text-primary-800">
-        {game.$name}
-      </span>
-      <div className="flex justify-between items-center w-full tracking-normal">
-        <span className="text-xs text-primary-600 normal-case flex gap-1 items-center">
-          <dc.Icon className="size-3" icon="calendar-plus" /> {days} dias
-        </span>
-        <span className="text-xs text-primary-600 normal-case flex gap-1 items-center">
-          anotado {lastAnnotationLabel}{' '}
-          <dc.Icon className="size-3" icon="notebook-pen" />
-        </span>
-      </div>
-    </WidgetItem>
   )
 }
