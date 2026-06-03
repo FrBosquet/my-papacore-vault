@@ -1,6 +1,4 @@
 import type { TFile } from 'obsidian'
-import { getPage } from './files'
-import { setPageFrontmatterValue } from './markdown'
 
 /** Public Templater core API used from outside template execution. */
 type TemplaterCore = {
@@ -77,19 +75,17 @@ export const createNewReadLater = async (
     throw new Error('Read later template not found')
   }
   const templater = getTemplaterCore()
-  const file = await templater.create_new_note_from_template(
+  const targetFile = await templater.create_new_note_from_template(
     template,
     'Readlist',
     title,
     false
   )
-  if (file) {
-    const page = getPage(file.path)
-
-    if (page) {
-      await setPageFrontmatterValue(page, 'url', url)
-      await setPageFrontmatterValue(page, 'why', why)
-    }
+  if (targetFile) {
+    await dc.app.fileManager.processFrontMatter(targetFile, (frontmatter) => {
+      frontmatter.url = url
+      frontmatter.why = why
+    })
   }
-  return file
+  return targetFile
 }
