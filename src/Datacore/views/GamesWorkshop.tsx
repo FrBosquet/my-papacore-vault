@@ -1,8 +1,8 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
+import type { IconName } from '../../icons'
+import { GameItem } from '../components/games/game-item'
 import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
-import { GameItem } from '../components/games/game-item'
-import { IconName } from '../../icons'
 
 export const GamesWorkshop = () => {
   return (
@@ -88,11 +88,9 @@ const NowPlayingGamesCard = () => {
           <p className="text-sm text-gray-400">NOW PLAYING</p>
         </Link>
         <section className="md:col-span-2 flex flex-col gap-2">
-          {
-            nowPlayingGames.map((game) => (
-              <GameItem key={game.$id} game={game} />
-            ))
-          }
+          {nowPlayingGames.map((game) => (
+            <GameItem key={game.$id} game={game} />
+          ))}
         </section>
       </div>
     </Card>
@@ -104,41 +102,56 @@ const MalformedGamesCard = () => {
     @page AND path("Gaming/Games")
   `)
 
-const filteredList = malformedGames.reduce<{ game: MarkdownPage, errors: string[] }[]>((acc, game) => {
-  const errors = []
-  if (!game.value('image')) errors.push('image')
-  if (!game.value('year')) errors.push('year')
-  if (!(game.value('price') !== undefined)) errors.push('price')
-  if (!game.value('hltb')) errors.push('hltb')
-  if (!game.value('metacritic')) errors.push('metacritic')
+  const filteredList = malformedGames.reduce<
+    { game: MarkdownPage; errors: string[] }[]
+  >((acc, game) => {
+    const errors = []
+    if (!game.value('image')) errors.push('image')
+    if (!game.value('year')) errors.push('year')
+    if (!(game.value('price') !== undefined)) errors.push('price')
+    if (!game.value('hltb')) errors.push('hltb')
+    if (!game.value('metacritic')) errors.push('metacritic')
 
-  if (errors.length > 0) {
-    acc.push({
-      game,
-      errors,
-    })
-  }
+    if (errors.length > 0) {
+      acc.push({
+        game,
+        errors,
+      })
+    }
 
-  return acc
-}, [])
+    return acc
+  }, [])
 
   return (
     <Card>
-      <h3>Games with errors</h3>
+      <h4>Games with errors ({filteredList.length})</h4>
       <section className="flex flex-col gap-2 p-2">
-          {
-            filteredList.map(({game, errors}) => (
-              <Link key={game.$id} path={game.$path} className="text-sm text-gray-400 flex gap-2 items-center">
-                <p className="flex-1">{game.$name}</p>
-                <div className="text-red-400 flex gap-1">{errors.map(error => <ErrorIcon key={error} error={error} />)}</div></Link>
-            ))
-          }
-        </section>
+        {filteredList.map(({ game, errors }) => (
+          <Link
+            key={game.$id}
+            path={game.$path}
+            className="text-sm text-gray-400 flex gap-2 items-center"
+          >
+            <p className="flex-1">{game.$name}</p>
+            <div className="text-red-400 flex gap-1">
+              {errors.map((error) => (
+                <ErrorIcon key={error} error={error} />
+              ))}
+            </div>
+          </Link>
+        ))}
+      </section>
     </Card>
   )
 }
 
-const IconWrapper = ({ icon, tooltip }: { icon: IconName, tooltip: string }) => {
+const IconWrapper = ({
+  icon,
+  tooltip,
+}: {
+  icon: IconName
+  tooltip: string
+}) => {
   return (
     <button
       type="button"
@@ -152,10 +165,31 @@ const IconWrapper = ({ icon, tooltip }: { icon: IconName, tooltip: string }) => 
 
 const ErrorIcon = ({ error }: { error: string }) => {
   switch (error) {
-    case 'image': return <IconWrapper icon='image' tooltip="This game is missing an image" />
-    case 'year': return <IconWrapper icon='calendar' tooltip="This game is missing a year" />
-    case 'price': return <IconWrapper icon='dollar-sign' tooltip="This game is missing a price" />
-    case 'hltb': return <IconWrapper icon='clock' tooltip="This game is missing a HLTB time" />
-    case 'metacritic': return <IconWrapper icon='star' tooltip="This game is missing a Metacritic link" />
+    case 'image':
+      return (
+        <IconWrapper icon="image" tooltip="This game is missing an image" />
+      )
+    case 'year':
+      return (
+        <IconWrapper icon="calendar" tooltip="This game is missing a year" />
+      )
+    case 'price':
+      return (
+        <IconWrapper
+          icon="dollar-sign"
+          tooltip="This game is missing a price"
+        />
+      )
+    case 'hltb':
+      return (
+        <IconWrapper icon="clock" tooltip="This game is missing a HLTB time" />
+      )
+    case 'metacritic':
+      return (
+        <IconWrapper
+          icon="star"
+          tooltip="This game is missing a Metacritic link"
+        />
+      )
   }
 }

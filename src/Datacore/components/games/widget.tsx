@@ -5,7 +5,11 @@ import { Scroller } from '../shared/scroller'
 import { GameItem } from './game-item'
 import { GameStudioModal } from './game-studio/game-studio-modal'
 
-export const GameWidget = ({ steamGridApiKey }: { steamGridApiKey: string }) => {
+export const GameWidget = ({
+  steamGridApiKey,
+}: {
+  steamGridApiKey: string
+}) => {
   const games = dc.useQuery<MarkdownPage>(
     `@page AND path("Gaming/Games") AND start AND !end`
   )
@@ -13,10 +17,10 @@ export const GameWidget = ({ steamGridApiKey }: { steamGridApiKey: string }) => 
   return (
     <Card>
       <header className="flex justify-between items-center">
-        <Link path="Gaming/2. Next.base" icon="gamepad-2">
+        <Link path="Gaming/0. Workshop.md" icon="gamepad-2">
           Playing
         </Link>
-        <GameStudioModal steamGridApiKey={steamGridApiKey}/>
+        <GameStudioModal steamGridApiKey={steamGridApiKey} />
       </header>
       <Scroller className="h-30" wrapperClassName="gap-2">
         {games.map((game) => (
