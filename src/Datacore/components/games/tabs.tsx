@@ -1,5 +1,5 @@
-import { Button } from "../shared/button"
-import type { JSX } from "preact"
+import type { JSX } from 'preact'
+import { Button } from '../shared/button'
 
 type Props<T extends readonly string[]> = {
   tabs: T
@@ -18,12 +18,20 @@ export const Tabs = <T extends readonly string[]>({
     <section className="h-full flex flex-col overflow-hidden">
       <header className="flex">
         {tabs.map((tab) => (
-          <Button variant={activeTab === tab ? 'default' : 'ghost'} key={tab} onClick={() => setActiveTab(tab)}>{tab}</Button>
+          <Button
+            variant={activeTab === tab ? 'default' : 'ghost'}
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </Button>
         ))}
       </header>
       <main className="flex-1 py-2 overflow-hidden">
         {Object.entries(tabContent).map(([tab, content]) => (
-          <div key={tab} className={activeTab === tab ? 'contents' : 'hidden'}>{content as JSX.Element}</div>
+          <div key={tab} className={activeTab === tab ? 'contents' : 'hidden'}>
+            {content as JSX.Element}
+          </div>
         ))}
       </main>
     </section>

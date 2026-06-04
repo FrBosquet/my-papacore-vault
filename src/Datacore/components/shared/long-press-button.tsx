@@ -26,14 +26,15 @@ export const LongPressButton = ({
     consumeLongPress,
   } = useLongPress<HTMLButtonElement>({ onLongPress })
 
-  const handlePointerUp: preact.JSX.MouseEventHandler<HTMLButtonElement> =
-    async (event) => {
-      handlePointerUpFromLongPress(event)
+  const handlePointerUp: preact.JSX.MouseEventHandler<
+    HTMLButtonElement
+  > = async (event) => {
+    handlePointerUpFromLongPress(event)
 
-      if (!consumeLongPress()) {
-        await onClick()
-      }
+    if (!consumeLongPress()) {
+      await onClick()
     }
+  }
 
   return (
     <button

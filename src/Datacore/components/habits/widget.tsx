@@ -243,7 +243,6 @@ const HabitToggle = ({
     streak?.type === 'hiatus' && streak?.days < 3 && streak?.days > 1
   const inDangerHiatus = streak?.type === 'hiatus' && streak?.days >= 3
 
-  const [togglePending, setTogglePending] = dc.useState(false)
   const [page] = dc.useQuery(`@page and $path = "${targetPath}"`)
   const [isDone, setIsDone, isLoading] = useFileFrontmatterState<boolean>(
     targetPath,
@@ -255,19 +254,11 @@ const HabitToggle = ({
   const handleClick = async () => {
     if (!page) {
       await createFromTemplate(targetPath, 'daily')
-      setTogglePending(true)
       return
     }
     setOptimisticIsDone(!optimisticIsDone)
     setIsDone(!isDone)
   }
-
-  // dc.useEffect(() => {
-  //   if (togglePending && page) {
-  //     setIsDone(!isDone)
-  //     setTogglePending(false)
-  //   }
-  // }, [togglePending, page])
 
   dc.useEffect(() => {
     if (!isLoading && optimisticIsDone !== isDone) {

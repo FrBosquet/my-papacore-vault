@@ -88,7 +88,9 @@ export const getGameData = async (
   const asJson = await result.json()
 
   if (typeof asJson === 'string') {
-    throw new Error(`Error obteniendo los datos del juego: Perplexity devolvió una cadena de texto: '${asJson}'`)
+    throw new Error(
+      `Error obteniendo los datos del juego: Perplexity devolvió una cadena de texto: '${asJson}'`
+    )
   }
 
   validateJson(asJson)
@@ -97,7 +99,7 @@ export const getGameData = async (
 }
 
 const validateJson = (json: Record<string, unknown>): void => {
-const errors = []
+  const errors = []
 
   if (!json.year) {
     errors.push('year is required')
@@ -118,7 +120,7 @@ const errors = []
   if (!json.metacritic) {
     errors.push('metacritic is required')
   }
-  
+
   if (!json.metacriticDataUrl) {
     errors.push('metacriticDataUrl is required')
   }
@@ -126,12 +128,14 @@ const errors = []
   if (!json.howLongToBeatUrl) {
     errors.push('howLongToBeatUrl is required')
   }
-  
+
   if (!json.dataUrl) {
     errors.push('dataUrl is required')
   }
 
   if (errors.length > 0) {
-    throw new Error(`Error obteniendo los datos del juego: ${errors.join(', ')}`)
+    throw new Error(
+      `Error obteniendo los datos del juego: ${errors.join(', ')}`
+    )
   }
 }

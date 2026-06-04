@@ -1,4 +1,4 @@
-import type { Ref, RefObject } from 'preact'
+import type { RefObject } from 'preact'
 import { useEffect, useRef } from 'preact/hooks'
 import type { IconName } from '../../../icons'
 import { classMerge } from '../../utils/classMerge'
@@ -6,7 +6,7 @@ import { Button, type Props as ButtonProps } from './button'
 
 export type Props = {
   children: React.ReactNode
-  className?: string,
+  className?: string
   wrapperClassName?: string
   title?: string
   icon?: IconName
@@ -103,7 +103,11 @@ export const Dialog = (props: Props) => {
                 </h2>
               )}
               <div className="flex-1" />
-              <Button icon="x" size="icon-xs" onClick={() => dialogRef?.current?.close()} />
+              <Button
+                icon="x"
+                size="icon-xs"
+                onClick={() => dialogRef?.current?.close()}
+              />
             </header>
           )}
           {children}

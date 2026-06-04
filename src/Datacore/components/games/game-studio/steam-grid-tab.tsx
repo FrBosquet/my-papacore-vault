@@ -104,8 +104,8 @@ export const SteamGridTab = ({
         }
       >
         {gameOptions.map((game) => {
-          const releaseDate = game['release_date']
-            ? new Date(game['release_date'] * 1000).getFullYear()
+          const releaseDate = game.release_date
+            ? new Date(game.release_date * 1000).getFullYear()
             : null
 
           return (
