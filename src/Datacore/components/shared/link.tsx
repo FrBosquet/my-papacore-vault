@@ -37,10 +37,13 @@ const getVariant = cva({
     default:
       'uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent hover:text-theme-contrast transition-all overflow-hidden w-full flex items-center gap-2',
     plain: 'text-primary-300 hover:text-contrast-300 hover:bg-contrast-950',
+    button:
+      'bg-theme-accent text-primary-950 hover:bg-theme-accent-hover tracking-wide disabled:bg-theme-accent-disabled disabled:cursor-not-allowed active:bg-white active:text-theme-disabled relative rounded-none cursor-pointer h-auto uppercase font-semibold transition-colors py-1 flex gap-2 items-center',
   },
   sizes: {
     default: '',
     lg: 'text-base',
+    sm: 'px-1 text-xs',
   },
 })
 

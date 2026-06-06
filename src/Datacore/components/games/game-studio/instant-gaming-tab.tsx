@@ -1,3 +1,4 @@
+import { getInstantGamingUrl } from '../../../utils/services'
 import { useDebouncedState } from './use-debounced-state'
 
 interface Props {
@@ -7,12 +8,10 @@ interface Props {
 export const InstantGamingTab = ({ name }: Props) => {
   const value = useDebouncedState(name)
 
-  const query = encodeURIComponent(value)
-
   return (
     <iframe
       title="Instant Gaming"
-      src={`https://www.instant-gaming.com/es/busquedas/?query=${query}`}
+      src={getInstantGamingUrl(value)}
       style={{ zoom: 0.75 }}
       className="w-full h-full"
     />

@@ -81,7 +81,7 @@ const NowPlayingGamesCard = () => {
     <Card>
       <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
         <Link
-          path="Gaming/2. Next.base"
+          path="Gaming/1. Playing.base"
           className="flex flex-col items-center justify-center"
         >
           <p className="text-[4rem] text-gray-400"> {nowPlayingGames.length}</p>
@@ -110,7 +110,7 @@ const MalformedGamesCard = () => {
     if (!game.value('year')) errors.push('year')
     if (!(game.value('price') !== undefined)) errors.push('price')
     if (!game.value('hltb')) errors.push('hltb')
-    if (!game.value('metacritic')) errors.push('metacritic')
+    if (!(game.value('metacritic') !== undefined)) errors.push('metacritic')
 
     if (errors.length > 0) {
       acc.push({
@@ -121,6 +121,8 @@ const MalformedGamesCard = () => {
 
     return acc
   }, [])
+
+  if (filteredList.length === 0) return null
 
   return (
     <Card>

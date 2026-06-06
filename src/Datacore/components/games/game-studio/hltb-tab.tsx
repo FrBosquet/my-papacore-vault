@@ -1,3 +1,4 @@
+import { getHLTBUrl } from '../../../utils/services'
 import { useDebouncedState } from './use-debounced-state'
 
 interface Props {
@@ -7,12 +8,10 @@ interface Props {
 export const HLTBTab = ({ name }: Props) => {
   const value = useDebouncedState(name)
 
-  const urlEncodedName = encodeURIComponent(value)
-
   return (
     <iframe
       title="HLTB"
-      src={`https://howlongtobeat.com/?q=${urlEncodedName}`}
+      src={getHLTBUrl(value)}
       style={{ zoom: 0.75 }}
       className="w-full h-full"
     />
