@@ -1,4 +1,5 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
+import { classMerge } from '../../../utils/classMerge'
 import { getFile, getLeaf, isInvalidFilename } from '../../../utils/files'
 import { createNewGame } from '../../../utils/templater'
 import { Button } from '../../shared/button'
@@ -29,6 +30,7 @@ export const GameStudioModal = ({
 }: Props) => {
   const { ref: dialogRef, close } = useDialog()
   const [activeTab, setActiveTab] = dc.useState<(typeof tabs)[number]>(tabs[0])
+  const [mobileHelpersMode, setMobileHelpersMode] = dc.useState<boolean>(false)
   const [formState, setFormState] = dc.useState({
     name: file?.$name ?? '',
     year: (file?.value('year') ?? '') as string,
@@ -113,11 +115,12 @@ export const GameStudioModal = ({
   }
 
   const hasErrors = Object.values(errors).some(Boolean)
+  const isMobile = dc.app.isMobile
 
   return (
     <Dialog
       dialogRef={dialogRef}
-      className="h-full max-w-[calc(100vw-10rem)]"
+      className="h-full w-screen sm:max-w-[calc(100vw-10rem)] max-md:h-[calc(100vh-10rem)]"
       title="Game studio"
       triggerProps={{
         icon: 'plus',
@@ -128,7 +131,11 @@ export const GameStudioModal = ({
       <div className="flex h-full gap-4 overflow-hidden">
         {/* form */}
         <form
-          className="flex-1 overflow-hidden flex flex-col gap-4"
+          className={classMerge(
+            'flex-1 overflow-hidden flex flex-col gap-4',
+            isMobile && 'w-full',
+            isMobile && mobileHelpersMode && 'hidden'
+          )}
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-6 flex-1 overflow-y-scroll">
@@ -247,6 +254,16 @@ export const GameStudioModal = ({
           />
         </div>
       </div>
+
+      <Button
+        variant="ghost"
+        className={isMobile ? '' : 'hidden'}
+        onClick={() => {
+          setMobileHelpersMode(!mobileHelpersMode)
+        }}
+      >
+        {mobileHelpersMode ? 'Form' : 'Helpers'}
+      </Button>
     </Dialog>
   )
 }

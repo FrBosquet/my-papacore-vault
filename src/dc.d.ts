@@ -21,7 +21,10 @@ declare global {
       query: string,
       settings?: { debounce?: number }
     ): Array<Indexable & T>
-    query<T = Indexable>(query: string): Array<Indexable & T> | undefined
+    query<T = Indexable>(query: string): Array<Indexable & T> | undefinedm
+    app: {
+      isMobile: boolean
+    }
   }
 
   const requestUrl: typeof import('obsidian').requestUrl
