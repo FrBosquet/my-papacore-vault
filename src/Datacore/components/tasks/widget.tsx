@@ -33,7 +33,7 @@ export const TasksWidget = () => {
   return (
     <Card>
       <header className="flex justify-between items-center gap-2">
-        <Link path={currentWeekPath} icon="kanban">
+        <Link path={currentWeekPath} icon="kanban" createIfNotExists template="week">
           Tasks (#{weekTag} | {tasks.length})
         </Link>
         <Button onClick={() => setIsKanban(!isKanban)} size="sm">
