@@ -1,12 +1,25 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { IconName } from '../../icons'
 import { GameItem } from '../components/games/game-item'
+import { GameStudioModal } from '../components/games/game-studio/game-studio-modal'
 import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
 
-export const GamesWorkshop = () => {
+type Props = {
+  steamGridApiKey: string
+}
+
+export const GamesWorkshop = ({ steamGridApiKey }: Props) => {
   return (
     <article className="flex flex-col gap-4 pb-2">
+      <GameStudioModal
+        steamGridApiKey={steamGridApiKey}
+        triggerProps={{
+          label: 'Add game',
+          icon: 'plus',
+          size: 'sm',
+        }}
+      />
       <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
         <AllGamesCard />
         <CompletedGamesCard />
