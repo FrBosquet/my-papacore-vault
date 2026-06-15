@@ -6,17 +6,12 @@ import {
   getMetacriticUrl,
 } from '../utils/services'
 
-type Props = {
-  apiKey: string
-}
-
-export const GamePane = ({ apiKey }: Props) => {
+export const GamePane = () => {
   const file = dc.useCurrentFile()
 
   return (
     <menu className="flex justify-start gap-3 py-2">
       <GameStudioModal
-        steamGridApiKey={apiKey}
         file={file}
         triggerProps={{
           label: 'Game studio',

@@ -5,11 +5,7 @@ import { Scroller } from '../shared/scroller'
 import { GameItem } from './game-item'
 import { GameStudioModal } from './game-studio/game-studio-modal'
 
-export const GameWidget = ({
-  steamGridApiKey,
-}: {
-  steamGridApiKey: string
-}) => {
+export const GameWidget = () => {
   const games = dc.useQuery<MarkdownPage>(
     `@page AND path("Gaming/Games") AND start AND !end`
   )
@@ -20,7 +16,7 @@ export const GameWidget = ({
         <Link path="Gaming/0. Workshop.md" icon="gamepad-2">
           Playing
         </Link>
-        <GameStudioModal steamGridApiKey={steamGridApiKey} />
+        <GameStudioModal />
       </header>
       <Scroller className="h-30" wrapperClassName="gap-2">
         {games.map((game) => (

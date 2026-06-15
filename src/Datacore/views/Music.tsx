@@ -7,11 +7,7 @@ import { buildAlbumHierarchy, type YearString } from '../components/music/utils'
 import { Button } from '../components/shared/button'
 import { useFrontmatterState } from '../hooks/markdown'
 
-type Props = {
-  apiKey: string
-}
-
-export const Music = ({ apiKey }: Props) => {
+export const Music = () => {
   const [mode, setMode] = useFrontmatterState<'song' | 'album'>('mode', 'album')
   const [time, setTime] = useFrontmatterState<'month' | 'year'>('time', 'month')
 
@@ -59,7 +55,7 @@ export const Music = ({ apiKey }: Props) => {
           </Button>
         </div>
         <AlbumDialog albums={albumList.unlisted} />
-        <AddAlbumModal apiKey={apiKey} />
+        <AddAlbumModal />
       </menu>
 
       <main

@@ -1,11 +1,11 @@
 import { Button } from '../../shared/button'
 import { useDebouncedState } from './use-debounced-state'
+import { useEnvVar } from '../../../utils/envvars'
 
 interface Props {
   name: string
   injectValue: (field: 'name' | 'year' | 'image', value: string) => void
   formData: Record<string, string>
-  apiKey: string
   isEditing: boolean
 }
 
@@ -29,9 +29,10 @@ export const SteamGridTab = ({
   name,
   injectValue,
   formData,
-  apiKey,
   isEditing,
 }: Props) => {
+  const apiKey = useEnvVar('steamGridApiKey')
+
   const value = useDebouncedState(name)
 
   const [selectedGame, setSelectedGame] = dc.useState<GameOption | undefined>(

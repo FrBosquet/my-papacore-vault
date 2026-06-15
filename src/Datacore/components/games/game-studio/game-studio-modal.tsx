@@ -18,13 +18,11 @@ import { SteamGridTab } from './steam-grid-tab'
 const tabs = ['steam-grid', 'hltb', 'metacritic', 'instant-gaming'] as const
 
 type Props = {
-  steamGridApiKey: string
   file?: MarkdownPage
   triggerProps?: DialogProps['triggerProps']
 }
 
 export const GameStudioModal = ({
-  steamGridApiKey,
   file,
   triggerProps,
 }: Props) => {
@@ -247,7 +245,6 @@ export const GameStudioModal = ({
                   name={formState.name}
                   injectValue={injectValue}
                   formData={formState}
-                  apiKey={steamGridApiKey}
                 />
               ),
             }}

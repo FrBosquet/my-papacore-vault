@@ -6,6 +6,7 @@ import type { Album } from '../../utils/spotify'
 import { searchAlbums } from '../../utils/spotify'
 import { Button } from '../shared/button'
 import { Dialog, useDialog } from '../shared/dialog'
+import { useEnvVar } from '../../utils/envvars'
 
 type State = {
   results: Array<Album>
@@ -51,11 +52,10 @@ const contentTransformer =
     return content
   }
 
-type Props = {
-  apiKey: string
-}
 
-export const AddAlbumModal = ({ apiKey }: Props) => {
+export const AddAlbumModal = () => {
+  const apiKey = useEnvVar('spotifyApiKey')
+
   const { ref: dialogRef, close } = useDialog()
 
   const [state, dispatch] = useReducer(
