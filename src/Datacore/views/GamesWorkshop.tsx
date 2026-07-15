@@ -5,15 +5,10 @@ import { GameStudioModal } from '../components/games/game-studio/game-studio-mod
 import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
 
-type Props = {
-  steamGridApiKey: string
-}
-
-export const GamesWorkshop = ({ steamGridApiKey }: Props) => {
+export const GamesWorkshop = () => {
   return (
     <article className="flex flex-col gap-4 pb-2">
       <GameStudioModal
-        steamGridApiKey={steamGridApiKey}
         triggerProps={{
           label: 'Add game',
           icon: 'plus',
