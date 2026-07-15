@@ -77,7 +77,7 @@ const ProjectItem = ({ project }: { project: MarkdownPage }) => {
       className="h-6 text-primary-300 text-xs gap-2 tracking-normal"
     >
       <div>
-        <p className="">{project.$name}</p>
+        <p className="min-w-0 truncate">{project.$name}</p>
         <p className="text-primary-600">
           (<span>{backlog}</span>|
           <span
