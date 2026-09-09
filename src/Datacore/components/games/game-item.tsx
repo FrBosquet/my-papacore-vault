@@ -15,7 +15,7 @@ export const GameItem = ({ game }: { game: MarkdownPage }) => {
   const days = start ? Math.floor(-start.diffNow().as('days')) : 0
 
   const annotations = dc.useQuery<MarkdownListItem>(
-    `@list-item AND connected([[${path}]])`
+    `@list-item AND connected([[${path}]]) AND path("Journal")`
   )
   const lastAnnotation = annotations[annotations.length - 1]
 
