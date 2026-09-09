@@ -36,7 +36,7 @@ export const TasksWidget = () => {
         <Link path={currentWeekPath} icon="kanban" createIfNotExists template="week">
           Tasks (#{weekTag} | {tasks.length})
         </Link>
-        <Button onClick={() => setIsKanban(!isKanban)} size="sm">
+        <Button onClick={() => setIsKanban((current) => !current)} size="sm">
           {isKanban ? 'List' : 'Kanban'}
         </Button>
         <AddTaskModal />

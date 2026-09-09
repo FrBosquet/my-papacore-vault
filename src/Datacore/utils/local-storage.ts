@@ -1,5 +1,5 @@
 import type { Dispatch, StateUpdater } from 'preact/hooks'
-import { useEffect, useState } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 
 type LSKey =
   | 'papacore:task:last-week-tag'
@@ -14,15 +14,19 @@ export const setLS = (key: LSKey, value: string) => {
   localStorage.setItem(key, value)
 }
 
-export const useLocalState = <T>(key: LSKey, defaultValue: T) => {
-  const [state, setState] = useState<T>(defaultValue)
+const readLocalState = <T>(key: LSKey, defaultValue: T): T => {
+  const raw = getLS(key)
+  if (raw === undefined) return defaultValue
 
-  useEffect(() => {
-    const value = getLS(key)
-    if (value) {
-      setState(value as T)
-    }
-  }, [key])
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    return defaultValue
+  }
+}
+
+export const useLocalState = <T>(key: LSKey, defaultValue: T) => {
+  const [state, setState] = useState<T>(() => readLocalState(key, defaultValue))
 
   const setLocalState: Dispatch<StateUpdater<T>> = (nextState) => {
     setState((prevState) => {
@@ -31,7 +35,7 @@ export const useLocalState = <T>(key: LSKey, defaultValue: T) => {
           ? (nextState as (prev: T) => T)(prevState)
           : nextState
 
-      setLS(key, String(resolvedState))
+      setLS(key, JSON.stringify(resolvedState))
       return resolvedState
     })
   }
