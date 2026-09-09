@@ -113,7 +113,7 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
 
   return (
     <Card>
-      <section className="flex overflow-hidden">
+      <section className="flex gap-2 overflow-x-auto min-w-0">
         {KANBAN_COLUMNS.map((column) => (
           <KanbanColumn
             key={column.key}

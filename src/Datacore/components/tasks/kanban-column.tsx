@@ -35,7 +35,7 @@ export const KanbanColumn = ({
       onDragLeave={onDragLeave}
       onDrop={(event) => onDrop(event, status)}
       className={classMerge(
-        'rounded-md p-2 min-h-48 space-y-2 bg-primary-950/50 flex-1 overflow-hidden',
+        'rounded-md p-2 min-h-48 min-w-44 space-y-2 bg-primary-950/50 flex-1 overflow-hidden',
         isDragOver && 'bg-purple-900/50'
       )}
     >
