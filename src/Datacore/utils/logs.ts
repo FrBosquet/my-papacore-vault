@@ -152,9 +152,7 @@ const getProgressValue = (
   index: number,
   progressFn: ProgressFn
 ) => {
-  if (index < 0) return 0
-  if (index >= logs.length)
-    return getProgressValue(logs, logs.length - 1, progressFn)
+  if (index < 0 || index >= logs.length) return 0
 
   const log = logs[index]
   const text = log.$text ?? ''
@@ -173,7 +171,9 @@ const getProgressValue = (
   }
 
   if (progressFn === 'value') {
-    return getValueFromLogText(cleanedText) ?? 0
+    const parsed = getValueFromLogText(cleanedText)
+    if (parsed !== undefined) return parsed
+    return getProgressValue(logs, index + 1, progressFn)
   }
 
   throw new Error(`Invalid progress function: ${progressFn}`)
