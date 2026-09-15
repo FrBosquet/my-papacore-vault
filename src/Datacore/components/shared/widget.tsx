@@ -15,6 +15,10 @@ export type Props = {
   className?: string
   actions?: ComponentChildren
   omitModalLogger?: boolean
+  coverAction?: {
+    onClick: (e: MouseEvent) => void
+    tooltip?: string
+  }
 }
 
 export const WidgetItem = ({
@@ -24,6 +28,7 @@ export const WidgetItem = ({
   className,
   actions,
   omitModalLogger = false,
+  coverAction,
 }: Props) => {
   const image = getFrontmatterValue<string>(page, 'image')
   const { ref: dialogRef, close, open } = useDialog()
@@ -45,11 +50,35 @@ export const WidgetItem = ({
           className
         )}
       >
-        <Image
-          src={image ?? getResourcePath('Images/empty.jpg')}
-          alt={page.$name}
-          className="h-full aspect-square object-cover"
-        />
+        <div className="relative h-full aspect-square shrink-0 overflow-hidden group/cover">
+          <Image
+            src={image ?? getResourcePath('Images/empty.jpg')}
+            alt={page.$name}
+            className={classMerge(
+              'h-full aspect-square object-cover transition-[filter]',
+              coverAction && 'group-hover/cover:blur-sm'
+            )}
+          />
+          {coverAction ? (
+            <button
+              type="button"
+              aria-label={coverAction.tooltip ?? 'Play'}
+              className="absolute inset-0 grid place-items-center opacity-0 pointer-events-none group-hover/cover:opacity-100 group-hover/cover:pointer-events-auto appearance-none bg-transparent border-none shadow-none outline-none cursor-pointer transition-opacity p-0 m-0 size-full"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                coverAction.onClick(e)
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onPointerUp={(e) => e.stopPropagation()}
+            >
+              <dc.Icon
+                icon="play"
+                className="size-4 text-black translate-x-px"
+              />
+            </button>
+          ) : null}
+        </div>
         <div className="flex flex-col gap-1 flex-1 overflow-hidden">
           {children}
         </div>

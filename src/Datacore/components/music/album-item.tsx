@@ -2,6 +2,7 @@ import type { Link as LinkType, MarkdownPage } from '@blacksmithgu/datacore'
 import type { ComponentChildren } from 'preact'
 import { getFileName } from '../../utils/files'
 import { getFrontmatterValue } from '../../utils/markdown'
+import { playSpotifyUrl, toSpotifyUri } from '../../utils/spotify'
 import { WidgetItem } from '../shared/widget'
 
 export type Props = {
@@ -13,6 +14,8 @@ export const AlbumItem = ({ album, actions }: Props) => {
   const rating = getFrontmatterValue<number>(album, 'my rating')
   const year = getFrontmatterValue<number>(album, 'year')
   const artist = getFrontmatterValue<LinkType[]>(album, 'artist')
+  const albumUrl = getFrontmatterValue<string>(album, 'album')
+  const canPlay = Boolean(albumUrl && toSpotifyUri(albumUrl))
 
   const hasRating = !!rating
 
@@ -31,6 +34,14 @@ export const AlbumItem = ({ album, actions }: Props) => {
       page={album}
       tooltip={album.$name}
       actions={actions}
+      coverAction={
+        canPlay && albumUrl
+          ? {
+              tooltip: 'Play',
+              onClick: () => playSpotifyUrl(albumUrl),
+            }
+          : undefined
+      }
     >
       <span className="normal-case text-primary-300 group-hover:text-primary-800 text-ellipsis overflow-hidden text-nowrap w-full block">
         {albumName}

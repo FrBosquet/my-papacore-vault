@@ -8,6 +8,10 @@ type TemplaterCore = {
     filename?: string,
     open_new_note?: boolean
   ) => Promise<TFile | undefined>
+  overwrite_file_commands: (
+    file: TFile,
+    active_file?: boolean
+  ) => Promise<void>
 }
 
 const getTemplaterCore = (): TemplaterCore => {
@@ -33,6 +37,17 @@ const findTFile = (filename: string): TFile | null => {
     return null
   }
   return dest as TFile
+}
+
+/**
+ * Resolves leftover Templater commands in an existing note.
+ * Needed after vault.create(): Templater's create_new_note_from_template
+ * is what actually evaluates <% tp.file.creation_date() %> / <% tp.date.now() %>.
+ * @see https://silentvoid13.github.io/Templater/internal-functions/internal-modules/file-module.html
+ */
+export const processFileCommands = async (file: TFile) => {
+  const templater = getTemplaterCore()
+  await templater.overwrite_file_commands(file)
 }
 
 export const createNewGame = async (title: string) => {

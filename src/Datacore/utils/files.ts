@@ -1,5 +1,6 @@
 import type { PaneType } from 'obsidian'
 import { ContentTransformer } from './ContentTransformer'
+import { processFileCommands } from './templater'
 import { fromStringToDatetime } from './time'
 
 export const getPage = (path: string) => {
@@ -80,14 +81,20 @@ export const createFromTemplate = async (
   const templateContent = await getTemplateContent(templatePath)
 
   if (templateContent !== null) {
-    await dc.app.vault.create(
-      targetPath,
-      transformer
-        ? transformer(new ContentTransformer(templateContent)).toString()
-        : templateContent
-    )
+    const content = transformer
+      ? transformer(new ContentTransformer(templateContent)).toString()
+      : templateContent
 
-    return getFile(targetPath)
+    const created = await dc.app.vault.create(targetPath, content)
+    const file = created ?? getFile(targetPath)
+
+    // vault.create copies the template as-is. Run Templater so commands like
+    // <% tp.file.creation_date() %> resolve against the new file.
+    if (file && content.includes('<%')) {
+      await processFileCommands(file)
+    }
+
+    return file
   } else {
     alert(
       `El contenido de la plantilla es nulo. Comprueba la plantilla ${templatePath}.`

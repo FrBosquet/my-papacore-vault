@@ -1,4 +1,4 @@
-import { useReducer } from 'preact/hooks'
+import { useReducer, useRef } from 'preact/hooks'
 import type { ContentTransformer } from '../../utils/ContentTransformer'
 import { createFromTemplate, fileExists, getFile } from '../../utils/files'
 import { getMusicAlbumWiki } from '../../utils/perplexity'
@@ -19,7 +19,14 @@ type Action =
   | { type: 'setAlbums'; payload?: Array<Album> }
   | { type: 'selectAlbum'; payload: Album }
   | { type: 'abort' }
+  | { type: 'reset' }
   | { type: 'loading-wiki' }
+
+const initialState: State = {
+  results: [],
+  state: 'idle',
+  selected: null,
+}
 
 const contentTransformer =
   (source: Album, reason: string, wikiContent: string) =>
@@ -70,6 +77,8 @@ export const AddAlbumModal = () => {
             ...state,
             state: state.results.length > 0 ? 'success' : 'idle',
           }
+        case 'reset':
+          return initialState
         case 'setAlbums':
           return {
             selected: null,
@@ -85,12 +94,10 @@ export const AddAlbumModal = () => {
           return state
       }
     },
-    {
-      results: [],
-      state: 'idle',
-      selected: null,
-    }
+    initialState
   )
+
+  const searchFormRef = useRef<HTMLFormElement>(null)
 
   const handleSearch = async (e: Event) => {
     e.preventDefault()
@@ -165,7 +172,9 @@ export const AddAlbumModal = () => {
         contentTransformer(source, reason ?? '', wiki)
       )
 
-      dispatch({ type: 'abort' })
+      target.reset()
+      searchFormRef.current?.reset()
+      dispatch({ type: 'reset' })
       close()
 
       // navigate to the created file
@@ -193,7 +202,11 @@ export const AddAlbumModal = () => {
         size: 'sm',
       }}
     >
-      <form className="flex gap-4 w-full" onSubmit={handleSearch}>
+      <form
+        ref={searchFormRef}
+        className="flex gap-4 w-full"
+        onSubmit={handleSearch}
+      >
         <input className="flex-1" type="text" name="albumName" />
         <Button
           variant="secondary"
