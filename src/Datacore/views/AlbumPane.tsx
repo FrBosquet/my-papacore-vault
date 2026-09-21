@@ -1,6 +1,7 @@
 import { months } from '../components/music/utils'
 import { Button } from '../components/shared/button'
 import { useFrontmatterState } from '../hooks/markdown'
+import { getFile, getLeaf } from '../utils/files'
 import { playSpotifyUrl, toSpotifyUri } from '../utils/spotify'
 import { getTodayDatetime } from '../utils/time'
 
@@ -22,6 +23,17 @@ export const AlbumPane = () => {
 
   return (
     <menu className="flex justify-start gap-3 px-2 py-2 items-center w-full bg-primary-950">
+      <Button
+        size="icon-xs"
+        variant="ghost"
+        icon="house"
+        tooltip="Hub"
+        className="text-theme-accent hover:bg-theme-accent hover:text-primary-950"
+        onClick={(e) => {
+          const file = getFile('Music/Hub.md')
+          if (file) getLeaf(e.ctrlKey || e.metaKey).openFile(file)
+        }}
+      />
       <Button
         size="icon-xs"
         icon="play"
