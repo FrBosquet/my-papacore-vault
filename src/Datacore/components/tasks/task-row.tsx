@@ -135,7 +135,7 @@ const WeekBadge = ({
 
     return (
       <ContextMenu
-        className="font-bold text-xs flex size-8 items-center justify-center p-1 bg-green-900 text-green-300"
+        className="font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 bg-green-900 text-green-300"
         options={options}
       >
         W{week.toString().padStart(2, '0')}
@@ -147,7 +147,7 @@ const WeekBadge = ({
     <Link
       onClick={() => updater('this-week')}
       className={classMerge(
-        'font-bold text-xs flex size-8 items-center justify-center p-1 bg-primary-900 text-primary-300'
+        'font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 bg-primary-900 text-primary-300'
       )}
       tooltip="Agregar a la semana"
     >
@@ -264,7 +264,7 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
 
   return (
     <section
-      className="flex gap-2 items-center relative pr-2"
+      className="flex gap-2 items-center relative pr-2 shrink-0"
       style={{ '--bg-color': bgColor }}
     >
       <Button
@@ -373,37 +373,38 @@ export const TaskRow = ({
       variant="plain"
       path={task.$path}
       className={classMerge(
-        'bg-primary-950 flex gap-2',
+        'bg-primary-950 flex-col items-stretch gap-1',
         isOngoing && 'ongoing-task'
       )}
     >
-      <WeekBadge
-        task={task}
-        weekTag={targetWeekTag}
-        updater={handleUpdateTask}
-        openAnnotateDialog={openAnnotateDialog}
-      />
-      <Dialog dialogRef={dialogRef} hideTrigger>
-        <LogAnnotationForm targetPage={task} onSubmit={() => close()} />
-      </Dialog>
-      <section className="flex-1">
-        <div className="flex items-center gap-2">
-          <p
-            className={classMerge(
-              'text-primary-300 text-xs',
-              done && 'text-green-300'
-            )}
-          >
-            {done
-              ? `Completado ${done.toLocaleString()}`
-              : `Actualizado ${task.$mtime.toLocaleString()}`}
-          </p>
-          {project && <ProjectBadge project={project} />}
-          {!done && <DueBadge due={due} />}
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
         <p
           className={classMerge(
-            'flex items-center gap-2',
+            'text-primary-300 text-xs whitespace-nowrap',
+            done && 'text-green-300'
+          )}
+        >
+          {done
+            ? `Completado ${done.toLocaleString()}`
+            : `Actualizado ${task.$mtime.toLocaleString()}`}
+        </p>
+        {(project || (!done && due)) && (
+          <div className="flex items-center gap-2 ml-auto">
+            {project && <ProjectBadge project={project} />}
+            {!done && <DueBadge due={due} />}
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-2 min-w-0">
+        <WeekBadge
+          task={task}
+          weekTag={targetWeekTag}
+          updater={handleUpdateTask}
+          openAnnotateDialog={openAnnotateDialog}
+        />
+        <p
+          className={classMerge(
+            'flex-1 min-w-0 break-words',
             isOngoing ? 'text-primary-100' : 'text-primary-300',
             done && 'text-green-600',
             archived && 'line-through text-primary-600'
@@ -412,15 +413,18 @@ export const TaskRow = ({
           {task.$name}
           {carryoverCount > 0 && (
             <Badge
-              className="bg-red-600 text-red-100 inline"
+              className="bg-red-600 text-red-100 inline ml-2 align-middle"
               tooltip={`${carryoverCount} carryover${carryoverCount > 1 ? 's' : ''}`}
             >
               +{carryoverCount} semanas
             </Badge>
           )}
         </p>
-      </section>
-      <TaskTimeline task={task} />
+        <TaskTimeline task={task} />
+      </div>
+      <Dialog dialogRef={dialogRef} hideTrigger>
+        <LogAnnotationForm targetPage={task} onSubmit={() => close()} />
+      </Dialog>
     </Link>
   )
 }
