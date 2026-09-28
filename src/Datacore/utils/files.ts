@@ -198,3 +198,20 @@ export const isInvalidFilename = (name: string): boolean => {
     INVALID_FILENAME_RESERVED.test(trimmed)
   )
 }
+
+/**
+ * Turns a title into a vault-safe file name.
+ * Characters forbidden on Windows, macOS, or in wikilinks are replaced with spaces.
+ * Apostrophes and inner periods are kept.
+ */
+export const sanitizeFilename = (name: string): string => {
+  const cleaned = name
+    .replace(new RegExp(INVALID_FILENAME_CHARS.source, 'gu'), ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.\s]+$/g, '')
+
+  if (!cleaned) return ''
+  if (INVALID_FILENAME_RESERVED.test(cleaned)) return `${cleaned}-`
+  return cleaned
+}

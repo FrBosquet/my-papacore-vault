@@ -1,6 +1,6 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { classMerge } from '../../../utils/classMerge'
-import { getFile, getLeaf, isInvalidFilename } from '../../../utils/files'
+import { getFile, getLeaf, sanitizeFilename } from '../../../utils/files'
 import { createNewGame } from '../../../utils/templater'
 import { Button } from '../../shared/button'
 import {
@@ -46,20 +46,27 @@ export const GameStudioModal = ({
     const formData = new FormData(e.target as HTMLFormElement)
 
     // If its a new game, use the file name, otherwise use the form data
-    const name = isNewGame ? (formData.get('name') as string) : file.$name
+    const rawName = isNewGame ? String(formData.get('name') ?? '') : file.$name
+    const name = isNewGame ? sanitizeFilename(rawName) : rawName
     const year = formData.get('year') as string
     const image = formData.get('image') as string
     const hltb = formData.get('hltb') as string
     const metacritic = formData.get('metacritic') as string
     const price = formData.get('price') as string
 
-    // If its a new game, create the file
-    if (!file) {
-      await createNewGame(name)
+    if (isNewGame && !name) {
+      setErrors((prev) => ({
+        ...prev,
+        name: 'This title has no characters that can be used in a file name.',
+      }))
+      return
     }
 
+    // If its a new game, create the file
+    const createdFile = !file ? await createNewGame(name) : undefined
+
     // Edit frontmatter of the file
-    const targetFile = getFile(`Gaming/Games/${name}.md`)
+    const targetFile = createdFile ?? getFile(`Gaming/Games/${name}.md`)
     if (targetFile) {
       await dc.app.fileManager.processFrontMatter(targetFile, (frontmatter) => {
         frontmatter.year = year
@@ -90,18 +97,15 @@ export const GameStudioModal = ({
 
     if (fieldName === 'name') {
       const isEmpty = value.trim() === ''
+      const filename = sanitizeFilename(value)
 
-      if (isEmpty || !isInvalidFilename(value)) {
-        setErrors((prev) => ({
-          ...prev,
-          name: '',
-        }))
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          name: 'Invalid file name. Avoid slashes, colons, and symbols forbidden on Windows or in wikilinks. Apostrophes and spaces are fine.',
-        }))
-      }
+      setErrors((prev) => ({
+        ...prev,
+        name:
+          isEmpty || filename
+            ? ''
+            : 'This title has no characters that can be used in a file name.',
+      }))
     }
   }
 
@@ -145,7 +149,7 @@ export const GameStudioModal = ({
               label="Game name"
               id="name"
               placeholder="Game name"
-              helpText="Also used as the note file name. Avoid slashes, colons, and symbols forbidden on Windows or in wikilinks. Apostrophes and spaces are fine."
+              helpText="Also used as the note file name. Colons and other symbols that cannot go in a file name are removed. Apostrophes and spaces are kept."
               disabled={!!file}
               defaultValue={formState?.name}
             />
