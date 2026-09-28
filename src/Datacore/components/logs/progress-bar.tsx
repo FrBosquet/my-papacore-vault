@@ -2,7 +2,7 @@ import { classMerge } from '../../utils/classMerge'
 
 interface Props {
   progressFn: string
-  progressTarget: number
+  progressTarget: string | number
   index: number
   value?: number
   prevValue?: number

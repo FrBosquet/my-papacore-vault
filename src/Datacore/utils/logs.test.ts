@@ -147,6 +147,29 @@ describe('logs utils', () => {
       )
     })
 
+    it('should use the latest older value when a specific log has none', () => {
+      const logs = [
+        log('20 Latest'),
+        log('No number today'),
+        log('10 Started working on this'),
+      ]
+
+      expect(
+        getProgress({
+          logs,
+          log: logs[1],
+          target: '100 pages',
+          progressFn: 'value',
+        })
+      ).toEqual(
+        expect.objectContaining({
+          value: 10,
+          prevValue: 10,
+          delta: 0,
+        })
+      )
+    })
+
     it('should return 0 when no log has a parseable value', () => {
       const logs = [log('I worked on this'), log('Still thinking')]
 

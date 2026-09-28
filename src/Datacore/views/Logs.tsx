@@ -5,7 +5,12 @@ import { Card } from '../components/shared/card'
 import { Link } from '../components/shared/link'
 import { YearGraph } from '../components/yeargraph/graph'
 import { getDailyNoteDatetime } from '../utils/files'
-import { cleanLogText, getPrevValue, getValueFromLogText } from '../utils/logs'
+import {
+  cleanLogText,
+  getProgress,
+  getValueFromLogText,
+  type ProgressFn,
+} from '../utils/logs'
 import {
   getDailyNotePath,
   getSemanticDateOffset,
@@ -14,8 +19,8 @@ import {
 
 export const Logs = () => {
   const thisFile = dc.useCurrentFile()
-  const progressFn = thisFile.value('progressFn') as string
-  const progressTarget = thisFile.value('target') as number
+  const progressFn = thisFile.value('progressFn') as ProgressFn
+  const progressTarget = thisFile.value('target') as string | number
   const today = getTodayDatetime()
   const todayPath = getDailyNotePath(today)
 
@@ -51,16 +56,24 @@ export const Logs = () => {
           const text = l.$text
 
           const cleanedText = cleanLogText(text ?? '')
-          const value = getValueFromLogText(cleanedText)
+          const loggedValue = getValueFromLogText(cleanedText)
 
           let textWithParentLink = cleanLogText(text ?? '', thisFile.$path)
 
-          if (value) {
-            const valueAsText = value.toString()
+          if (loggedValue) {
+            const valueAsText = loggedValue.toString()
             textWithParentLink = textWithParentLink.replace(valueAsText, '')
           }
 
-          const prevValue = getPrevValue(logs, index)
+          const { value, prevValue } =
+            progressFn === 'value'
+              ? getProgress({
+                  logs,
+                  log: l,
+                  target: String(progressTarget ?? ''),
+                  progressFn,
+                })
+              : { value: loggedValue, prevValue: undefined }
 
           const label = getSemanticDateOffset(datetime)
 
