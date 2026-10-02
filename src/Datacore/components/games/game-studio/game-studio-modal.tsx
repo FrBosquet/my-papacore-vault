@@ -22,10 +22,7 @@ type Props = {
   triggerProps?: DialogProps['triggerProps']
 }
 
-export const GameStudioModal = ({
-  file,
-  triggerProps,
-}: Props) => {
+export const GameStudioModal = ({ file, triggerProps }: Props) => {
   const { ref: dialogRef, close } = useDialog()
   const [activeTab, setActiveTab] = dc.useState<(typeof tabs)[number]>(tabs[0])
   const [mobileHelpersMode, setMobileHelpersMode] = dc.useState<boolean>(false)
@@ -240,7 +237,13 @@ export const GameStudioModal = ({
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             tabContent={{
-              hltb: <HLTBTab name={formState.name} />,
+              hltb: (
+                <HLTBTab
+                  name={formState.name}
+                  currentHours={String(formState.hltb ?? '')}
+                  onCopy={(hours) => injectValue('hltb', hours)}
+                />
+              ),
               metacritic: <MetacriticTab name={formState.name} />,
               'instant-gaming': <InstantGamingTab name={formState.name} />,
               'steam-grid': (
