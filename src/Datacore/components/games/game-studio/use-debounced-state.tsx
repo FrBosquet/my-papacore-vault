@@ -7,7 +7,7 @@ export const useDebouncedState = <T,>(rawState: T) => {
     }
 
     debouncer.current = setTimeout(() => {
-      setState(rawState)
+      setState((current) => (Object.is(current, rawState) ? current : rawState))
     }, 600)
   }, [rawState])
   return state

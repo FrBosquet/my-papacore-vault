@@ -1,22 +1,25 @@
 import { getHLTBUrl } from '../../../utils/services'
-import { Button } from '../../shared/button'
 import { EmbeddedPage, type EmbeddedWebview } from './embedded-page'
 import { parseHltbHours, READ_MAIN_PLUS_SIDES } from './hltb-hours'
 import { useDebouncedState } from './use-debounced-state'
 
 interface Props {
   name: string
-  currentHours?: string
-  onCopy: (hours: string) => void
+  onValue: (hours?: string) => void
 }
 
-export const HLTBTab = ({ name, currentHours, onCopy }: Props) => {
+export const HLTBTab = ({ name, onValue }: Props) => {
   const value = useDebouncedState(name)
   const viewRef = dc.useRef<EmbeddedWebview | null>(null)
-  const [hours, setHours] = dc.useState<string | undefined>(undefined)
+  const onValueRef = dc.useRef(onValue)
+  const queryRef = dc.useRef(value)
+
+  onValueRef.current = onValue
 
   dc.useEffect(() => {
-    setHours(undefined)
+    const queryChanged = queryRef.current !== value
+    queryRef.current = value
+    if (queryChanged) onValueRef.current(undefined)
     if (dc.app.isMobile || !value.trim()) return
 
     let cancelled = false
@@ -29,7 +32,9 @@ export const HLTBTab = ({ name, currentHours, onCopy }: Props) => {
         const raw = await view.executeJavaScript(READ_MAIN_PLUS_SIDES)
 
         if (cancelled) return
-        setHours(parseHltbHours(typeof raw === 'string' ? raw : undefined))
+        const hours = parseHltbHours(typeof raw === 'string' ? raw : undefined)
+        // An empty read means the page is still rendering. Keep the last value.
+        if (hours) onValueRef.current(hours)
       } catch {
         // The page is still navigating. Keep polling.
       }
@@ -45,20 +50,8 @@ export const HLTBTab = ({ name, currentHours, onCopy }: Props) => {
   }, [value])
 
   return (
-    <div className="flex h-full flex-col gap-2">
-      {hours && (
-        <Button
-          icon="arrow-big-left"
-          className="justify-start"
-          disabled={currentHours === hours}
-          onClick={() => onCopy(hours)}
-        >
-          {hours} hours - Copy to form
-        </Button>
-      )}
-      <div className="min-h-0 flex-1">
-        <EmbeddedPage title="HLTB" src={getHLTBUrl(value)} viewRef={viewRef} />
-      </div>
+    <div className="h-full">
+      <EmbeddedPage title="HLTB" src={getHLTBUrl(value)} viewRef={viewRef} />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
+import type { ComponentChildren } from 'preact'
 import { classMerge } from '../../../utils/classMerge'
 import { getFile, getLeaf, sanitizeFilename } from '../../../utils/files'
 import { createNewGame } from '../../../utils/templater'
@@ -13,13 +14,49 @@ import { Tabs } from '../tabs'
 import { HLTBTab } from './hltb-tab'
 import { InstantGamingTab } from './instant-gaming-tab'
 import { MetacriticTab } from './metacritic-tab'
-import { SteamGridTab } from './steam-grid-tab'
+import { SteamGridTab, type SteamSuggestions } from './steam-grid-tab'
 
 const tabs = ['steam-grid', 'hltb', 'metacritic', 'instant-gaming'] as const
+
+type SuggestionField =
+  | 'name'
+  | 'year'
+  | 'image'
+  | 'hltb'
+  | 'metacritic'
+  | 'price'
 
 type Props = {
   file?: MarkdownPage
   triggerProps?: DialogProps['triggerProps']
+}
+
+const SuggestionButton = ({
+  value,
+  current,
+  label,
+  className,
+  onApply,
+}: {
+  value?: string
+  current: string
+  label: ComponentChildren
+  className?: string
+  onApply: () => void
+}) => {
+  if (!value || current === value) return null
+
+  return (
+    <Button
+      size="sm"
+      variant="secondary"
+      className={classMerge('shrink-0', className)}
+      tooltip="Copy to form"
+      onClick={onApply}
+    >
+      {label}
+    </Button>
+  )
 }
 
 export const GameStudioModal = ({ file, triggerProps }: Props) => {
@@ -35,6 +72,11 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     price: (file?.value('price') ?? '') as string,
   })
   const [errors, setErrors] = dc.useState<Record<string, string>>({})
+  const [suggestions, setSuggestions] = dc.useState<
+    Partial<Record<SuggestionField, string>>
+  >({})
+  const suggestionsRef = dc.useRef(suggestions)
+  suggestionsRef.current = suggestions
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault()
@@ -113,6 +155,70 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     }))
   }
 
+  const setSuggestion = (field: SuggestionField, value?: string) => {
+    if (suggestionsRef.current[field] === value) return
+    const next = { ...suggestionsRef.current, [field]: value }
+    suggestionsRef.current = next
+    setSuggestions(next)
+  }
+
+  const setSteamSuggestions = (update: SteamSuggestions) => {
+    const prev = suggestionsRef.current
+    const next = {
+      ...prev,
+      ...(update.clear
+        ? { name: undefined, year: undefined, image: undefined }
+        : {
+            ...(update.name !== undefined
+              ? { name: update.name || undefined }
+              : {}),
+            ...(update.year !== undefined
+              ? { year: update.year || undefined }
+              : {}),
+            ...(update.image !== undefined
+              ? { image: update.image || undefined }
+              : {}),
+          }),
+    }
+
+    if (
+      next.name === prev.name &&
+      next.year === prev.year &&
+      next.image === prev.image
+    ) {
+      return
+    }
+
+    suggestionsRef.current = next
+    setSuggestions(next)
+  }
+
+  const suggestionFields: SuggestionField[] = [
+    'name',
+    'year',
+    'image',
+    'hltb',
+    'metacritic',
+    'price',
+  ]
+  const hasPendingSuggestions = suggestionFields.some(
+    (field) =>
+      suggestions[field] &&
+      String(formState[field] ?? '') !== suggestions[field]
+  )
+
+  const applyAllSuggestions = () => {
+    setFormState((prev) => ({
+      ...prev,
+      ...(suggestions.name && !file ? { name: suggestions.name } : {}),
+      ...(suggestions.year ? { year: suggestions.year } : {}),
+      ...(suggestions.image ? { image: suggestions.image } : {}),
+      ...(suggestions.hltb ? { hltb: suggestions.hltb } : {}),
+      ...(suggestions.metacritic ? { metacritic: suggestions.metacritic } : {}),
+      ...(suggestions.price ? { price: suggestions.price } : {}),
+    }))
+  }
+
   const hasErrors = Object.values(errors).some(Boolean)
   const isMobile = dc.app.isMobile
 
@@ -138,7 +244,13 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-6 flex-1 overflow-y-scroll">
-            {formState.image && <img src={formState.image} alt="Game hero" />}
+            {formState.image && (
+              <img
+                src={formState.image}
+                alt="Game hero"
+                className="max-h-[200px] max-w-full object-contain"
+              />
+            )}
             <InputField
               error={errors.name}
               value={formState.name}
@@ -149,6 +261,15 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               helpText="Also used as the note file name. Colons and other symbols that cannot go in a file name are removed. Apostrophes and spaces are kept."
               disabled={!!file}
               defaultValue={formState?.name}
+              action={
+                <SuggestionButton
+                  value={suggestions.name}
+                  current={String(formState.name ?? '')}
+                  label={suggestions.name ?? ''}
+                  className="max-w-40 truncate"
+                  onApply={() => injectValue('name', suggestions.name ?? '')}
+                />
+              }
             />
             <InputField
               disabled={!formState.name}
@@ -161,6 +282,20 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               id="image"
               placeholder="Url of the hero image"
               helpText="Url of the hero image for the game"
+              action={
+                <SuggestionButton
+                  value={suggestions.image}
+                  current={String(formState.image ?? '')}
+                  label={
+                    <img
+                      src={suggestions.image}
+                      alt=""
+                      className="h-5 w-8 object-cover"
+                    />
+                  }
+                  onApply={() => injectValue('image', suggestions.image ?? '')}
+                />
+              }
             />
             <InputField
               disabled={!formState.name}
@@ -174,6 +309,14 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               placeholder="Year"
               helpText="When was this game released"
               type="number"
+              action={
+                <SuggestionButton
+                  value={suggestions.year}
+                  current={String(formState.year ?? '')}
+                  label={suggestions.year ?? ''}
+                  onApply={() => injectValue('year', suggestions.year ?? '')}
+                />
+              }
             />
             <InputField
               disabled={!formState.name}
@@ -187,6 +330,14 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               placeholder="How long to beat this game on average"
               helpText="Average time to complete this game. It indicates if its worth to commit to it or not."
               type="number"
+              action={
+                <SuggestionButton
+                  value={suggestions.hltb}
+                  current={String(formState.hltb ?? '')}
+                  label={`${suggestions.hltb} h`}
+                  onApply={() => injectValue('hltb', suggestions.hltb ?? '')}
+                />
+              }
             />
             <InputField
               disabled={!formState.name}
@@ -200,6 +351,16 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               placeholder="Score"
               helpText="Score of the game. It indicates if its worth to commit to it or not. It could be a metacritic score, an steam score, or other source. MEasured from 0 to 100"
               type="number"
+              action={
+                <SuggestionButton
+                  value={suggestions.metacritic}
+                  current={String(formState.metacritic ?? '')}
+                  label={suggestions.metacritic ?? ''}
+                  onApply={() =>
+                    injectValue('metacritic', suggestions.metacritic ?? '')
+                  }
+                />
+              }
             />
             <InputField
               disabled={!formState.name}
@@ -214,9 +375,26 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               placeholder="Price"
               helpText="Price of the game. It indicates if its worth to commit to it or not. It could be a steam price, an instant gaming price, or other source. Measured in euros."
               type="number"
+              action={
+                <SuggestionButton
+                  value={suggestions.price}
+                  current={String(formState.price ?? '')}
+                  label={`${suggestions.price} €`}
+                  onApply={() => injectValue('price', suggestions.price ?? '')}
+                />
+              }
             />
           </div>
           <footer className="flex justify-end gap-2">
+            {hasPendingSuggestions && (
+              <Button
+                variant="secondary"
+                className="mr-auto"
+                onClick={applyAllSuggestions}
+              >
+                Copy all suggestions
+              </Button>
+            )}
             <Button
               variant="secondary"
               onClick={() => {
@@ -240,18 +418,27 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
               hltb: (
                 <HLTBTab
                   name={formState.name}
-                  currentHours={String(formState.hltb ?? '')}
-                  onCopy={(hours) => injectValue('hltb', hours)}
+                  onValue={(hours) => setSuggestion('hltb', hours)}
                 />
               ),
-              metacritic: <MetacriticTab name={formState.name} />,
-              'instant-gaming': <InstantGamingTab name={formState.name} />,
+              metacritic: (
+                <MetacriticTab
+                  name={formState.name}
+                  onValue={(score) => setSuggestion('metacritic', score)}
+                />
+              ),
+              'instant-gaming': (
+                <InstantGamingTab
+                  name={formState.name}
+                  onValue={(price) => setSuggestion('price', price)}
+                />
+              ),
               'steam-grid': (
                 <SteamGridTab
                   isEditing={!!file}
                   name={formState.name}
                   injectValue={injectValue}
-                  formData={formState}
+                  onSuggest={setSteamSuggestions}
                 />
               ),
             }}
