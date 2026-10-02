@@ -50,6 +50,7 @@ export const KanbanColumn = ({
           <KanbanTaskCard
             key={task.$id}
             task={task}
+            status={status}
             onDragStart={onDragStartTask}
             onDragEnd={onDragEndTask}
             isDragging={draggingTaskId === task.$id}

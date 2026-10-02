@@ -79,6 +79,7 @@ export const WeekManager = () => {
                   key={subtask.$id}
                   task={subtask}
                   targetWeek={targetWeek}
+                  showCarryButton
                 />
               ))}
         </>

@@ -1,9 +1,11 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
+import { classMerge } from '../../utils/classMerge'
 import { getFrontmatterValue } from '../../utils/markdown'
 import {
   getWeekFromTag,
   getWeekFromTags,
+  type STATUSES,
   type WeekTag,
 } from '../../utils/tasks'
 import { LogAnnotationForm } from '../logs/log-annotation-form'
@@ -15,6 +17,7 @@ import { KanbanMetaBadge } from './kanban-meta-badge'
 
 interface Props {
   task: MarkdownPage
+  status: (typeof STATUSES)[number]
   onDragStart: (event: DragEvent, task: MarkdownPage) => void
   onDragEnd: () => void
   isDragging: boolean
@@ -22,6 +25,7 @@ interface Props {
 
 export const KanbanTaskCard = ({
   task,
+  status,
   onDragStart,
   onDragEnd,
   isDragging,
@@ -41,6 +45,8 @@ export const KanbanTaskCard = ({
   }, [parent])
 
   const { ref: dialogRef, open, close } = useDialog()
+  const isArchive = status === 'archive'
+  const isCompleted = status === 'done' || isArchive
 
   return (
     <>
@@ -54,7 +60,11 @@ export const KanbanTaskCard = ({
         draggable
         onDragStart={(event: DragEvent) => onDragStart(event, task)}
         onDragEnd={onDragEnd}
-        className="block rounded-md p-2 space-y-2 border border-transparent hover:border-primary-700 cursor-grab shadow-none w-full h-[unset] bg-primary-800 overflow-hidden"
+        className={classMerge(
+          'block rounded-md p-2 space-y-2 border border-transparent hover:border-primary-700 cursor-grab shadow-none w-full h-[unset] bg-primary-800 overflow-hidden',
+          isCompleted && 'bg-green-300 text-primary-950',
+          isArchive && 'opacity-70'
+        )}
       >
         <header className="flex justify-between items-center gap-1">
           {project && (
@@ -71,7 +81,10 @@ export const KanbanTaskCard = ({
           path={task.$path}
           variant="plain"
           onLongPress={open}
-          className="block w-full text-left whitespace-normal wrap-break-word"
+          className={classMerge(
+            'block w-full text-left whitespace-normal wrap-break-word',
+            isCompleted && 'text-primary-950 hover:text-primary-50'
+          )}
         >
           {task.$name}
         </Link>

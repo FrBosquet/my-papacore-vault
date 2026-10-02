@@ -304,9 +304,11 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
 export const TaskRow = ({
   task,
   targetWeek,
+  showCarryButton,
 }: {
   task: MarkdownPage
   targetWeek?: DateTime
+  showCarryButton?: boolean
 }) => {
   const { ref: dialogRef, open: openAnnotateDialog, close } = useDialog()
 
@@ -421,6 +423,19 @@ export const TaskRow = ({
           )}
         </p>
         <TaskTimeline task={task} />
+        {showCarryButton && (
+          <Button
+            icon="calendar-arrow-up"
+            size="icon-xs"
+            className="shrink-0"
+            tooltip="Añadir a esta semana"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleUpdateTask('this-week')
+            }}
+          />
+        )}
       </div>
       <Dialog dialogRef={dialogRef} hideTrigger>
         <LogAnnotationForm targetPage={task} onSubmit={() => close()} />
