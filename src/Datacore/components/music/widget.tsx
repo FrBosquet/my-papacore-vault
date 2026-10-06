@@ -1,37 +1,30 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
+import { getTodayDatetime } from '../../utils/time'
 import { Card } from '../shared/card'
 import { Link } from '../shared/link'
 import { Scroller } from '../shared/scroller'
 import { AlbumItem } from './album-item'
-import { sortByLastModified } from './utils'
+import { months, sortByLastModified } from './utils'
 
-const useMonthAlbums = (datetime: DateTime) => {
-  datetime.setLocale('en')
-  const currentPeriod = `${datetime.year} ${datetime.monthLong}`
+const listeningPeriod = (datetime: DateTime) =>
+  `${datetime.year} ${months[datetime.month - 1]}`
 
+const useMonthAlbums = (period: string) => {
   return dc.useQuery<MarkdownPage>(
     `@page 
       AND path("Music/Albums")
-      AND Listening = "${currentPeriod}"`
+      AND Listening = "${period}"`
   )
 }
 
 const useRecentAlbums = () => {
-  const now = dc.coerce.date(new Date().toISOString())?.setLocale('en')
-
-  if (!now) {
-    return []
-  }
-
+  const now = getTodayDatetime()
   const previousMonth = now.minus({ months: 1 })
-  const thisMonthAlbums = useMonthAlbums(now)
-  const previousMonthAlbums = useMonthAlbums(previousMonth)
+  const thisMonthAlbums = useMonthAlbums(listeningPeriod(now))
+  const previousMonthAlbums = useMonthAlbums(listeningPeriod(previousMonth))
 
-  return [
-    ...thisMonthAlbums.sort(sortByLastModified),
-    ...previousMonthAlbums.sort(sortByLastModified),
-  ]
+  return [...thisMonthAlbums, ...previousMonthAlbums].sort(sortByLastModified)
 }
 
 export const MusicWidget = () => {
