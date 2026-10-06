@@ -3,8 +3,8 @@ import { getFrontmatterValue } from '../../utils/markdown'
 import {
   addToWeek,
   getTaskWeekTagFromDate,
-  moveToArchive,
   moveToDone,
+  moveToInReview,
   moveToOngoing,
   removeFromWeek,
   type STATUSES,
@@ -19,8 +19,8 @@ const KANBAN_COLUMNS: Array<{ key: (typeof STATUSES)[number]; label: string }> =
     { key: 'backlog', label: 'Backlog' },
     { key: 'this-week', label: 'This Week' },
     { key: 'ongoing', label: 'Ongoing' },
+    { key: 'in-review', label: 'In Review' },
     { key: 'done', label: 'Done' },
-    { key: 'archive', label: 'Archive' },
   ]
 
 export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
@@ -34,8 +34,8 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
       backlog: [] as MarkdownPage[],
       'this-week': [] as MarkdownPage[],
       ongoing: [] as MarkdownPage[],
+      'in-review': [] as MarkdownPage[],
       done: [] as MarkdownPage[],
-      archive: [] as MarkdownPage[],
     }
 
     tasks.forEach((task) => {
@@ -86,11 +86,11 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
       case 'ongoing':
         moveToOngoing(task)
         break
+      case 'in-review':
+        moveToInReview(task)
+        break
       case 'done':
         moveToDone(task)
-        break
-      case 'archive':
-        moveToArchive(task)
         break
     }
 

@@ -7,13 +7,13 @@ export const STATUSES = [
   'backlog',
   'this-week',
   'ongoing',
+  'in-review',
   'done',
-  'archive',
 ] as const
 export const STATUS_ORDER = [
   'backlog',
-  'archive',
   'done',
+  'in-review',
   'this-week',
   'ongoing',
 ] as const
@@ -147,13 +147,13 @@ export const moveToOngoing = (task: MarkdownPage) => {
   setPageFrontmatterValue(task, 'done', undefined)
 }
 
-export const moveToDone = (task: MarkdownPage) => {
-  setPageFrontmatterValue(task, 'status', 'done')
+export const moveToInReview = (task: MarkdownPage) => {
+  setPageFrontmatterValue(task, 'status', 'in-review')
   setPageFrontmatterValue(task, 'done', getTodayDatetime())
 }
 
-export const moveToArchive = (task: MarkdownPage) => {
-  setPageFrontmatterValue(task, 'status', 'archive')
+export const moveToDone = (task: MarkdownPage) => {
+  setPageFrontmatterValue(task, 'status', 'done')
 }
 
 export const taskSorter = (a: MarkdownPage, b: MarkdownPage) => {

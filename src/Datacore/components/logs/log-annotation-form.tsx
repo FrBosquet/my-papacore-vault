@@ -1,8 +1,8 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { appendToLog, createFromTemplate, getFile } from '../../utils/files'
 import {
-  moveToArchive,
   moveToDone,
+  moveToInReview,
   moveToOngoing,
   removeFromWeek,
 } from '../../utils/tasks'
@@ -70,9 +70,9 @@ export const LogAnnotationForm = ({ targetPage, onSubmit }: Props) => {
 
     const isTask = targetPage.$path.startsWith('Kanban/Tasks/')
 
-    if (isTask && logContent.includes('/done')) {
-      logContent = logContent.replace('/done', '').trim()
-      await moveToDone(targetPage)
+    if (isTask && logContent.includes('/in-review')) {
+      logContent = logContent.replace('/in-review', '').trim()
+      await moveToInReview(targetPage)
     }
 
     if (isTask && logContent.includes('/backlog')) {
@@ -85,9 +85,9 @@ export const LogAnnotationForm = ({ targetPage, onSubmit }: Props) => {
       await moveToOngoing(targetPage)
     }
 
-    if (isTask && logContent.includes('/archive')) {
-      logContent = logContent.replace('/archive', '').trim()
-      await moveToArchive(targetPage)
+    if (isTask && logContent.includes('/done')) {
+      logContent = logContent.replace('/done', '').trim()
+      await moveToDone(targetPage)
     }
 
     if (file && logContent.trim().length > 0) {

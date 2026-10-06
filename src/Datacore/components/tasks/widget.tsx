@@ -32,7 +32,7 @@ export const TasksWidget = () => {
   const tasksNotInThisWeek = dc.useQuery<MarkdownPage>(`
     @page
     AND path("Kanban/Tasks")
-    AND !["backlog", "done", "archived"].contains(status)
+    AND !["backlog", "in-review", "done"].contains(status)
     AND !#${weekTag}
   `)
 

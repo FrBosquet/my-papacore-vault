@@ -68,7 +68,7 @@ const ProjectItem = ({ project }: { project: MarkdownPage }) => {
   const backlog = byStatus.backlog?.length ?? 0
   const thisWeek = byStatus['this-week']?.length ?? 0
   const ongoing = byStatus.ongoing?.length ?? 0
-  const done = byStatus.done?.length ?? 0
+  const inReview = byStatus['in-review']?.length ?? 0
 
   return (
     <WidgetItem
@@ -88,10 +88,10 @@ const ProjectItem = ({ project }: { project: MarkdownPage }) => {
           </span>
           |<span>{ongoing}</span>|
           <span
-            data-success={done > 0}
+            data-success={inReview > 0}
             className="data-[success=true]:text-emerald-400"
           >
-            {done}
+            {inReview}
           </span>
           )
         </p>

@@ -19,8 +19,8 @@ import {
   getWeekFromTag,
   getWeekFromTags,
   isCarryoverTag,
-  moveToArchive,
   moveToDone,
+  moveToInReview,
   moveToOngoing,
   removeFromWeek,
   STATUSES,
@@ -39,8 +39,8 @@ type Updater = (
     | 'backlog'
     | 'this-week'
     | 'ongoing'
+    | 'in-review'
     | 'done'
-    | 'archive'
     | 'push-forward'
 ) => void
 
@@ -240,11 +240,11 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
       setPageFrontmatterValue(task, 'status', 'ongoing')
     }
 
-    if (action === 'done') {
-      if (status === 'done') {
-        setPageFrontmatterValue(task, 'status', 'archive')
-      } else {
+    if (action === 'in-review') {
+      if (status === 'in-review') {
         setPageFrontmatterValue(task, 'status', 'done')
+      } else {
+        setPageFrontmatterValue(task, 'status', 'in-review')
         setPageFrontmatterValue(task, 'done', getTodayDatetime())
       }
     }
@@ -260,7 +260,7 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
 
   const progressWidth = Math.min(2, progress) / 2
 
-  if (status === 'archive') return null
+  if (status === 'done') return null
   if (status === 'backlog') return null
 
   return (
@@ -287,12 +287,12 @@ const TaskTimeline = ({ task }: { task: MarkdownPage }) => {
       />
       <Button
         onClick={handleAction}
-        dataAttributes={{ 'data-action': 'done' }}
+        dataAttributes={{ 'data-action': 'in-review' }}
         className={classMerge(
           'bg-(--bg-color) hover:bg-green-500 size-4 rounded-full z-10',
           progress < 2 && 'bg-primary-600'
         )}
-        tooltip={status === 'done' ? 'Archive' : 'Complete'}
+        tooltip={status === 'in-review' ? 'Mark done' : 'In review'}
       />
       <div
         className="absolute inset-0 bg-(--bg-color) mx-2 h-1 top-1/2 -translate-y-1/2 scale-x-(--progress-width) origin-left transition-transform duration-300"
@@ -328,7 +328,7 @@ export const TaskRow = ({
     `)?.[0]
   }, [parent])
 
-  const archived = status === 'archive'
+  const isDone = status === 'done'
   const target = dc.useMemo(() => {
     const candidate = targetWeek ?? getTodayDatetime()
 
@@ -352,11 +352,11 @@ export const TaskRow = ({
       case 'ongoing':
         moveToOngoing(task)
         break
+      case 'in-review':
+        moveToInReview(task)
+        break
       case 'done':
         moveToDone(task)
-        break
-      case 'archive':
-        moveToArchive(task)
         break
       case 'push-forward': {
         const nextWeek = target.plus({ weeks: 1 })
@@ -410,7 +410,7 @@ export const TaskRow = ({
             'flex-1 min-w-0 break-words',
             isOngoing ? 'text-primary-100' : 'text-primary-300',
             done && 'text-green-600',
-            archived && 'line-through text-primary-600'
+            isDone && 'line-through text-primary-600'
           )}
         >
           {task.$name}

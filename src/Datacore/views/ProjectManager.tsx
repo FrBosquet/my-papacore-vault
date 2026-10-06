@@ -7,7 +7,7 @@ import { createFromTemplate } from '../utils/files'
 import {
   getTasksByMoment,
   getTaskWeekTagFromDate,
-  moveToArchive,
+  moveToDone,
   taskSorter,
 } from '../utils/tasks'
 import { getTodayDatetime } from '../utils/time'
@@ -38,9 +38,9 @@ export const ProjectManager = () => {
     getTaskWeekTagFromDate(getTodayDatetime())
   )
 
-  const handleArchiveAll = () => {
+  const handleMarkAllDone = () => {
     past.forEach((task) => {
-      if (task.value('status') === 'done') moveToArchive(task)
+      if (task.value('status') === 'in-review') moveToDone(task)
     })
   }
 
@@ -110,9 +110,9 @@ export const ProjectManager = () => {
             <Button
               iconRight="chevron-down"
               size="sm"
-              onClick={handleArchiveAll}
+              onClick={handleMarkAllDone}
             >
-              Archive all
+              Mark all done
             </Button>
           </header>
           <Scroller className="max-h-56">

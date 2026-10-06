@@ -46,8 +46,9 @@ export const KanbanTaskCard = ({
   }, [parent])
 
   const { ref: dialogRef, open, close } = useDialog()
-  const isArchive = status === 'archive'
-  const isCompleted = status === 'done' || isArchive
+  const isDone = status === 'done'
+  const isInReview = status === 'in-review'
+  const isCompleted = isInReview || isDone
   const isOngoing = status === 'ongoing'
 
   return (
@@ -66,7 +67,7 @@ export const KanbanTaskCard = ({
           'block rounded-md p-2 space-y-2 border border-transparent hover:border-primary-700 cursor-grab shadow-none w-full h-[unset] overflow-hidden',
           isOngoing ? ongoingTaskClassName : 'bg-primary-800',
           isCompleted && 'bg-green-300 text-primary-950',
-          isArchive && 'opacity-70'
+          isDone && 'opacity-70'
         )}
       >
         <header className="flex justify-between items-center gap-1">
