@@ -36,8 +36,8 @@ export const TasksWidget = () => {
     AND !#${weekTag}
   `)
 
-  const carryOverCount = getTasksByMoment(tasksNotInThisWeek, weekTag).carryOver
-    .length
+  const carryOver = getTasksByMoment(tasksNotInThisWeek, weekTag).carryOver
+  const carryOverCount = carryOver.length
 
   const currentWeekPath = getPathFromTag(weekTag)
 
@@ -72,7 +72,7 @@ export const TasksWidget = () => {
         <AddTaskModal />
       </header>
       {isKanban ? (
-        <KanbanBoard tasks={tasks} />
+        <KanbanBoard tasks={tasks} carryOvers={carryOver} />
       ) : (
         <Scroller className="max-h-100" wrapperClassName="gap-2">
           {tasks.sort(taskSorter).map((task) => (

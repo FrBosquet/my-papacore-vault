@@ -1,16 +1,25 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { classMerge } from '../../utils/classMerge'
-import type { STATUSES } from '../../utils/tasks'
+import { getFrontmatterValue } from '../../utils/markdown'
+import { STATUSES } from '../../utils/tasks'
 import { KanbanTaskCard } from './kanban-task-card'
+
+export type KanbanColumnKey = (typeof STATUSES)[number] | 'carryover'
+
+const isTaskStatus = (
+  status: string | undefined
+): status is (typeof STATUSES)[number] => {
+  return !!status && (STATUSES as readonly string[]).includes(status)
+}
 
 interface Props {
   label: string
-  status: (typeof STATUSES)[number]
+  status: KanbanColumnKey
   tasks: MarkdownPage[]
   isDragOver: boolean
-  onDragOver: (event: DragEvent, status: (typeof STATUSES)[number]) => void
+  onDragOver: (event: DragEvent, status: KanbanColumnKey) => void
   onDragLeave: () => void
-  onDrop: (event: DragEvent, status: (typeof STATUSES)[number]) => void
+  onDrop: (event: DragEvent, status: KanbanColumnKey) => void
   onDragStartTask: (event: DragEvent, task: MarkdownPage) => void
   onDragEndTask: () => void
   draggingTaskId: string | null
@@ -46,16 +55,26 @@ export const KanbanColumn = ({
         <span className="text-[0.65rem] text-primary-500">{tasks.length}</span>
       </header>
       <div className="space-y-2">
-        {tasks.map((task) => (
-          <KanbanTaskCard
-            key={task.$id}
-            task={task}
-            status={status}
-            onDragStart={onDragStartTask}
-            onDragEnd={onDragEndTask}
-            isDragging={draggingTaskId === task.$id}
-          />
-        ))}
+        {tasks.map((task) => {
+          const taskStatus = getFrontmatterValue<string>(task, 'status')
+          const cardStatus =
+            status === 'carryover'
+              ? isTaskStatus(taskStatus)
+                ? taskStatus
+                : 'this-week'
+              : status
+
+          return (
+            <KanbanTaskCard
+              key={task.$id}
+              task={task}
+              status={cardStatus}
+              onDragStart={onDragStartTask}
+              onDragEnd={onDragEndTask}
+              isDragging={draggingTaskId === task.$id}
+            />
+          )
+        })}
       </div>
     </section>
   )

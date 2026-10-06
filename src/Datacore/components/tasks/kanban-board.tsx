@@ -12,7 +12,7 @@ import {
 } from '../../utils/tasks'
 import { getTodayDatetime } from '../../utils/time'
 import { Card } from '../shared/card'
-import { KanbanColumn } from './kanban-column'
+import { KanbanColumn, type KanbanColumnKey } from './kanban-column'
 
 const KANBAN_COLUMNS: Array<{ key: (typeof STATUSES)[number]; label: string }> =
   [
@@ -23,11 +23,28 @@ const KANBAN_COLUMNS: Array<{ key: (typeof STATUSES)[number]; label: string }> =
     { key: 'done', label: 'Done' },
   ]
 
-export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
+export const KanbanBoard = ({
+  tasks,
+  carryOvers,
+}: {
+  tasks: MarkdownPage[]
+  carryOvers?: MarkdownPage[]
+}) => {
   const today = getTodayDatetime()
   const weekTag = getTaskWeekTagFromDate(today)
   const [draggingTaskId, setDraggingTaskId] = dc.useState<string | null>(null)
   const [dragOverColumn, setDragOverColumn] = dc.useState<string | null>(null)
+  const showCarryOvers = carryOvers !== undefined
+
+  const columns = dc.useMemo(() => {
+    const statusColumns = showCarryOvers
+      ? KANBAN_COLUMNS.filter((column) => column.key !== 'backlog')
+      : KANBAN_COLUMNS
+
+    if (!carryOvers?.length) return statusColumns
+
+    return [{ key: 'carryover' as const, label: 'Carryover' }, ...statusColumns]
+  }, [carryOvers, showCarryOvers])
 
   const tasksByStatus = dc.useMemo(() => {
     const byStatus = {
@@ -63,17 +80,22 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
     setDraggingTaskId(task.$id)
   }
 
-  const handleDrop = (
-    event: DragEvent,
-    nextStatus: (typeof STATUSES)[number]
-  ) => {
+  const handleDrop = (event: DragEvent, nextStatus: KanbanColumnKey) => {
     event.preventDefault()
+    if (nextStatus === 'carryover') {
+      setDraggingTaskId(null)
+      setDragOverColumn(null)
+      return
+    }
+
     const taskId =
       event.dataTransfer?.getData('application/x-task-id') ||
       event.dataTransfer?.getData('text/plain') ||
       draggingTaskId
     if (!taskId) return
-    const task = tasks.find((candidate) => candidate.$id === taskId)
+    const task = [...(carryOvers ?? []), ...tasks].find(
+      (candidate) => candidate.$id === taskId
+    )
     if (!task) return
 
     switch (nextStatus) {
@@ -103,10 +125,8 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
     setDragOverColumn(null)
   }
 
-  const handleColumnDragOver = (
-    event: DragEvent,
-    status: (typeof STATUSES)[number]
-  ) => {
+  const handleColumnDragOver = (event: DragEvent, status: KanbanColumnKey) => {
+    if (status === 'carryover') return
     event.preventDefault()
     setDragOverColumn(status)
   }
@@ -114,12 +134,16 @@ export const KanbanBoard = ({ tasks }: { tasks: MarkdownPage[] }) => {
   return (
     <Card>
       <section className="flex gap-2 overflow-x-auto min-w-0">
-        {KANBAN_COLUMNS.map((column) => (
+        {columns.map((column) => (
           <KanbanColumn
             key={column.key}
             label={column.label}
             status={column.key}
-            tasks={tasksByStatus[column.key]}
+            tasks={
+              column.key === 'carryover'
+                ? [...(carryOvers ?? [])].sort(taskSorter)
+                : tasksByStatus[column.key]
+            }
             isDragOver={dragOverColumn === column.key}
             onDragOver={handleColumnDragOver}
             onDragLeave={() => setDragOverColumn(null)}
