@@ -14,6 +14,7 @@ import { Link } from '../shared/link'
 import { ModalHeader } from '../shared/typography'
 import { KanbanDueBadge } from './kanban-due-badge'
 import { KanbanMetaBadge } from './kanban-meta-badge'
+import { ongoingTaskClassName } from './ongoing-task'
 
 interface Props {
   task: MarkdownPage
@@ -47,6 +48,7 @@ export const KanbanTaskCard = ({
   const { ref: dialogRef, open, close } = useDialog()
   const isArchive = status === 'archive'
   const isCompleted = status === 'done' || isArchive
+  const isOngoing = status === 'ongoing'
 
   return (
     <>
@@ -61,7 +63,8 @@ export const KanbanTaskCard = ({
         onDragStart={(event: DragEvent) => onDragStart(event, task)}
         onDragEnd={onDragEnd}
         className={classMerge(
-          'block rounded-md p-2 space-y-2 border border-transparent hover:border-primary-700 cursor-grab shadow-none w-full h-[unset] bg-primary-800 overflow-hidden',
+          'block rounded-md p-2 space-y-2 border border-transparent hover:border-primary-700 cursor-grab shadow-none w-full h-[unset] overflow-hidden',
+          isOngoing ? ongoingTaskClassName : 'bg-primary-800',
           isCompleted && 'bg-green-300 text-primary-950',
           isArchive && 'opacity-70'
         )}

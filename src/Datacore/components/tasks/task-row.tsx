@@ -32,6 +32,7 @@ import { Button } from '../shared/button'
 import { ContextMenu, type ContextOption } from '../shared/context'
 import { Dialog, useDialog } from '../shared/dialog'
 import { Link } from '../shared/link'
+import { ongoingTaskClassName } from './ongoing-task'
 
 type Updater = (
   action:
@@ -375,8 +376,8 @@ export const TaskRow = ({
       variant="plain"
       path={task.$path}
       className={classMerge(
-        'bg-primary-950 flex-col items-stretch gap-1',
-        isOngoing && 'ongoing-task'
+        'flex-col items-stretch gap-1',
+        isOngoing ? ongoingTaskClassName : 'bg-primary-950'
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
