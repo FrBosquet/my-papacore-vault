@@ -1,20 +1,13 @@
-import type { Link as LinkType, MarkdownPage } from '@blacksmithgu/datacore'
+import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import type { ComponentChildren } from 'preact'
 import { classMerge } from '../../utils/classMerge'
-import {
-  createFromTemplate,
-  fileExists,
-  getFile,
-  getLeaf,
-} from '../../utils/files'
 import {
   getFrontmatterValue,
   setPageFrontmatterValue,
 } from '../../utils/markdown'
 import {
   addToWeek,
-  getPathFromTag,
   getTaskWeekTagFromDate,
   getWeekFromTag,
   getWeekFromTags,
@@ -29,20 +22,16 @@ import {
 import { getTodayDatetime } from '../../utils/time'
 import { LogAnnotationForm } from '../logs/log-annotation-form'
 import { Button } from '../shared/button'
-import { ContextMenu, type ContextOption } from '../shared/context'
+import { ContextMenu } from '../shared/context'
 import { Dialog, useDialog } from '../shared/dialog'
 import { Link } from '../shared/link'
 import { ongoingTaskClassName } from './ongoing-task'
+import {
+  getTaskContextOptions,
+  type TaskMenuAction,
+} from './task-context-options'
 
-type Updater = (
-  action:
-    | 'backlog'
-    | 'this-week'
-    | 'ongoing'
-    | 'in-review'
-    | 'done'
-    | 'push-forward'
-) => void
+type Updater = (action: TaskMenuAction) => void
 
 const WeekBadge = ({
   task,
@@ -60,78 +49,12 @@ const WeekBadge = ({
   const hasWeek = !!currentWeekTag
 
   if (hasWeek) {
-    const nextWeekTag = getTaskWeekTagFromDate(
-      getTodayDatetime().plus({ weeks: 1 })
-    )
-    const weekPath = getPathFromTag(currentWeekTag)
     const week = getWeekFromTag(currentWeekTag)
-
-    const options: [ContextOption, ...ContextOption[]] = [
-      {
-        icon: 'kanban',
-        label: 'Panel Kanban',
-        action: () => {
-          const file = getFile('Kanban/Board.md')
-          if (file) getLeaf(false).openFile(file)
-        },
-      },
-      {
-        icon: 'folder-kanban',
-        label: 'Ver proyecto',
-        action: () => {
-          const project = getFrontmatterValue<LinkType>(task, 'parent')
-
-          if (!project) return alert('No project found')
-          const file = getFile(project.path)
-
-          if (file) getLeaf('split').openFile(file)
-        },
-      },
-      {
-        icon: 'notebook-pen',
-        label: 'Anotar',
-        action: () => openAnnotateDialog(),
-      },
-      {
-        type: 'divider',
-      },
-      {
-        icon: 'calendar',
-        label: `Ver semana (${currentWeekTag})`,
-        action: async () => {
-          if (!fileExists(weekPath)) {
-            await createFromTemplate(weekPath, 'week')
-          }
-          const file = getFile(weekPath)
-          if (file) getLeaf(false).openFile(file)
-        },
-      },
-    ]
-
-    if (currentWeekTag !== weekTag) {
-      options.push({
-        icon: 'calendar-plus',
-        label: `Añadir a esta semana (${weekTag})`,
-        action: () => updater('this-week'),
-      })
-    }
-
-    if (currentWeekTag !== nextWeekTag) {
-      options.push({
-        icon: 'calendar-plus',
-        label: `Añadir a la siguiente semana (${nextWeekTag})`,
-        action: () => updater('push-forward'),
-      })
-    }
-
-    options.push({
-      type: 'divider',
-    })
-
-    options.push({
-      icon: 'calendar-x',
-      label: 'Desasignar',
-      action: () => updater('backlog'),
+    const options = getTaskContextOptions({
+      task,
+      weekTag,
+      updater,
+      openAnnotateDialog,
     })
 
     return (
@@ -408,7 +331,7 @@ export const TaskRow = ({
         <p
           className={classMerge(
             'flex-1 min-w-0 break-words',
-            isOngoing ? 'text-primary-100' : 'text-primary-300',
+            isOngoing ? 'text-contrast-200 font-bold' : 'text-primary-300',
             done && 'text-green-600',
             isDone && 'line-through text-primary-600'
           )}

@@ -9,6 +9,7 @@ import {
   getTaskWeekTagFromDate,
   isCarryoverTag,
   isWeekTag,
+  retagToWeek,
 } from './tasks'
 
 describe('tasks utils', () => {
@@ -86,6 +87,14 @@ describe('tasks utils', () => {
     it('should compose the tag from the file name', () => {
       const tag = getTagFromFileName('2026 Week 8.md')
       expect(tag).toBe('2026-W08')
+    })
+
+    it('should turn the previous week tag into a carryover tag', () => {
+      expect(retagToWeek(['2026-W41', 'focus'], '2026-W42')).toEqual([
+        'carryover-2026-W41',
+        'focus',
+        '2026-W42',
+      ])
     })
   })
 })

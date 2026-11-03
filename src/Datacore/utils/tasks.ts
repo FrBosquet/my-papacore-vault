@@ -129,22 +129,39 @@ export const removeFromWeek = (task: MarkdownPage) => {
   })
 }
 
+export const retagToWeek = (
+  tags: string[] | undefined,
+  weekTag: WeekTag
+): string[] => {
+  const cleanTags = (tags ?? []).map((tag) =>
+    isWeekTag(tag) ? `carryover-${tag}` : tag
+  )
+  return [...cleanTags, weekTag]
+}
+
+const carryIntoWeek = (task: MarkdownPage, weekTag: WeekTag) => {
+  const currentWeek = getWeekFromTags(task)
+  if (!currentWeek || currentWeek >= weekTag) return
+
+  setPageFrontmatterValue(task, 'due', getLastDayOfWeektag(weekTag))
+  setPageFrontmatterValue(task, 'tags', (current) =>
+    retagToWeek(current as string[] | undefined, weekTag)
+  )
+}
+
 export const addToWeek = (task: MarkdownPage, weekTag: WeekTag) => {
   setPageFrontmatterValue(task, 'status', 'this-week')
   setPageFrontmatterValue(task, 'done', undefined)
   setPageFrontmatterValue(task, 'due', getLastDayOfWeektag(weekTag))
-  setPageFrontmatterValue(task, 'tags', (current) => {
-    const cleanTags = (current as string[])?.map((tag) => {
-      if (isWeekTag(tag)) return `carryover-${tag}`
-      return tag
-    })
-    return [...cleanTags, weekTag]
-  })
+  setPageFrontmatterValue(task, 'tags', (current) =>
+    retagToWeek(current as string[] | undefined, weekTag)
+  )
 }
 
-export const moveToOngoing = (task: MarkdownPage) => {
+export const moveToOngoing = (task: MarkdownPage, weekTag?: WeekTag) => {
   setPageFrontmatterValue(task, 'status', 'ongoing')
   setPageFrontmatterValue(task, 'done', undefined)
+  if (weekTag) carryIntoWeek(task, weekTag)
 }
 
 export const moveToInReview = (task: MarkdownPage) => {

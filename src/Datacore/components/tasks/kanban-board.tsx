@@ -105,9 +105,13 @@ export const KanbanBoard = ({
       case 'this-week':
         addToWeek(task, weekTag)
         break
-      case 'ongoing':
-        moveToOngoing(task)
+      case 'ongoing': {
+        const fromCarryover = (carryOvers ?? []).some(
+          (candidate) => candidate.$id === task.$id
+        )
+        moveToOngoing(task, fromCarryover ? weekTag : undefined)
         break
+      }
       case 'in-review':
         moveToInReview(task)
         break

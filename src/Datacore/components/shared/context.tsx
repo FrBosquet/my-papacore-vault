@@ -119,11 +119,11 @@ export const ContextMenu = ({
           ref={panelRef}
           className="bg-primary-700 fixed flex flex-col shadow-2xl pointer-events-auto min-w-48 py-1  border border-primary-800 overflow-hidden"
         >
-          {options.map((option) => {
+          {options.map((option, index) => {
             if ('type' in option && option.type === 'divider') {
               return (
                 <div
-                  key="divider"
+                  key={`divider-${index}`}
                   className="h-px w-full bg-primary-900 shadow-2xl"
                 />
               )
