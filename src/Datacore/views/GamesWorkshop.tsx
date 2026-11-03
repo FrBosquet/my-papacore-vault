@@ -116,6 +116,10 @@ const MalformedGamesCard = () => {
     const errors = []
     if (!game.value('image')) errors.push('image')
     if (!game.value('year')) errors.push('year')
+    if (!game.value('released')) errors.push('released')
+    if (!game.value('developer')) errors.push('developer')
+    if (!game.value('editor')) errors.push('editor')
+    if (!game.value('esrb')) errors.push('esrb')
     if (!(game.value('price') !== undefined)) errors.push('price')
     if (!game.value('hltb')) errors.push('hltb')
     if (!(game.value('metacritic') !== undefined)) errors.push('metacritic')
@@ -182,6 +186,28 @@ const ErrorIcon = ({ error }: { error: string }) => {
     case 'year':
       return (
         <IconWrapper icon="calendar" tooltip="This game is missing a year" />
+      )
+    case 'released':
+      return (
+        <IconWrapper
+          icon="calendar-days"
+          tooltip="This game is missing a release date"
+        />
+      )
+    case 'developer':
+      return (
+        <IconWrapper icon="user" tooltip="This game is missing a developer" />
+      )
+    case 'editor':
+      return (
+        <IconWrapper icon="building" tooltip="This game is missing an editor" />
+      )
+    case 'esrb':
+      return (
+        <IconWrapper
+          icon="shield"
+          tooltip="This game is missing an ESRB rating"
+        />
       )
     case 'price':
       return (

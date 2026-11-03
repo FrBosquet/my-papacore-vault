@@ -11,9 +11,11 @@ import {
 } from '../../shared/dialog'
 import { InputField, type InputOnChange } from '../input-field'
 import { Tabs } from '../tabs'
+import type { HltbProfile } from './hltb-profile'
 import { HLTBTab } from './hltb-tab'
 import { InstantGamingTab } from './instant-gaming-tab'
 import { MetacriticTab } from './metacritic-tab'
+import { asReleaseDateInput, yearFromReleaseDate } from './release-date'
 import { SteamGridTab, type SteamSuggestions } from './steam-grid-tab'
 
 const tabs = ['steam-grid', 'hltb', 'metacritic', 'instant-gaming'] as const
@@ -21,6 +23,10 @@ const tabs = ['steam-grid', 'hltb', 'metacritic', 'instant-gaming'] as const
 type SuggestionField =
   | 'name'
   | 'year'
+  | 'released'
+  | 'developer'
+  | 'editor'
+  | 'esrb'
   | 'image'
   | 'hltb'
   | 'metacritic'
@@ -29,6 +35,19 @@ type SuggestionField =
 type Props = {
   file?: MarkdownPage
   triggerProps?: DialogProps['triggerProps']
+}
+
+const textValue = (value: unknown): string =>
+  typeof value === 'string' ? value : ''
+
+const writeText = (
+  frontmatter: { [key: string]: unknown },
+  key: string,
+  value: string
+) => {
+  const trimmed = value.trim()
+  if (trimmed) frontmatter[key] = trimmed
+  else delete frontmatter[key]
 }
 
 const SuggestionButton = ({
@@ -66,6 +85,10 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
   const [formState, setFormState] = dc.useState({
     name: file?.$name ?? '',
     year: (file?.value('year') ?? '') as string,
+    released: asReleaseDateInput(file?.value('released')),
+    developer: textValue(file?.value('developer')),
+    editor: textValue(file?.value('editor')),
+    esrb: textValue(file?.value('esrb')),
     image: (file?.value('image') ?? '') as string,
     hltb: (file?.value('hltb') ?? '') as string,
     metacritic: (file?.value('metacritic') ?? '') as string,
@@ -77,6 +100,10 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
   >({})
   const suggestionsRef = dc.useRef(suggestions)
   suggestionsRef.current = suggestions
+  const steamYearRef = dc.useRef<string | undefined>(undefined)
+  const steamReleasedRef = dc.useRef<string | undefined>(undefined)
+  const hltbYearRef = dc.useRef<string | undefined>(undefined)
+  const hltbReleasedRef = dc.useRef<string | undefined>(undefined)
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault()
@@ -87,7 +114,12 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     // If its a new game, use the file name, otherwise use the form data
     const rawName = isNewGame ? String(formData.get('name') ?? '') : file.$name
     const name = isNewGame ? sanitizeFilename(rawName) : rawName
-    const year = formData.get('year') as string
+    const released = String(formData.get('released') ?? '')
+    const year =
+      (formData.get('year') as string) || yearFromReleaseDate(released)
+    const developer = String(formData.get('developer') ?? '')
+    const editor = String(formData.get('editor') ?? '')
+    const esrb = String(formData.get('esrb') ?? '')
     const image = formData.get('image') as string
     const hltb = formData.get('hltb') as string
     const metacritic = formData.get('metacritic') as string
@@ -109,6 +141,10 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     if (targetFile) {
       await dc.app.fileManager.processFrontMatter(targetFile, (frontmatter) => {
         frontmatter.year = year
+        writeText(frontmatter, 'released', released)
+        writeText(frontmatter, 'developer', developer)
+        writeText(frontmatter, 'editor', editor)
+        writeText(frontmatter, 'esrb', esrb)
         frontmatter.image = image
         frontmatter.hltb = +hltb
         frontmatter.metacritic = +metacritic
@@ -162,18 +198,40 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     setSuggestions(next)
   }
 
+  const resolvedYear = () => steamYearRef.current || hltbYearRef.current
+  const resolvedReleased = () =>
+    steamReleasedRef.current || hltbReleasedRef.current
+
   const setSteamSuggestions = (update: SteamSuggestions) => {
+    if (update.clear) {
+      steamYearRef.current = undefined
+      steamReleasedRef.current = undefined
+    } else {
+      if (update.year !== undefined) {
+        steamYearRef.current = update.year || undefined
+      }
+      if (update.released !== undefined) {
+        steamReleasedRef.current = update.released || undefined
+      }
+    }
+
     const prev = suggestionsRef.current
     const next = {
       ...prev,
       ...(update.clear
-        ? { name: undefined, year: undefined, image: undefined }
+        ? {
+            name: undefined,
+            year: resolvedYear(),
+            released: resolvedReleased(),
+            image: undefined,
+          }
         : {
             ...(update.name !== undefined
               ? { name: update.name || undefined }
               : {}),
-            ...(update.year !== undefined
-              ? { year: update.year || undefined }
+            ...(update.year !== undefined ? { year: resolvedYear() } : {}),
+            ...(update.released !== undefined
+              ? { released: resolvedReleased() }
               : {}),
             ...(update.image !== undefined
               ? { image: update.image || undefined }
@@ -184,7 +242,36 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
     if (
       next.name === prev.name &&
       next.year === prev.year &&
+      next.released === prev.released &&
       next.image === prev.image
+    ) {
+      return
+    }
+
+    suggestionsRef.current = next
+    setSuggestions(next)
+  }
+
+  const setHltbProfile = (profile?: HltbProfile) => {
+    hltbYearRef.current = yearFromReleaseDate(profile?.released) || undefined
+    hltbReleasedRef.current = profile?.released
+
+    const prev = suggestionsRef.current
+    const next = {
+      ...prev,
+      developer: profile?.developer,
+      editor: profile?.editor,
+      esrb: profile?.esrb,
+      year: resolvedYear(),
+      released: resolvedReleased(),
+    }
+
+    if (
+      next.developer === prev.developer &&
+      next.editor === prev.editor &&
+      next.esrb === prev.esrb &&
+      next.year === prev.year &&
+      next.released === prev.released
     ) {
       return
     }
@@ -196,6 +283,10 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
   const suggestionFields: SuggestionField[] = [
     'name',
     'year',
+    'released',
+    'developer',
+    'editor',
+    'esrb',
     'image',
     'hltb',
     'metacritic',
@@ -212,6 +303,10 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
       ...prev,
       ...(suggestions.name && !file ? { name: suggestions.name } : {}),
       ...(suggestions.year ? { year: suggestions.year } : {}),
+      ...(suggestions.released ? { released: suggestions.released } : {}),
+      ...(suggestions.developer ? { developer: suggestions.developer } : {}),
+      ...(suggestions.editor ? { editor: suggestions.editor } : {}),
+      ...(suggestions.esrb ? { esrb: suggestions.esrb } : {}),
       ...(suggestions.image ? { image: suggestions.image } : {}),
       ...(suggestions.hltb ? { hltb: suggestions.hltb } : {}),
       ...(suggestions.metacritic ? { metacritic: suggestions.metacritic } : {}),
@@ -320,6 +415,94 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
             />
             <InputField
               disabled={!formState.name}
+              value={formState.released}
+              onChange={handleChange}
+              onFocus={() => {
+                setActiveTab('steam-grid')
+              }}
+              label="Release date"
+              id="released"
+              helpText="Day the game came out. Suggested from the SteamGridDB release date, or from HowLongToBeat when Steam has no date."
+              type="date"
+              action={
+                <SuggestionButton
+                  value={suggestions.released}
+                  current={String(formState.released ?? '')}
+                  label={suggestions.released ?? ''}
+                  onApply={() =>
+                    injectValue('released', suggestions.released ?? '')
+                  }
+                />
+              }
+            />
+            <InputField
+              disabled={!formState.name}
+              value={formState.developer}
+              onChange={handleChange}
+              onFocus={() => {
+                setActiveTab('hltb')
+              }}
+              label="Developer"
+              id="developer"
+              placeholder="Developer"
+              helpText="Studio that made the game. Suggested from the HowLongToBeat page."
+              action={
+                <SuggestionButton
+                  value={suggestions.developer}
+                  current={String(formState.developer ?? '')}
+                  label={suggestions.developer ?? ''}
+                  className="max-w-40 truncate"
+                  onApply={() =>
+                    injectValue('developer', suggestions.developer ?? '')
+                  }
+                />
+              }
+            />
+            <InputField
+              disabled={!formState.name}
+              value={formState.editor}
+              onChange={handleChange}
+              onFocus={() => {
+                setActiveTab('hltb')
+              }}
+              label="Editor"
+              id="editor"
+              placeholder="Editor"
+              helpText="Publisher that released the game. Suggested from the HowLongToBeat page."
+              action={
+                <SuggestionButton
+                  value={suggestions.editor}
+                  current={String(formState.editor ?? '')}
+                  label={suggestions.editor ?? ''}
+                  className="max-w-40 truncate"
+                  onApply={() =>
+                    injectValue('editor', suggestions.editor ?? '')
+                  }
+                />
+              }
+            />
+            <InputField
+              disabled={!formState.name}
+              value={formState.esrb}
+              onChange={handleChange}
+              onFocus={() => {
+                setActiveTab('hltb')
+              }}
+              label="ESRB"
+              id="esrb"
+              placeholder="M"
+              helpText="Age rating, such as E, E10+, T, M, or AO. Suggested from HowLongToBeat, or from Steam when HowLongToBeat has no ESRB."
+              action={
+                <SuggestionButton
+                  value={suggestions.esrb}
+                  current={String(formState.esrb ?? '')}
+                  label={suggestions.esrb ?? ''}
+                  onApply={() => injectValue('esrb', suggestions.esrb ?? '')}
+                />
+              }
+            />
+            <InputField
+              disabled={!formState.name}
               value={formState.hltb}
               onChange={handleChange}
               onFocus={() => {
@@ -419,6 +602,7 @@ export const GameStudioModal = ({ file, triggerProps }: Props) => {
                 <HLTBTab
                   name={formState.name}
                   onValue={(hours) => setSuggestion('hltb', hours)}
+                  onProfile={setHltbProfile}
                 />
               ),
               metacritic: (

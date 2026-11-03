@@ -1,5 +1,6 @@
 import { useEnvVar } from '../../../utils/envvars'
 import { Button } from '../../shared/button'
+import { releaseDateFromUnix, yearFromReleaseDate } from './release-date'
 import { closestWidescreenAsset } from './steam-grid-image'
 import { useDebouncedState } from './use-debounced-state'
 
@@ -7,6 +8,7 @@ export type SteamSuggestions = {
   name?: string
   year?: string
   image?: string
+  released?: string
   clear?: boolean
 }
 
@@ -105,9 +107,8 @@ export const SteamGridTab = ({
     fetchGameAssets(selectedGame.id)
   }, [selectedGame?.id])
 
-  const year = selectedGame?.release_date
-    ? new Date(selectedGame.release_date * 1000).getFullYear().toString()
-    : ''
+  const released = releaseDateFromUnix(selectedGame?.release_date)
+  const year = yearFromReleaseDate(released)
   const image =
     assetsFor === selectedGame?.id
       ? closestWidescreenAsset(gameAssets)?.thumb
@@ -124,9 +125,18 @@ export const SteamGridTab = ({
     onSuggestRef.current({
       ...(isEditing ? {} : { name: selectedGame.name }),
       year,
+      released,
       image: image ?? '',
     })
-  }, [value, isEditing, selectedGame?.id, selectedGame?.name, year, image])
+  }, [
+    value,
+    isEditing,
+    selectedGame?.id,
+    selectedGame?.name,
+    year,
+    released,
+    image,
+  ])
 
   if (!value.length)
     return (
@@ -151,13 +161,13 @@ export const SteamGridTab = ({
         }
       >
         {gameOptions.map((game) => {
-          const releaseDate = game.release_date
-            ? new Date(game.release_date * 1000).getFullYear()
-            : null
+          const releaseYear = yearFromReleaseDate(
+            releaseDateFromUnix(game.release_date)
+          )
 
           return (
             <option value={game.id}>
-              {releaseDate ? `${releaseDate} - ` : ''} {game.name}
+              {releaseYear ? `${releaseYear} - ` : ''} {game.name}
             </option>
           )
         })}
