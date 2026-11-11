@@ -111,6 +111,13 @@ export const getFile = (path: string) => {
   return dc.app.vault.getFileByPath(path)
 }
 
+export const trashPage = async (path: string) => {
+  const file = getFile(path)
+  if (!file) return
+
+  await dc.app.fileManager.trashFile(file)
+}
+
 export const fileExists = (path: string) => {
   return getFile(path) !== null
 }

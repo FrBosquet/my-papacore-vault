@@ -22,6 +22,7 @@ export type TaskMenuAction =
   | 'in-review'
   | 'done'
   | 'push-forward'
+  | 'discard'
 
 export const getTaskContextOptions = ({
   task,

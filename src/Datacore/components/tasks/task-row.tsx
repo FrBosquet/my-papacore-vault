@@ -2,12 +2,14 @@ import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import type { ComponentChildren } from 'preact'
 import { classMerge } from '../../utils/classMerge'
+import { trashPage } from '../../utils/files'
 import {
   getFrontmatterValue,
   setPageFrontmatterValue,
 } from '../../utils/markdown'
 import {
   addToWeek,
+  getDateFromWeekTag,
   getTaskWeekTagFromDate,
   getWeekFromTag,
   getWeekFromTags,
@@ -22,7 +24,7 @@ import {
 import { getTodayDatetime } from '../../utils/time'
 import { LogAnnotationForm } from '../logs/log-annotation-form'
 import { Button } from '../shared/button'
-import { ContextMenu } from '../shared/context'
+import { ContextMenu, type ContextOption } from '../shared/context'
 import { Dialog, useDialog } from '../shared/dialog'
 import { Link } from '../shared/link'
 import { ongoingTaskClassName } from './ongoing-task'
@@ -67,16 +69,36 @@ const WeekBadge = ({
     )
   }
 
+  const nextWeekTag = weekTag
+    ? getTaskWeekTagFromDate(getDateFromWeekTag(weekTag).plus({ weeks: 1 }))
+    : undefined
+
+  const options: [ContextOption, ...ContextOption[]] = [
+    {
+      icon: 'calendar-plus',
+      label: weekTag ? `Esta semana (${weekTag})` : 'Esta semana',
+      action: () => updater('this-week'),
+    },
+    {
+      icon: 'calendar-arrow-up',
+      label: nextWeekTag ? `La que viene (${nextWeekTag})` : 'La que viene',
+      action: () => updater('push-forward'),
+    },
+    { type: 'divider' },
+    {
+      icon: 'trash',
+      label: 'Descartar',
+      action: () => updater('discard'),
+    },
+  ]
+
   return (
-    <Link
-      onClick={() => updater('this-week')}
-      className={classMerge(
-        'font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 bg-primary-900 text-primary-300'
-      )}
-      tooltip="Agregar a la semana"
+    <ContextMenu
+      className="font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 bg-primary-900 text-primary-300"
+      options={options}
     >
       <dc.Icon icon="plus" />
-    </Link>
+    </ContextMenu>
   )
 }
 
@@ -285,6 +307,14 @@ export const TaskRow = ({
         const nextWeek = target.plus({ weeks: 1 })
         const nextWeekTag = getTaskWeekTagFromDate(nextWeek)
         addToWeek(task, nextWeekTag)
+        break
+      }
+      case 'discard': {
+        const confirmed = confirm(
+          `¿Descartar "${task.$name}"? Se borrará la nota.`
+        )
+        if (!confirmed) return
+        void trashPage(task.$file)
         break
       }
     }
