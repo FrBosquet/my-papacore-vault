@@ -68,3 +68,45 @@ export const getSemanticDateOffset = (datetime: DateTime, long = false) => {
   if (offset < 8) return `${offset} ${long ? 'days ago' : 'DA'}`
   return datetime.toFormat('MMM dd')
 }
+
+const sameIsoWeek = (a: DateTime, b: DateTime) =>
+  a.weekYear === b.weekYear && a.weekNumber === b.weekNumber
+
+/**
+ * Relative label for when a task was last updated.
+ * Buckets get coarser as the date gets older: hoy, ayer, esta semana, este mes, and so on.
+ */
+export const getContextualUpdateLabel = (
+  updated: DateTime,
+  now: DateTime = getTodayDatetime()
+) => {
+  const updatedLocal = updated.setZone('local')
+  const today = now.setZone('local').startOf('day')
+  const updatedDay = updatedLocal.startOf('day')
+
+  if (updatedDay >= today) return 'Actualizado hoy'
+
+  if (updatedDay.hasSame(today.minus({ days: 1 }), 'day')) {
+    return 'Actualizado ayer'
+  }
+
+  if (sameIsoWeek(updatedLocal, today)) return 'Actualizado esta semana'
+
+  if (sameIsoWeek(updatedLocal, today.minus({ weeks: 1 }))) {
+    return 'Actualizado la semana pasada'
+  }
+
+  if (updatedLocal.hasSame(today, 'month')) return 'Actualizado este mes'
+
+  if (updatedLocal.hasSame(today.minus({ months: 1 }), 'month')) {
+    return 'Actualizado el mes pasado'
+  }
+
+  const months = Math.floor(today.diff(updatedDay, 'months').months)
+  if (months < 12) return `Actualizado hace ${months} meses`
+
+  const years = Math.floor(today.diff(updatedDay, 'years').years)
+  if (years <= 1) return 'Actualizado el año pasado'
+
+  return `Actualizado hace ${years} años`
+}

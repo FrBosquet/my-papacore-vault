@@ -134,6 +134,14 @@ dialog::backdrop {
   display: inline-block !important;
 }
 
+.pc-scroll-x {
+  scrollbar-width: none;
+}
+
+.pc-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
 @layer utilities {
   .grid-cols-auto-4 {
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));

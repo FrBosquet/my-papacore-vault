@@ -10,7 +10,7 @@ import {
   removeFromWeek,
   type STATUSES,
 } from '../../utils/tasks'
-import { getTodayDatetime } from '../../utils/time'
+import { getContextualUpdateLabel, getTodayDatetime } from '../../utils/time'
 import { LogAnnotationForm } from '../logs/log-annotation-form'
 import { ContextMenu } from '../shared/context'
 import { Dialog, useDialog } from '../shared/dialog'
@@ -146,7 +146,7 @@ export const KanbanTaskCard = ({
               <KanbanMetaBadge>
                 {done
                   ? `Completado ${done.toLocaleString()}`
-                  : `Actualizado ${task.$mtime.toLocaleString()}`}
+                  : getContextualUpdateLabel(task.$mtime)}
               </KanbanMetaBadge>
               <span className="flex items-center shrink-0 min-h-5 pr-6">
                 {weekTag && (

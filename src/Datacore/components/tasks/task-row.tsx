@@ -21,7 +21,7 @@ import {
   STATUSES,
   type WeekTag,
 } from '../../utils/tasks'
-import { getTodayDatetime } from '../../utils/time'
+import { getContextualUpdateLabel, getTodayDatetime } from '../../utils/time'
 import { LogAnnotationForm } from '../logs/log-annotation-form'
 import { Button } from '../shared/button'
 import { ContextMenu, type ContextOption } from '../shared/context'
@@ -342,7 +342,7 @@ export const TaskRow = ({
         >
           {done
             ? `Completado ${done.toLocaleString()}`
-            : `Actualizado ${task.$mtime.toLocaleString()}`}
+            : getContextualUpdateLabel(task.$mtime)}
         </p>
         {(project || (!done && due)) && (
           <div className="flex items-center gap-2 ml-auto">
