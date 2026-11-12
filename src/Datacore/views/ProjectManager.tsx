@@ -1,10 +1,12 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { Button } from '../components/shared/button'
 import { Card } from '../components/shared/card'
+import { Dialog, useDialog } from '../components/shared/dialog'
 import { Scroller } from '../components/shared/scroller'
 import { TaskRow } from '../components/tasks/task-row'
 import { createFromTemplate } from '../utils/files'
 import {
+  type DoneTaskGroup,
   getTasksByMoment,
   getTaskWeekTagFromDate,
   groupTasksByDoneRecency,
@@ -12,6 +14,21 @@ import {
   taskSorter,
 } from '../utils/tasks'
 import { getTodayDatetime } from '../utils/time'
+
+const PastTaskGroups = ({ groups }: { groups: DoneTaskGroup[] }) => (
+  <>
+    {groups.map((group, index) => (
+      <div key={group.key} className={index === 0 ? undefined : 'mt-3'}>
+        <h4 className="uppercase p-1 m-0 mb-1 text-xs tracking-wide font-semibold text-theme-accent">
+          {group.label}
+        </h4>
+        {group.tasks.map((subtask) => (
+          <TaskRow key={subtask.$id} task={subtask} />
+        ))}
+      </div>
+    ))}
+  </>
+)
 
 export const ProjectManager = () => {
   const thisProject = dc.useCurrentFile()
@@ -39,6 +56,7 @@ export const ProjectManager = () => {
     getTaskWeekTagFromDate(getTodayDatetime())
   )
   const pastGroups = groupTasksByDoneRecency(past)
+  const { ref: pastDialogRef } = useDialog()
 
   const handleMarkAllDone = () => {
     past.forEach((task) => {
@@ -109,25 +127,35 @@ export const ProjectManager = () => {
             <h3 className="uppercase p-0 m-0 text-sm tracking-wide font-semibold text-theme-accent">
               Past tasks: ({past.length})
             </h3>
-            <Button
-              iconRight="chevron-down"
-              size="sm"
-              onClick={handleMarkAllDone}
-            >
-              Mark all done
-            </Button>
+            <div className="flex items-center gap-1">
+              <Dialog
+                title={`Past tasks (${past.length})`}
+                icon="history"
+                dialogRef={pastDialogRef}
+                className="h-[calc(100vh-2rem)]"
+                triggerProps={{
+                  icon: 'expand',
+                  size: 'icon',
+                  variant: 'ghost',
+                  label: null,
+                  tooltip: 'Ver todas',
+                }}
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto">
+                  <PastTaskGroups groups={pastGroups} />
+                </div>
+              </Dialog>
+              <Button
+                iconRight="chevron-down"
+                size="sm"
+                onClick={handleMarkAllDone}
+              >
+                Mark all done
+              </Button>
+            </div>
           </header>
           <Scroller className="max-h-56">
-            {pastGroups.map((group, index) => (
-              <div key={group.key} className={index === 0 ? undefined : 'mt-3'}>
-                <h4 className="uppercase p-1 m-0 mb-1 text-xs tracking-wide font-semibold text-theme-accent">
-                  {group.label}
-                </h4>
-                {group.tasks.map((subtask) => (
-                  <TaskRow key={subtask.$id} task={subtask} />
-                ))}
-              </div>
-            ))}
+            <PastTaskGroups groups={pastGroups} />
           </Scroller>
         </>
       )}
