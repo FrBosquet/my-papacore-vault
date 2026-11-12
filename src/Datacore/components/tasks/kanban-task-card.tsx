@@ -26,6 +26,7 @@ import {
   getTaskContextOptions,
   type TaskMenuAction,
 } from './task-context-options'
+import { getWeekColorClass } from './week-color'
 
 interface Props {
   task: MarkdownPage
@@ -150,7 +151,12 @@ export const KanbanTaskCard = ({
               </KanbanMetaBadge>
               <span className="flex items-center shrink-0 min-h-5 pr-6">
                 {weekTag && (
-                  <KanbanMetaBadge className="bg-green-900 text-green-300 text-lg">
+                  <KanbanMetaBadge
+                    className={classMerge(
+                      getWeekColorClass(getWeekFromTag(weekTag)),
+                      'text-lg'
+                    )}
+                  >
                     W{getWeekFromTag(weekTag).toString().padStart(2, '0')}
                   </KanbanMetaBadge>
                 )}

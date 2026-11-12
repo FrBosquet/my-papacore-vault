@@ -7,6 +7,7 @@ import { createFromTemplate } from '../utils/files'
 import {
   getTasksByMoment,
   getTaskWeekTagFromDate,
+  groupTasksByDoneRecency,
   moveToDone,
   taskSorter,
 } from '../utils/tasks'
@@ -37,6 +38,7 @@ export const ProjectManager = () => {
     subtasks,
     getTaskWeekTagFromDate(getTodayDatetime())
   )
+  const pastGroups = groupTasksByDoneRecency(past)
 
   const handleMarkAllDone = () => {
     past.forEach((task) => {
@@ -116,8 +118,15 @@ export const ProjectManager = () => {
             </Button>
           </header>
           <Scroller className="max-h-56">
-            {past.sort(taskSorter).map((subtask) => (
-              <TaskRow key={subtask.$id} task={subtask} />
+            {pastGroups.map((group, index) => (
+              <div key={group.key} className={index === 0 ? undefined : 'mt-3'}>
+                <h4 className="uppercase p-1 m-0 mb-1 text-xs tracking-wide font-semibold text-theme-accent">
+                  {group.label}
+                </h4>
+                {group.tasks.map((subtask) => (
+                  <TaskRow key={subtask.$id} task={subtask} />
+                ))}
+              </div>
             ))}
           </Scroller>
         </>

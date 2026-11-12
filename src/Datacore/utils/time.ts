@@ -72,6 +72,84 @@ export const getSemanticDateOffset = (datetime: DateTime, long = false) => {
 const sameIsoWeek = (a: DateTime, b: DateTime) =>
   a.weekYear === b.weekYear && a.weekNumber === b.weekNumber
 
+const startOfIsoWeek = (datetime: DateTime) =>
+  datetime.setZone('local').set({ weekday: 1 }).startOf('day')
+
+const isoWeekKey = (datetime: DateTime) => {
+  const week = startOfIsoWeek(datetime)
+  return `${week.weekYear}-W${week.weekNumber.toString().padStart(2, '0')}`
+}
+
+const calendarMonthsBetween = (later: DateTime, earlier: DateTime) =>
+  (later.year - earlier.year) * 12 + (later.month - earlier.month)
+
+const monthKey = (datetime: DateTime) =>
+  `${datetime.year}-${datetime.month.toString().padStart(2, '0')}`
+
+export type DoneRecency = {
+  key: string
+  label: string
+}
+
+/**
+ * Bucket a completion date for past-task headings.
+ * Recent weeks stay separate. Older dates collapse into months, then years.
+ */
+export const getDoneRecency = (
+  done: DateTime,
+  now: DateTime = getTodayDatetime()
+): DoneRecency => {
+  const doneLocal = done.setZone('local')
+  const today = now.setZone('local')
+  const weeks = Math.round(
+    startOfIsoWeek(today).diff(startOfIsoWeek(doneLocal), 'weeks').weeks
+  )
+
+  if (!Number.isFinite(weeks) || weeks <= 0) {
+    return { key: `week:${isoWeekKey(today)}`, label: 'Esta semana' }
+  }
+
+  if (weeks === 1) {
+    return {
+      key: `week:${isoWeekKey(doneLocal)}`,
+      label: 'La semana pasada',
+    }
+  }
+
+  if (weeks <= 3) {
+    return {
+      key: `week:${isoWeekKey(doneLocal)}`,
+      label: `Hace ${weeks} semanas`,
+    }
+  }
+
+  const months = calendarMonthsBetween(today, doneLocal)
+
+  if (months <= 0) {
+    return {
+      key: `week:${isoWeekKey(doneLocal)}`,
+      label: `Hace ${weeks} semanas`,
+    }
+  }
+
+  if (months === 1) {
+    return { key: `month:${monthKey(doneLocal)}`, label: 'Hace un mes' }
+  }
+
+  if (months < 12) {
+    return {
+      key: `month:${monthKey(doneLocal)}`,
+      label: `Hace ${months} meses`,
+    }
+  }
+
+  const years = Math.floor(months / 12)
+  return {
+    key: `years:${years}`,
+    label: years === 1 ? 'Hace un año' : `Hace ${years} años`,
+  }
+}
+
 /**
  * Relative label for when a task was last updated.
  * Buckets get coarser as the date gets older: hoy, ayer, esta semana, este mes, and so on.

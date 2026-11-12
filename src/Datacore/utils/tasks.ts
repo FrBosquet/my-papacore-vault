@@ -1,7 +1,7 @@
 import type { MarkdownPage } from '@blacksmithgu/datacore'
 import type { DateTime } from 'luxon'
 import { getFrontmatterValue, setPageFrontmatterValue } from './markdown'
-import { getTodayDatetime } from './time'
+import { getDoneRecency, getTodayDatetime } from './time'
 
 export const STATUSES = [
   'backlog',
@@ -171,6 +171,63 @@ export const moveToInReview = (task: MarkdownPage) => {
 
 export const moveToDone = (task: MarkdownPage) => {
   setPageFrontmatterValue(task, 'status', 'done')
+}
+
+const getDoneDate = (task: MarkdownPage): DateTime | undefined => {
+  const done = getFrontmatterValue<DateTime | string>(task, 'done')
+  if (!done) return undefined
+
+  if (typeof done === 'string') {
+    const parsed = dc.luxon.DateTime.fromISO(done, { zone: 'local' })
+    return parsed.isValid ? parsed : undefined
+  }
+
+  return done.isValid ? done : undefined
+}
+
+export type DoneTaskGroup = {
+  key: string
+  label: string
+  tasks: MarkdownPage[]
+}
+
+export const groupTasksByDoneRecency = (
+  tasks: MarkdownPage[],
+  now: DateTime = getTodayDatetime()
+): DoneTaskGroup[] => {
+  const sorted = [...tasks].sort((a, b) => {
+    const aDone = getDoneDate(a)?.toMillis()
+    const bDone = getDoneDate(b)?.toMillis()
+
+    if (aDone == null && bDone == null) return a.$name.localeCompare(b.$name)
+    if (aDone == null) return 1
+    if (bDone == null) return -1
+    if (aDone !== bDone) return bDone - aDone
+
+    return a.$name.localeCompare(b.$name)
+  })
+
+  const groups: DoneTaskGroup[] = []
+
+  for (const task of sorted) {
+    const done = getDoneDate(task)
+    const recency = done
+      ? getDoneRecency(done, now)
+      : { key: 'unknown', label: 'Sin fecha' }
+    const current = groups[groups.length - 1]
+
+    if (current?.key === recency.key) {
+      current.tasks.push(task)
+    } else {
+      groups.push({
+        key: recency.key,
+        label: recency.label,
+        tasks: [task],
+      })
+    }
+  }
+
+  return groups
 }
 
 export const taskSorter = (a: MarkdownPage, b: MarkdownPage) => {

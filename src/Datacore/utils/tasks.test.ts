@@ -1,3 +1,4 @@
+import type { MarkdownPage } from '@blacksmithgu/datacore'
 import { DateTime } from 'luxon'
 import {
   getDateFromWeekTag,
@@ -7,6 +8,7 @@ import {
   getPathFromTag,
   getTagFromFileName,
   getTaskWeekTagFromDate,
+  groupTasksByDoneRecency,
   isCarryoverTag,
   isWeekTag,
   retagToWeek,
@@ -94,6 +96,52 @@ describe('tasks utils', () => {
         'carryover-2026-W41',
         'focus',
         '2026-W42',
+      ])
+    })
+  })
+
+  describe('groupTasksByDoneRecency', () => {
+    it('orders tasks by done date and splits them when the week changes', () => {
+      const now = DateTime.fromISO('2026-11-12T12:00:00', { zone: 'local' })
+      const task = (name: string, done?: string) =>
+        ({
+          $name: name,
+          $frontmatter: done
+            ? {
+                done: {
+                  value: DateTime.fromISO(done, { zone: 'local' }),
+                },
+              }
+            : {},
+        }) as MarkdownPage
+
+      const groups = groupTasksByDoneRecency(
+        [
+          task('Octubre tarde', '2026-10-18'),
+          task('Hoy tarde', '2026-11-12'),
+          task('Semana pasada', '2026-11-03'),
+          task('Octubre pronto', '2026-10-02'),
+          task('Hoy', '2026-11-12'),
+          task('Sin cerrar'),
+          task('Hace tres', '2026-10-20'),
+        ],
+        now
+      )
+
+      expect(groups.map((group) => group.label)).toEqual([
+        'Esta semana',
+        'La semana pasada',
+        'Hace 3 semanas',
+        'Hace un mes',
+        'Sin fecha',
+      ])
+      expect(groups[0].tasks.map((item) => item.$name)).toEqual([
+        'Hoy',
+        'Hoy tarde',
+      ])
+      expect(groups[3].tasks.map((item) => item.$name)).toEqual([
+        'Octubre tarde',
+        'Octubre pronto',
       ])
     })
   })

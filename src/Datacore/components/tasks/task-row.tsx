@@ -32,6 +32,7 @@ import {
   getTaskContextOptions,
   type TaskMenuAction,
 } from './task-context-options'
+import { getWeekColorClass } from './week-color'
 
 type Updater = (action: TaskMenuAction) => void
 
@@ -61,7 +62,10 @@ const WeekBadge = ({
 
     return (
       <ContextMenu
-        className="font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 bg-green-900 text-green-300"
+        className={classMerge(
+          'font-bold text-xs flex size-8 shrink-0 items-center justify-center p-1 hover:text-current',
+          getWeekColorClass(week)
+        )}
         options={options}
       >
         W{week.toString().padStart(2, '0')}
@@ -329,7 +333,7 @@ export const TaskRow = ({
       variant="plain"
       path={task.$path}
       className={classMerge(
-        'flex-col items-stretch gap-1',
+        'flex-col items-stretch gap-1 px-2 py-1.5',
         isOngoing ? ongoingTaskClassName : 'bg-primary-950'
       )}
     >
@@ -337,7 +341,7 @@ export const TaskRow = ({
         <p
           className={classMerge(
             'text-primary-300 text-xs whitespace-nowrap',
-            done && 'text-green-300'
+            done && 'text-green-500'
           )}
         >
           {done
